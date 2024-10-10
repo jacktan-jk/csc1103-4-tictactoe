@@ -54,9 +54,12 @@ void clearBtn();
 void updateScoreBtn(gpointer data);
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data);
 void on_btnScore_clicked(GtkWidget *widget, gpointer data);
+
+struct Move findBestMove(int board[3][3]) ;
 int minimax(int board[3][3], int depth, bool isMax);
 int evaluate(int b[3][3]);
-bool isMovesLeft(int board[3][3]) ;
+bool isMovesLeft(int board[3][3]);
+
 /*===============================================================================================
 END OF GLOBAL DECLARATION
 ===============================================================================================*/
@@ -67,6 +70,7 @@ GUI FUNCTIONS
 
 void clearBtn()
 {
+    isPlayer1Turn = true;
     for (int i = 0; i < 3; i++) 
     {
         for (int j = 0; j < 3; j++) 
@@ -119,7 +123,17 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     {
         isPlayer1Turn = !isPlayer1Turn;
         updateScoreBtn(data);
-        return;
+        if(playerMode.mode == MODE_BOT)
+        {
+            struct Move botMove = findBestMove(iBoard); 
+            gtk_button_set_label(GTK_BUTTON(btnGrid[botMove.row][botMove.col]), "X");
+            iBoard[botMove.row][botMove.col] = BOT;
+            retVal = chkPlayerWin();
+        }
+        else
+        {
+            return;
+        }
     }
 
     if(retVal == WIN)
@@ -132,6 +146,11 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     {
         iTie_score++;
         iGameState = TIE;
+    }
+
+    if(playerMode.mode == MODE_BOT)
+    {
+        isPlayer1Turn = !isPlayer1Turn;
     }
     updateScoreBtn(data);
 }
@@ -232,9 +251,7 @@ struct Move findBestMove(int board[3][3])
                 // Undo the move 
                 board[i][j] = EMPTY; 
   
-                // If the value of the current move is 
-                // more than the best value, then update 
-                // best/ 
+                // If the value of the current move is more than the best value, then update best move 
                 if (moveVal > bestVal) 
                 { 
                     bestMove.row = i; 
@@ -243,18 +260,13 @@ struct Move findBestMove(int board[3][3])
                 } 
             } 
         } 
-    } 
-  
-    printf("The value of the best Move is : %d\n\n", 
-            bestVal); 
-  
+    }   
     return bestMove; 
 }
 
 int minimax(int board[3][3], int depth, bool isMax) 
 { 
-    int score = chkPlayerWin(board); 
-
+    int score = evaluate(board); 
     // If Maximizer has won the game return his/her 
     // evaluated score 
     if (score == 10) 
@@ -290,7 +302,7 @@ int minimax(int board[3][3], int depth, bool isMax)
                     // the maximum value 
                     best = max( best, 
                         minimax(board, depth+1, !isMax) ); 
-  
+
                     // Undo the move 
                     board[i][j] = EMPTY; 
                 } 
