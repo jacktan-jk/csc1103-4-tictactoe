@@ -14,7 +14,7 @@
 
 #define EMPTY 0
 #define PLAYER1 1
-#define BOT 2
+#define BOT 2       //this is also used for player 2
 
 /*===============================================================================================
 GLOBAL DECLARATION
@@ -43,7 +43,7 @@ int iTie_score = 0;
 bool isPlayer1Turn = true;
 int iBoard[3][3];
 int iGameState = PLAY;
-struct stPlayerMode playerMode = {"2P", MODE_BOT};
+struct stPlayerMode playerMode = {"2P", MODE_2P};
 
 GtkWidget *btnGrid[3][3];
 
@@ -109,7 +109,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         return;
     }
 
-    iBoard[btnPos->pos[0]][btnPos->pos[1]] = isPlayer1Turn ? 1 : 2; // O (1), X(2)
+    iBoard[btnPos->pos[0]][btnPos->pos[1]] = isPlayer1Turn ? PLAYER1 : BOT; // O (1), X(2), BOT is the same as player 2
 
     // Update the button text, for example, with an "O"
     gtk_button_set_label(GTK_BUTTON(widget), isPlayer1Turn ? "O" : "X");
@@ -139,7 +139,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
 void on_btnScore_clicked(GtkWidget *widget, gpointer data) 
 {
     playerMode.mode = !playerMode.mode;
-    strncpy(playerMode.txt, playerMode.mode == MODE_2P ? "1P" : "2P", sizeof(playerMode.txt));
+    strncpy(playerMode.txt, playerMode.mode == MODE_2P ? "2P" : "1P", sizeof(playerMode.txt));
     updateScoreBtn(data);
     clearBtn();
 }
