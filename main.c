@@ -9,8 +9,12 @@
 #define SUCCESS 0
 #define ERROR -1
 
-#define PLAYER_2 0
-#define PLAYER_BOT 1
+#define MODE_2P 0
+#define MODE_BOT 1
+
+#define EMPTY 0
+#define PLAYER1 1
+#define BOT 2
 
 /*===============================================================================================
 GLOBAL DECLARATION
@@ -39,16 +43,20 @@ int iTie_score = 0;
 bool isPlayer1Turn = true;
 int iBoard[3][3];
 int iGameState = PLAY;
-struct stPlayerMode playerMode = {"2P", PLAYER_BOT};
+struct stPlayerMode playerMode = {"2P", MODE_BOT};
 
 GtkWidget *btnGrid[3][3];
 
+int max(int a, int b);
+int min(int a, int b);
 int chkPlayerWin();
 void clearBtn();
 void updateScoreBtn(gpointer data);
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data);
 void on_btnScore_clicked(GtkWidget *widget, gpointer data);
-
+int minimax(int board[3][3], int depth, bool isMax);
+int evaluate(int b[3][3]);
+bool isMovesLeft(int board[3][3]) ;
 /*===============================================================================================
 END OF GLOBAL DECLARATION
 ===============================================================================================*/
@@ -131,7 +139,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
 void on_btnScore_clicked(GtkWidget *widget, gpointer data) 
 {
     playerMode.mode = !playerMode.mode;
-    strncpy(playerMode.txt, playerMode.mode == PLAYER_2 ? "1P" : "2P", sizeof(playerMode.txt));
+    strncpy(playerMode.txt, playerMode.mode == MODE_2P ? "1P" : "2P", sizeof(playerMode.txt));
     updateScoreBtn(data);
     clearBtn();
 }
@@ -144,6 +152,15 @@ END OF GUI FUNCTIONS
 /*===============================================================================================
 LOGIC FUNCTIONS
 ===============================================================================================*/
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Helper function to get the minimum of two integers
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
 
 int chkPlayerWin()
 {
@@ -188,7 +205,7 @@ int chkPlayerWin()
     return TIE;
 }
 
-struct Move findBestMove(char board[3][3]) 
+struct Move findBestMove(int board[3][3]) 
 { 
     int bestVal = -1000; 
     struct Move bestMove; 
@@ -203,17 +220,17 @@ struct Move findBestMove(char board[3][3])
         for (int j = 0; j < 3; j++) 
         { 
             // Check if cell is empty 
-            if (board[i][j]==0) 
+            if (board[i][j] == EMPTY) 
             { 
                 // Make the move 
-                board[i][j] = 3; 
+                board[i][j] = BOT; 
   
                 // compute evaluation function for this 
                 // move. 
                 int moveVal = minimax(board, 0, false); 
   
                 // Undo the move 
-                board[i][j] = 0; 
+                board[i][j] = EMPTY; 
   
                 // If the value of the current move is 
                 // more than the best value, then update 
@@ -233,6 +250,143 @@ struct Move findBestMove(char board[3][3])
   
     return bestMove; 
 }
+
+int minimax(int board[3][3], int depth, bool isMax) 
+{ 
+    int score = chkPlayerWin(board); 
+
+    // If Maximizer has won the game return his/her 
+    // evaluated score 
+    if (score == 10) 
+        return score; 
+  
+    // If Minimizer has won the game return his/her 
+    // evaluated score 
+    if (score == -10) 
+        return score; 
+  
+    // If there are no more moves and no winner then 
+    // it is a tie 
+    if (isMovesLeft(board)==false) 
+        return 0; 
+  
+    // If this maximizer's move 
+    if (isMax) 
+    { 
+        int best = -1000; 
+  
+        // Traverse all cells 
+        for (int i = 0; i<3; i++) 
+        { 
+            for (int j = 0; j<3; j++) 
+            { 
+                // Check if cell is empty 
+                if (board[i][j] == EMPTY) 
+                { 
+                    // Make the move 
+                    board[i][j] = BOT; 
+  
+                    // Call minimax recursively and choose 
+                    // the maximum value 
+                    best = max( best, 
+                        minimax(board, depth+1, !isMax) ); 
+  
+                    // Undo the move 
+                    board[i][j] = EMPTY; 
+                } 
+            } 
+        } 
+        return best; 
+    } 
+  
+    // If this minimizer's move 
+    else
+    { 
+        int best = 1000; 
+  
+        // Traverse all cells 
+        for (int i = 0; i < 3; i++) 
+        { 
+            for (int j = 0; j < 3; j++) 
+            { 
+                // Check if cell is empty 
+                if (board[i][j] == EMPTY) 
+                { 
+                    // Make the move 
+                    board[i][j] = PLAYER1; 
+  
+                    // Call minimax recursively and choose 
+                    // the minimum value 
+                    best = min(best, 
+                           minimax(board, depth+1, !isMax)); 
+  
+                    // Undo the move 
+                    board[i][j] = EMPTY; 
+                } 
+            } 
+        } 
+        return best; 
+    } 
+} 
+
+int evaluate(int b[3][3]) 
+{ 
+    // Checking for Rows for X or O victory. 
+    for (int row = 0; row<3; row++) 
+    { 
+        if (b[row][0]==b[row][1] && 
+            b[row][1]==b[row][2]) 
+        { 
+            if (b[row][0] == BOT) 
+                return +10; 
+            else if (b[row][0] == PLAYER1) 
+                return -10; 
+        } 
+    } 
+  
+    // Checking for Columns for X or O victory. 
+    for (int col = 0; col<3; col++) 
+    { 
+        if (b[0][col]==b[1][col] && 
+            b[1][col]==b[2][col]) 
+        { 
+            if (b[0][col] == BOT) 
+                return +10; 
+  
+            else if (b[0][col] == PLAYER1) 
+                return -10; 
+        } 
+    } 
+  
+    // Checking for Diagonals for X or O victory. 
+    if (b[0][0]==b[1][1] && b[1][1]==b[2][2]) 
+    { 
+        if (b[0][0] == BOT) 
+            return +10; 
+        else if (b[0][0] == PLAYER1) 
+            return -10; 
+    } 
+  
+    if (b[0][2]==b[1][1] && b[1][1]==b[2][0]) 
+    { 
+        if (b[0][2] == BOT) 
+            return +10; 
+        else if (b[0][2] == PLAYER1) 
+            return -10; 
+    } 
+  
+    // Else if none of them have won then return 0 
+    return 0; 
+} 
+
+bool isMovesLeft(int board[3][3]) 
+{ 
+    for (int i = 0; i<3; i++) 
+        for (int j = 0; j<3; j++) 
+            if (board[i][j] == EMPTY) 
+                return true; 
+    return false; 
+} 
 
 /*===============================================================================================
 END OF LOGIC FUNCTIONS
