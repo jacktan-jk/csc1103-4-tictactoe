@@ -187,7 +187,7 @@ int chkPlayerWin()
 
     return TIE;
 }
-/*
+
 struct Move findBestMove(char board[3][3]) 
 { 
     int bestVal = -1000; 
@@ -210,7 +210,7 @@ struct Move findBestMove(char board[3][3])
   
                 // compute evaluation function for this 
                 // move. 
-                int moveVal ;//= minimax(board, 0, false); 
+                int moveVal = minimax(board, 0, false); 
   
                 // Undo the move 
                 board[i][j] = 0; 
@@ -233,7 +233,7 @@ struct Move findBestMove(char board[3][3])
   
     return bestMove; 
 }
-*/
+
 /*===============================================================================================
 END OF LOGIC FUNCTIONS
 ===============================================================================================*/
