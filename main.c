@@ -33,15 +33,15 @@ struct Move
 }; 
 
 // Global variables for scores
-int player1_score = 0;
-int player2_score = 0;
-int tie_score = 0;
-int isPlayer1Turn = 1;
-int board[3][3];
-int gameState = PLAY;
+int iPlayer1_score = 0;
+int iPlayer2_score = 0;
+int iTie_score = 0;
+bool isPlayer1Turn = true;
+int iBoard[3][3];
+int iGameState = PLAY;
 struct stPlayerMode playerMode = {"2P", PLAYER_BOT};
 
-GtkWidget *buttons[3][3];
+GtkWidget *btnGrid[3][3];
 
 int chkPlayerWin();
 void clearBtn();
@@ -63,8 +63,8 @@ void clearBtn()
     {
         for (int j = 0; j < 3; j++) 
         {
-            gtk_button_set_label(GTK_BUTTON(buttons[i][j]), ""); // Clear the button labels
-            board[i][j] = 0;
+            gtk_button_set_label(GTK_BUTTON(btnGrid[i][j]), ""); // Clear the button labels
+            iBoard[i][j] = 0;
         }
     }
 }
@@ -74,11 +74,11 @@ void updateScoreBtn(gpointer data)
     // Update the score display
     char score_text[100];
     if (isPlayer1Turn == 1) {
-        snprintf(score_text, sizeof(score_text),"<b>Player 1 (O): %d</b>     |     TIE: %d     |     Player 2 (X): %d     |    [%s]    ", player1_score, tie_score, player2_score, playerMode.txt);
+        snprintf(score_text, sizeof(score_text),"<b>Player 1 (O): %d</b>     |     TIE: %d     |     Player 2 (X): %d     |    [%s]    ", iPlayer1_score, iTie_score, iPlayer2_score, playerMode.txt);
     } 
     else 
     {
-        snprintf(score_text, sizeof(score_text),"Player 1 (O): %d     |     TIE: %d     |     <b>Player 2 (X): %d</b>     |    [%s]    ", player1_score, tie_score, player2_score, playerMode.txt);
+        snprintf(score_text, sizeof(score_text),"Player 1 (O): %d     |     TIE: %d     |     <b>Player 2 (X): %d</b>     |    [%s]    ", iPlayer1_score, iTie_score, iPlayer2_score, playerMode.txt);
     }
     gtk_button_set_label(GTK_BUTTON(data), score_text); // Update the score button label
     gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(GTK_BIN(data))), score_text);
@@ -90,9 +90,9 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     const char *current_label = gtk_button_get_label(GTK_BUTTON(widget));
     stBtnPos *btnPos = (stBtnPos *)g_object_get_data(G_OBJECT(widget), "button-data");
     
-    if(gameState != PLAY)
+    if(iGameState != PLAY)
     {
-        gameState = PLAY;
+        iGameState = PLAY;
         clearBtn();
     }
 
@@ -101,7 +101,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         return;
     }
 
-    board[btnPos->pos[0]][btnPos->pos[1]] = isPlayer1Turn ? 1 : 2; // O (1), X(2)
+    iBoard[btnPos->pos[0]][btnPos->pos[1]] = isPlayer1Turn ? 1 : 2; // O (1), X(2)
 
     // Update the button text, for example, with an "O"
     gtk_button_set_label(GTK_BUTTON(widget), isPlayer1Turn ? "O" : "X");
@@ -116,14 +116,14 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
 
     if(retVal == WIN)
     {
-        isPlayer1Turn ? player1_score++ : player2_score++;
-        gameState = WIN;
+        isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
+        iGameState = WIN;
     }
 
     if(retVal == TIE)
     {
-        tie_score++;
-        gameState = TIE;
+        iTie_score++;
+        iGameState = TIE;
     }
     updateScoreBtn(data);
 }
@@ -148,12 +148,12 @@ LOGIC FUNCTIONS
 int chkPlayerWin()
 {
     //check both dia
-    if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != 0) 
+    if (iBoard[0][0] == iBoard[1][1] && iBoard[1][1] == iBoard[2][2] && iBoard[0][0] != 0) 
     {
         return WIN;
     }
 
-    if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != 0) 
+    if (iBoard[0][2] == iBoard[1][1] && iBoard[1][1] == iBoard[2][0] && iBoard[0][2] != 0) 
     {
         return WIN;
     }
@@ -162,12 +162,12 @@ int chkPlayerWin()
     for (int i = 0; i < 3; i++) 
     {
         // Check rows
-        if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != 0) 
+        if (iBoard[i][0] == iBoard[i][1] && iBoard[i][1] == iBoard[i][2] && iBoard[i][0] != 0) 
         {
             return WIN;
         }
         // Check columns
-        if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != 0) 
+        if (iBoard[0][i] == iBoard[1][i] && iBoard[1][i] == iBoard[2][i] && iBoard[0][i] != 0) 
         {
             return WIN;
         }
@@ -178,7 +178,7 @@ int chkPlayerWin()
     {
         for (int j = 0; j < 3; j++) 
         {
-            if (board[i][j] == 0) 
+            if (iBoard[i][j] == 0) 
             {
                 return PLAY;    
             }
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_set_border_width(GTK_CONTAINER(box), 50); // Set padding
 
-    // Create a grid to hold the buttons
+    // Create a grid to hold the btnGrid
     grid = gtk_grid_new();
     gtk_box_pack_start(GTK_BOX(box), grid, TRUE, TRUE, 0); // Add grid to the box
 
@@ -286,29 +286,29 @@ int main(int argc, char *argv[])
     g_signal_connect(score_button, "clicked", G_CALLBACK(on_btnScore_clicked), score_button);
     gtk_grid_attach(GTK_GRID(grid), score_button, 0, 3, 3, 1); // Attach score button below the grid
 
-    // Create the 9 buttons and add them to the grid
+    // Create the 9 btnGrid and add them to the grid
     for (int i = 0; i < 3; i++) 
     {
         for (int j = 0; j < 3; j++) 
         {
-            buttons[i][j] = gtk_button_new_with_label("");
+            btnGrid[i][j] = gtk_button_new_with_label("");
             
             stBtnPos *data = g_new(stBtnPos, 1); // Allocate memory for the structure
             data->pos[0] = i; // Store row
             data->pos[1] = j; // Store column
             
             // Set the structure as data on the button
-            g_object_set_data(G_OBJECT(buttons[i][j]), "button-data", data);
+            g_object_set_data(G_OBJECT(btnGrid[i][j]), "button-data", data);
 
-            g_signal_connect(buttons[i][j], "clicked", G_CALLBACK(on_btnGrid_clicked), score_button); // Pass score_button as data
-            gtk_grid_attach(GTK_GRID(grid), buttons[i][j], j, i, 1, 1); // Attach buttons to the grid
+            g_signal_connect(btnGrid[i][j], "clicked", G_CALLBACK(on_btnGrid_clicked), score_button); // Pass score_button as data
+            gtk_grid_attach(GTK_GRID(grid), btnGrid[i][j], j, i, 1, 1); // Attach btnGrid to the grid
         }
     }
 
-    // Make the buttons expand to fill the available space
+    // Make the btnGrid expand to fill the available space
     for (int i = 0; i < 3; i++) {
-        gtk_widget_set_vexpand(buttons[i][0], TRUE);
-        gtk_widget_set_hexpand(buttons[i][0], TRUE);
+        gtk_widget_set_vexpand(btnGrid[i][0], TRUE);
+        gtk_widget_set_hexpand(btnGrid[i][0], TRUE);
     }
     gtk_widget_set_vexpand(score_button, TRUE);
     gtk_widget_set_hexpand(score_button, TRUE);
