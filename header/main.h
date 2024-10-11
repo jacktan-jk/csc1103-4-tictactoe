@@ -20,6 +20,8 @@
 GLOBAL DECLARATION
 ===============================================================================================*/
 
+#ifndef MAIN_H  // Start of include guard
+#define MAIN_H
 typedef struct 
 {
     int pos[2]; // Array to hold row and column
@@ -30,21 +32,10 @@ struct stPlayerMode
     char txt[2];
     int mode;
 } ;
+#endif // MAIN_H  // End of include guard
 
-struct Move 
-{ 
-    int row, col; 
-}; 
-
-int max(int a, int b);
-int min(int a, int b);
 int chkPlayerWin();
 void clearBtn();
 void updateScoreBtn(gpointer data);
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data);
 void on_btnScore_clicked(GtkWidget *widget, gpointer data);
-
-struct Move findBestMove(int board[3][3]) ;
-int minimax(int board[3][3], int depth, bool isMax);
-int evaluate(int b[3][3]);
-bool isMovesLeft(int board[3][3]);
