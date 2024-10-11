@@ -1,40 +1,11 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <stdbool.h>
-
-#define PLAY 0x69
-#define TIE 0xFF
-#define WIN 0
-
-#define SUCCESS 0
-#define ERROR -1
-
-#define MODE_2P 0
-#define MODE_BOT 1
-
-#define EMPTY 0
-#define PLAYER1 1
-#define BOT 2       //this is also used for player 2
+#include <main.h>
 
 /*===============================================================================================
 GLOBAL DECLARATION
 ===============================================================================================*/
-
-typedef struct 
-{
-    int pos[2]; // Array to hold row and column
-} stBtnPos;
-
-struct stPlayerMode
-{
-    char txt[2];
-    int mode;
-} ;
-
-struct Move 
-{ 
-    int row, col; 
-}; 
 
 // Global variables for scores
 int iPlayer1_score = 0;
@@ -46,19 +17,6 @@ int iGameState = PLAY;
 struct stPlayerMode playerMode = {"2P", MODE_2P};
 
 GtkWidget *btnGrid[3][3];
-
-int max(int a, int b);
-int min(int a, int b);
-int chkPlayerWin();
-void clearBtn();
-void updateScoreBtn(gpointer data);
-void on_btnGrid_clicked(GtkWidget *widget, gpointer data);
-void on_btnScore_clicked(GtkWidget *widget, gpointer data);
-
-struct Move findBestMove(int board[3][3]) ;
-int minimax(int board[3][3], int depth, bool isMax);
-int evaluate(int b[3][3]);
-bool isMovesLeft(int board[3][3]);
 
 /*===============================================================================================
 END OF GLOBAL DECLARATION
@@ -421,7 +379,7 @@ int main(int argc, char *argv[])
     // Create a new window
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Tic-Tac-Toe");
-    gtk_window_set_default_size(GTK_WINDOW(window), 400, 800);
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 950);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     // Create a box to hold the grid and score button with padding
