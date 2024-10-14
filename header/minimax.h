@@ -1,6 +1,4 @@
-#include <main.h>
-#include <stdbool.h>
-
+#include <definition.h>
 #ifndef MINIMAX_H
 #define MINIMAX_H
 // Define the Move struct
