@@ -1,5 +1,6 @@
 #include <minimax.h>
 
+int depthCounter = 0;
 int max(int a, int b) {
     return (a > b) ? a : b;
 }
@@ -32,7 +33,6 @@ struct Move findBestMove(int board[3][3])
                 // compute evaluation function for this 
                 // move. 
                 int moveVal = minimax(board, 0, false); 
-  
                 // Undo the move 
                 board[i][j] = EMPTY; 
   
@@ -45,7 +45,8 @@ struct Move findBestMove(int board[3][3])
                 } 
             } 
         } 
-    }   
+    }
+    depthCounter=0;
     return bestMove; 
 }
 
@@ -66,7 +67,10 @@ int minimax(int board[3][3], int depth, bool isMax)
     // it is a tie 
     if (isMovesLeft(board)==false) 
         return 0; 
-  
+    
+    if(depth>2)
+        return 0;
+
     // If this maximizer's move 
     if (isMax) 
     { 
@@ -85,8 +89,7 @@ int minimax(int board[3][3], int depth, bool isMax)
   
                     // Call minimax recursively and choose 
                     // the maximum value 
-                    best = max( best, 
-                        minimax(board, depth+1, !isMax) ); 
+                    best = max( best, minimax(board, depth+1, !isMax) ); 
 
                     // Undo the move 
                     board[i][j] = EMPTY; 

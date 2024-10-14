@@ -1,4 +1,3 @@
-#include <minimax.h>
 #include <main.h>
 
 /*===============================================================================================
@@ -75,21 +74,46 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     gtk_button_set_label(GTK_BUTTON(widget), isPlayer1Turn ? "O" : "X");
 
     int retVal = chkPlayerWin();
+
     if(retVal == PLAY)
     {
         isPlayer1Turn = !isPlayer1Turn;
         updateScoreBtn(data);
-        if(playerMode.mode == MODE_BOT)
-        {
-            struct Move botMove = findBestMove(iBoard); 
-            gtk_button_set_label(GTK_BUTTON(btnGrid[botMove.row][botMove.col]), "X");
-            iBoard[botMove.row][botMove.col] = BOT;
-            retVal = chkPlayerWin();
-        }
-        else
+
+        if(playerMode.mode != MODE_BOT)
         {
             return;
         }
+
+        struct Move botMove;
+        if (rand() % 100 < 30)
+        {
+            botMove = findBestMove(iBoard); 
+            iBoard[botMove.row][botMove.col] = BOT;
+            gtk_button_set_label(GTK_BUTTON(btnGrid[botMove.row][botMove.col]), "X");
+        }
+        else
+        {
+            int randRow = rand() % 3;
+            int randCol = rand() % 3;
+            bool bIsDone = false;
+            while(!bIsDone)
+            {
+                if(iBoard[randRow][randCol] == EMPTY)
+                {   
+                    iBoard[randRow][randCol] = BOT;
+                    gtk_button_set_label(GTK_BUTTON(btnGrid[randRow][randCol]), "X"); 
+                    bIsDone=!bIsDone;               
+                }
+                else
+                {
+                    randRow = rand() % 3;
+                    randCol = rand() % 3;
+                }
+            }
+        }
+
+        retVal = chkPlayerWin();
     }
 
     if(retVal == WIN)
@@ -108,6 +132,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     {
         isPlayer1Turn = !isPlayer1Turn;
     }
+
     updateScoreBtn(data);
 }
 
@@ -182,6 +207,8 @@ MAIN
 
 int main(int argc, char *argv[]) 
 {
+    srand(time(NULL));
+
     GtkWidget *window;
     GtkWidget *grid;
     GtkWidget *score_button;
