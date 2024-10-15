@@ -53,15 +53,16 @@ void updateScoreBtn(gpointer data)
 
 // Callback function for button clicks
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data) 
-{
-    const char *current_label = gtk_button_get_label(GTK_BUTTON(widget));
-    stBtnPos *btnPos = (stBtnPos *)g_object_get_data(G_OBJECT(widget), "button-data");
-    
+{   
     if(iGameState != PLAY)
     {
         iGameState = PLAY;
         clearBtn();
+        return;
     }
+
+    const char *current_label = gtk_button_get_label(GTK_BUTTON(widget));
+    stBtnPos *btnPos = (stBtnPos *)g_object_get_data(G_OBJECT(widget), "button-data");
 
     if(g_strcmp0(current_label, "") == 1)
     {
@@ -86,7 +87,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         }
 
         struct Move botMove;
-        if (rand() % 100 < 30)
+        if (rand() % 100 < 70)
         {
             botMove = findBestMove(iBoard); 
             iBoard[botMove.row][botMove.col] = BOT;
@@ -97,11 +98,13 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
             int randRow = rand() % 3;
             int randCol = rand() % 3;
             bool bIsDone = false;
+
             while(!bIsDone)
             {
                 if(iBoard[randRow][randCol] == EMPTY)
                 {   
                     iBoard[randRow][randCol] = BOT;
+                    PRINT_DEBUG("Random Move -> R:%d C:%d\n", randRow, randCol);
                     gtk_button_set_label(GTK_BUTTON(btnGrid[randRow][randCol]), "X"); 
                     bIsDone=!bIsDone;               
                 }

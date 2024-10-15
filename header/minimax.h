@@ -1,4 +1,4 @@
-#include <definition.h>
+#include <macros.h>
 #ifndef MINIMAX_H
 #define MINIMAX_H
 // Define the Move struct

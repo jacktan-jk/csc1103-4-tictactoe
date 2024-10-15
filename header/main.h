@@ -1,7 +1,7 @@
 #include <time.h>
 #include <gtk/gtk.h>
 
-#include <definition.h>
+#include <macros.h>
 #include <minimax.h>
 
 /*===============================================================================================

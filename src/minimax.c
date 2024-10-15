@@ -1,6 +1,7 @@
 #include <minimax.h>
 
 int depthCounter = 0;
+
 int max(int a, int b) {
     return (a > b) ? a : b;
 }
@@ -32,7 +33,8 @@ struct Move findBestMove(int board[3][3])
   
                 // compute evaluation function for this 
                 // move. 
-                int moveVal = minimax(board, 0, false); 
+                int moveVal = minimax(board, 0, false);
+                PRINT_DEBUG("[DEBUG] Depth exited at -> %d\n", depthCounter);
                 // Undo the move 
                 board[i][j] = EMPTY; 
   
@@ -52,6 +54,9 @@ struct Move findBestMove(int board[3][3])
 
 int minimax(int board[3][3], int depth, bool isMax) 
 { 
+#if DEBUG
+    depthCounter++;
+#endif
     int score = evaluate(board); 
     // If Maximizer has won the game return his/her 
     // evaluated score 

@@ -15,3 +15,11 @@
 #define EMPTY 0
 #define PLAYER1 1
 #define BOT 2       //this is also used for player 2
+
+#define DEBUG 1
+
+#if DEBUG
+#define PRINT_DEBUG(...) printf(__VA_ARGS__);
+#else
+#define PRINT_DEBUG(...)
+#endif
