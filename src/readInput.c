@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
-#define DATA_ROWS 15
+#define DATA_ROWS 958
 #define BOX 9
 #define TRAINING_SET (int)(0.8 * DATA_ROWS)
 #define TESTING_SET (DATA_ROWS - TRAINING_SET)
@@ -27,11 +28,15 @@ struct allData {
 
 // read the data from the .data file.
 struct allData getData() {
+
     struct allData dataList;
-    FILE *fptr = fopen("tic-tac-toe.data", "r");
-    if (fptr == NULL) {
-        perror("Error opening file.");
-        return dataList;
+
+    char path[] = "resources/tic-tac-toe.data";
+    FILE *fptr = fopen(path, "r");
+
+    if (access(path, 0) != 0 || fptr == NULL) 
+    {
+        return dataList;        
     }
 
     printf("Training_SET: %d", TRAINING_SET);
@@ -78,55 +83,16 @@ struct allData getData() {
 
 }
 
-// split the data - 80% training data 20% testing 
-// returns the training data and testing data in the struct allData
-// struct allData splitData(struct allData mainData) {
-//         int reset = 0;
-//         for (int a = 0; DATA_ROWS > a; a++) {
-//             if (TRAINING_SET > a) {
-//                 for (int b = 0; BOX > b; b++) {
-//                     // printf("data[%d][%d]: %s\n", a, b, mainData.data[a][b]);
-//                     strcpy(mainData.trainingData[a], mainData.data[a]);
-//             }
-//             strcpy(mainData.trainingOutput[a], mainData.dataOutput[a]); 
-        
-//         } else {
-//             for (int b = 0; BOX > b; b++) {
-//                 strcpy(mainData.testingData[reset][b], mainData.data[a][b]);
-//                 reset++;
-//             }
-//             strcpy(mainData.testingOutput[reset], mainData.dataOutput[a]);
-//             }       
-//         }
-//         return mainData; 
-//     }
-
-
 // test it out
 int main() {
     
     struct allData test = getData();
-
-    // for (int a = 0; 2 > a; a++) {
-    //     for (int b = 0; BOX > b; b++) {
-    //         printf("data[%d][%d]: %s\n", a, b, test.data[a][b]);
-    //     }
-    //     printf("%s\n", test.dataOutput[a]);
-    // }
-
-    for (int a = 0; TRAINING_SET > a; a++) {
-        for (int b = 0; BOX > b; b++) {
+    for (int a = 0; a < TRAINING_SET; a++) {
+        for (int b = 0; b < BOX; b++) {
             printf("training data[%d][%d]: %s\n", a, b, test.trainingData[a][b]);
         }
         printf("%s\n", test.trainingOutput[a]);
     }
-
-    for (int a = 0; TESTING_SET > a; a++) {
-        for (int b = 0; BOX > b; b++) {
-            printf("testing data[%d][%d]: %s\n", a, b, test.testingData[a][b]);
-        }
-        printf("%s\n", test.trainingOutput[a]);
-    } 
 
     return 0;
 }
