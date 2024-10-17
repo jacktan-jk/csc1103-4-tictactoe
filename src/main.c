@@ -288,7 +288,14 @@ int main(int argc, char *argv[])
 
     // Start the GTK main loop
     gtk_main();
-
+    
+    // struct allData test = getData();
+    // for (int a = 0; a < TRAINING_SET; a++) {
+    //     for (int b = 0; b < BOX; b++) {
+    //         printf("training data[%d][%d]: %s\n", a, b, test.trainingData[a][b]);
+    //     }
+    //     printf("%s\n", test.trainingOutput[a]);
+    // }
     return SUCCESS;
 }
 /*

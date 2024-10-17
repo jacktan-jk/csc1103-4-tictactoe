@@ -1,30 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
-
-#define DATA_ROWS 958
-#define BOX 9
-#define TRAINING_SET (int)(0.8 * DATA_ROWS)
-#define TESTING_SET (DATA_ROWS - TRAINING_SET)
-#define DATA_NO 10 // total no. of variables in data set
-
-
+#include <readInput.h>
 // data[x, m] where x is the dataset row and n is the square box no. 
 
 // output[data_rows] wheere data_rows is the classification output and the key (same key as data[][] for reference to the 2d array)
 char value[256];
 int i = 0;
-
-struct allData {
-    char data[DATA_ROWS][BOX][20];
-    char dataOutput[DATA_ROWS][20];
-    char trainingData[TRAINING_SET][BOX][20];
-    char trainingOutput[TRAINING_SET][10];
-    char testingData[TESTING_SET][BOX][20];
-    char testingOutput[TESTING_SET][20];
-};
 
 // read the data from the .data file.
 struct allData getData() {
@@ -34,7 +13,7 @@ struct allData getData() {
     char path[] = "resources/tic-tac-toe.data";
     FILE *fptr = fopen(path, "r");
 
-    if (access(path, 0) != 0 || fptr == NULL) 
+    if (access(path, F_OK) != SUCCESS || fptr == NULL) 
     {
         return dataList;        
     }
@@ -52,7 +31,7 @@ struct allData getData() {
                 if (a == DATA_NO - 1) {
                     strcpy(dataList.dataOutput[i], token);
                 }
-                a ++;
+                a++;
                 token = strtok(NULL, ",");
             }
             i++; 
@@ -73,26 +52,13 @@ struct allData getData() {
             if (TRAINING_SET > x) {
                 strcpy(dataList.trainingData[x][y], dataList.data[x][y]);
             }
-         else {
-            strcpy(dataList.testingData[x - TRAINING_SET][y], dataList.data[x][y]);
-        }
+            else 
+            {
+                strcpy(dataList.testingData[x - TRAINING_SET][y], dataList.data[x][y]);
+            }
         }
     }
 
     return dataList;
 
-}
-
-// test it out
-int main() {
-    
-    struct allData test = getData();
-    for (int a = 0; a < TRAINING_SET; a++) {
-        for (int b = 0; b < BOX; b++) {
-            printf("training data[%d][%d]: %s\n", a, b, test.trainingData[a][b]);
-        }
-        printf("%s\n", test.trainingOutput[a]);
-    }
-
-    return 0;
 }
