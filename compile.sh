@@ -1,8 +1,22 @@
 #!/bin/sh
-gcc -Iheader `pkg-config --cflags --static gtk+-3.0` -o tictactoe.exe src/main.c src/minimax.c `pkg-config --libs --static gtk+-3.0`
+rm -f tictactoe.exe
+gcc -Iheader `pkg-config --cflags --static gtk+-3.0` -o tictactoe src/main.c src/minimax.c `pkg-config --libs --static gtk+-3.0`
 
 if [ $? -eq 0 ]; then
-	./tictactoe.exe
+	OS=$(uname)
+
+	if [ "$OS" = "Linux" ]; then
+    		echo "[COMPILE] Running on Linux"
+
+	elif [[ "$OS" == *"_NT"* ]]; then
+		echo "[COMPILE] Running on Windows"
+		./tictactoe.exe
+	
+	else
+		echo "[COMPILE] UNKNOWN OS!"
+		echo "[COMPILE] ABORTED APP LAUNCH..."
+
+	fi
 else
-	echo "[ERROR] FAILED TO COMPILE!!!"
+	echo "[COMPILE] FAILED TO COMPILE!!!"
 fi
