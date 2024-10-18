@@ -1,15 +1,69 @@
 # **CSC1103 and CSC1104 Project**
 ## **TIC TAC TOE**
 
+### Installation Instructions
+
+To get started with the project, ensure you have the following installed:
+
+1. **Docker Desktop**
+   - [Install Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+2. **WSL2 (Windows Subsystem for Linux)**
+   - Follow [Microsoft's guide to install WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
+   - Install Ubuntu with the following command:
+     ```
+     wsl --install -d Ubuntu
+     ```
+   - Set Ubuntu as your default WSL distribution:
+     ```
+     wsl --set-default Ubuntu
+     ```
+   - Check default:
+     ```
+     wsl -l -v
+     ```
+
+### Building the Project via Docker
+After setting up WSL2 and Docker, you can choose to either load a Docker image or build the Docker image yourself.
+#### Loading Docker Image
+```
+docker load -I FILE_NAME.tar
+```
+
+#### Building Docker Image
+```
+./run_docker.sh
+```
+
+> [!WARNING]
+> **Warning for Docker Building:**
+> If `compile.sh` is not found after building, run the following command to convert it to Unix line endings:
+> ```
+> dos2unix compile.sh
+> ```
+
+> [!TIP]
+> **Saving Docker Image**
+> ```
+> ./run_script.sh -s
+> ```
+
+### Build and Run the Project in Windows
+> [!CAUTION]
+> **Not recommended**, unless you know what you're doing and install the right packages. (refer Dockerfile)
+> ```
+> ./compile.sh
+> ```
+
 ### **BASIC REQUIREMENTS** (BOTH)
 - [X] GUI (GTK)
 - [X] 2 Player Mode
-- [ ] 1 Player Mode ("Perfect" Minimax)
+- [X] 1 Player Mode ("Perfect" Minimax)
 - [X] Winning Logic
 - [ ] GUI indication when player WIN (e.g, blinking))
 
 ### **[^1]PM-CSC1103 REQUIRMENTS**
-- [ ] Improve Minimax memory usage
+- [X] Improve Minimax memory usage
 - [ ] Implement ML Algorithm (80:20)
     > [TIP]
     > Linear regression, Navie bayes, Neural network and Reinforcement learning
