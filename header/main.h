@@ -1,4 +1,3 @@
-#include <time.h>
 #include <gtk/gtk.h>
 
 #include <macros.h>
@@ -27,3 +26,4 @@ void clearBtn();
 void updateScoreBtn(gpointer data);
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data);
 void on_btnScore_clicked(GtkWidget *widget, gpointer data);
+void blinkWin();

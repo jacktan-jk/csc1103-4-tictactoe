@@ -11,6 +11,7 @@ int iTie_score = 0;
 bool isPlayer1Turn = true;
 int iBoard[3][3];
 int iGameState = PLAY;
+int iWinPos[3][3];
 struct stPlayerMode playerMode = {"2P", MODE_2P};
 
 GtkWidget *btnGrid[3][3];
@@ -40,7 +41,7 @@ void updateScoreBtn(gpointer data)
 {
     // Update the score display
     char score_text[100];
-    if (isPlayer1Turn == 1) {
+    if (isPlayer1Turn == true) {
         snprintf(score_text, sizeof(score_text),"<b>Player 1 (O): %d</b>     |     TIE: %d     |     Player 2 (X): %d     |    [%s]    ", iPlayer1_score, iTie_score, iPlayer2_score, playerMode.txt);
     } 
     else 
@@ -54,17 +55,18 @@ void updateScoreBtn(gpointer data)
 // Callback function for button clicks
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data) 
 {   
+    const char *current_label = gtk_button_get_label(GTK_BUTTON(widget));
+    stBtnPos *btnPos = (stBtnPos *)g_object_get_data(G_OBJECT(widget), "button-data");
+
     if(iGameState != PLAY)
     {
         iGameState = PLAY;
         clearBtn();
+        updateScoreBtn(data);
         return;
     }
 
-    const char *current_label = gtk_button_get_label(GTK_BUTTON(widget));
-    stBtnPos *btnPos = (stBtnPos *)g_object_get_data(G_OBJECT(widget), "button-data");
-
-    if(g_strcmp0(current_label, "") == 1)
+    if(strcmp(current_label, "") != 0)
     {
         return;
     }
@@ -121,6 +123,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
 
     if(retVal == WIN)
     {
+        blinkWin();
         isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
         iGameState = WIN;
     }
@@ -143,10 +146,25 @@ void on_btnScore_clicked(GtkWidget *widget, gpointer data)
 {
     playerMode.mode = !playerMode.mode;
     strncpy(playerMode.txt, playerMode.mode == MODE_2P ? "2P" : "1P", sizeof(playerMode.txt));
+    isPlayer1Turn = true;
     updateScoreBtn(data);
     clearBtn();
 }
 
+void blinkWin()
+{
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            if(iWinPos[i][j] != WIN)
+            {
+                gtk_button_set_label(GTK_BUTTON(btnGrid[i][j]), "");
+            }
+        }
+    }
+    memset(iWinPos,0,sizeof(iWinPos));
+}
 /*===============================================================================================
 END OF GUI FUNCTIONS
 ===============================================================================================*/
@@ -161,11 +179,13 @@ int chkPlayerWin()
     //check both dia
     if (iBoard[0][0] == iBoard[1][1] && iBoard[1][1] == iBoard[2][2] && iBoard[0][0] != 0) 
     {
+        iWinPos[0][0] = iWinPos[1][1] = iWinPos[2][2] = WIN;
         return WIN;
     }
 
     if (iBoard[0][2] == iBoard[1][1] && iBoard[1][1] == iBoard[2][0] && iBoard[0][2] != 0) 
     {
+        iWinPos[0][2] = iWinPos[1][1] = iWinPos[0][2] = WIN;
         return WIN;
     }
 
@@ -175,11 +195,13 @@ int chkPlayerWin()
         // Check rows
         if (iBoard[i][0] == iBoard[i][1] && iBoard[i][1] == iBoard[i][2] && iBoard[i][0] != 0) 
         {
+            iWinPos[i][0] = iWinPos[i][1] = iWinPos[i][2] = WIN;
             return WIN;
         }
         // Check columns
         if (iBoard[0][i] == iBoard[1][i] && iBoard[1][i] == iBoard[2][i] && iBoard[0][i] != 0) 
         {
+            iWinPos[0][i] = iWinPos[1][i] = iWinPos[2][i] = WIN;
             return WIN;
         }
     }
@@ -222,7 +244,7 @@ int main(int argc, char *argv[])
     // Create a new window
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Tic-Tac-Toe");
-    gtk_window_set_default_size(GTK_WINDOW(window), 300, 950);
+    gtk_window_set_default_size(GTK_WINDOW(window), 250, 950);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     // Create a box to hold the grid and score button with padding

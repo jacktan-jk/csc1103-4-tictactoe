@@ -6,7 +6,7 @@
 
 #define PLAY 0x69
 #define TIE 0xFF
-#define WIN 0
+#define WIN 0xAA
 
 #define SUCCESS 0
 #define ERROR -1

@@ -27,6 +27,7 @@ done
 
 rm docker_tictactoe.tar
 rm tictactoe.exe
+dos2unix compile.sh
 
 # Build the Docker image
 echo "[DOCKER] Building image..."
@@ -37,17 +38,31 @@ fi
 if [ "$SAVE_IMAGE" = true ]; then
 	echo "[DOCKER] Saving Image..."
 	if ! docker save -o docker_tictactoe.tar docker_tictactoe; then
-        	echo "[DOCKER] Failed to save Docker image!"
+        echo "[DOCKER] Failed to save Docker image!"
 	fi
 fi
-# Run the Docker command inside WSL
-echo "[DOCKER] Opening WSL to run container..."
 
-# Construct the Docker run command
-DOCKER_RUN_CMD="docker run -e DISPLAY=\$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe"
+OS=$(uname)
 
-# Use `wsl` command to open WSL and run the Docker command
-wsl bash -c "$DOCKER_RUN_CMD"
+if [ "$OS" = "Linux" ]; then
+    echo "[DOCKER] Running container..."
+    sudo xhost +local:
+    export DISPLAY=:0
+    sudo docker run --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe
+
+elif [[ "$OS" == *"_NT"* ]]; then
+    # Run the Docker command inside WSL
+    echo "[DOCKER] Opening WSL to run container..."
+
+    # Construct the Docker run command
+    DOCKER_RUN_CMD="export DISPLAY=:0 && docker run -e DISPLAY=\$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe"
+
+    # Use `wsl` command to open WSL and run the Docker command
+    wsl bash -c "$DOCKER_RUN_CMD"
+
+fi
+
+
 
 echo "[DOCKER] Container ran successfully."
 
