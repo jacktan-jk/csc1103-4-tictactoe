@@ -3,22 +3,33 @@
 
 To get started with the project, ensure you have the following installed:
 ```
-sudo apt-get update && apt-get install -y \
-       gcc \
-       make \
-       pkg-config \
-       libgtk-3-dev \
-       libsystemd-dev \
-       libjpeg-dev \
-       libwebp-dev \
-       libzstd-dev \
-       && apt-get clean
+sudo apt-get install -y \
+       docker-ce \
+       x11-xserver-utils \
 ```
-### Build and Run the Project in Linux
+### Building the Project via Docker
+After setting up WSL2 and Docker, you can choose to either load a Docker image or build the Docker image yourself.
+#### Loading Docker Image
 ```
-./compile.sh
-./tictactoe
+sudo docker load -i FILE_NAME.tar
 ```
+
+#### Building Docker Image
+```
+sudo ./run_docker.sh
+```
+> [!WARNING]
+> **Warning for Docker Building:**
+> If `compile.sh` or `run_docker.sh` is not found after building, run the following command to convert it to Unix line endings:
+> ```
+> dos2unix SCRIPT_NAME.sh
+> ```
+
+> [!TIP]
+> **Saving Docker Image**
+> ```
+> ./run_script.sh -s
+> ```
 
 ## Installation Instructions (Windows)
 
@@ -46,7 +57,7 @@ To get started with the project, ensure you have the following installed:
 After setting up WSL2 and Docker, you can choose to either load a Docker image or build the Docker image yourself.
 #### Loading Docker Image
 ```
-docker load -I FILE_NAME.tar
+docker load -i FILE_NAME.tar
 ```
 
 #### Building Docker Image
@@ -56,9 +67,9 @@ docker load -I FILE_NAME.tar
 
 > [!WARNING]
 > **Warning for Docker Building:**
-> If `compile.sh` is not found after building, run the following command to convert it to Unix line endings:
+> If `compile.sh` or `run_docker.sh` is not found after building, run the following command to convert it to Unix line endings:
 > ```
-> dos2unix compile.sh
+> dos2unix SCRIPT_NAME.sh
 > ```
 
 > [!TIP]
