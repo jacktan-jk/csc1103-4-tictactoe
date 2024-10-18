@@ -90,7 +90,7 @@ docker load -i FILE_NAME.tar
 - [X] 2 Player Mode
 - [X] 1 Player Mode ("Perfect" Minimax)
 - [X] Winning Logic
-- [ ] GUI indication when player WIN (e.g, blinking))
+- [X] GUI indication when player WIN (e.g, blinking))
 
 ## **[^1]PM-CSC1103 REQUIRMENTS**
 - [X] Improve Minimax memory usage
