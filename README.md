@@ -1,7 +1,26 @@
-# **CSC1103 and CSC1104 Project**
-## **TIC TAC TOE**
+# **TIC TAC TOE - CSC1103 & CSC1104 Project**
+## Installation Instructions (Linux)
 
-### Installation Instructions
+To get started with the project, ensure you have the following installed:
+```
+sudo apt-get update && apt-get install -y \
+       gcc \
+       make \
+       pkg-config \
+       libgtk-3-dev \
+       libsystemd-dev \
+       libjpeg-dev \
+       libwebp-dev \
+       libzstd-dev \
+       && apt-get clean
+```
+### Build and Run the Project in Linux
+```
+./compile.sh
+./tictactoe
+```
+
+## Installation Instructions (Windows)
 
 To get started with the project, ensure you have the following installed:
 
@@ -55,14 +74,14 @@ docker load -I FILE_NAME.tar
 > ./compile.sh
 > ```
 
-### **BASIC REQUIREMENTS** (BOTH)
+## **BASIC REQUIREMENTS** (BOTH)
 - [X] GUI (GTK)
 - [X] 2 Player Mode
 - [X] 1 Player Mode ("Perfect" Minimax)
 - [X] Winning Logic
 - [ ] GUI indication when player WIN (e.g, blinking))
 
-### **[^1]PM-CSC1103 REQUIRMENTS**
+## **[^1]PM-CSC1103 REQUIRMENTS**
 - [X] Improve Minimax memory usage
 - [ ] Implement ML Algorithm (80:20)
     > [TIP]
@@ -70,7 +89,7 @@ docker load -I FILE_NAME.tar
 - [ ] Plot the confusion matrix for the training and testing accuracy
 - [ ] Calculate the number of times the computer wins as a gauge of difficulty level. 
  
-### **[^2]COA-CSC1104 REQUIRMENTS**
+## **[^2]COA-CSC1104 REQUIRMENTS**
 - [ ] Replace one function with assembly
     > [TIP]
     > Use inline assembly code in C source file, or linking separate C and assembly object files.
