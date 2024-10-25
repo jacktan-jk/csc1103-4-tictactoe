@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libwebp-dev \
     libzstd-dev \
+    x11-apps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,6 +24,7 @@ RUN chmod 777 /app/compile.sh
 
 # Compile the application
 RUN /app/compile.sh
+RUN chmod +x /app/tictactoe
 
 # Set the command to run the application (instead of re-running compile.sh)
 CMD ["./tictactoe"]

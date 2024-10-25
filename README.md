@@ -127,6 +127,30 @@ docker load -i FILE_NAME.tar
 > ./compile.sh
 > ```
 
+## Run TicTaeToe Application on Docker (macOS)
+>[!IMPORTANT]
+>**Pre-requisite application to be install.
+>
+>**BEFORE BUILDING DOCKER IMAGE OR CONTAINER.
+1. install brew
+     - [Install brew](https://brew.sh)
+
+2. install xquartz from terminal
+     ```
+      brew install --cask xquartz
+     ```
+3. xquarts settings
+     - setting -> security -> allow connections from network clients
+     - Restart xquartz
+4. terminal command
+     ```
+      xhost + 127.0.0.1
+     ```
+5. Build and Run docker
+     ```
+      docker -compose up --build -d
+     ```
+
 ## **BASIC REQUIREMENTS** (BOTH)
 - [X] GUI (GTK)
 - [X] 2 Player Mode
