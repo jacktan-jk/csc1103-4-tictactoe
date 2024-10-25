@@ -31,6 +31,48 @@ sudo ./run_docker.sh
 > ./run_script.sh -s
 > ```
 
+## Installation Instructions (MacOS) 
+
+To get started with the project, ensure you have the following installed:
+
+1. **Docker Desktop**
+Select based on your specs.
+     - [Install Docker Desktop](https://www.docker.com/products/docker-desktop)
+     -  select "Download for Mac - Intel Chip"
+     -  select "Download for Mac - Apple Silicon"
+
+2. **Installation Docker Desktop**
+     - Go to "Downloads" and double click "Docker.dmg"
+     - Drag and Drop "Docker" to "Application"
+     - "Launch Pad" either search or swipe to find "Docker"
+
+3. **Verify Docker Desktop**
+     - Launch the application and select "Recommended Settings"
+                          OR
+     - Type the command in terminal "docker --version"
+
+4. **Verify Docker Image and Containers**
+Now create a new directory/folder and "cd" to that folder.
+     inside terminal use the following command and wait for "Download complete"
+     - docker pull hello-world
+     - Verify docker image in "Docker Desktop"
+
+Under the action tab click on "Run"
+          OR
+From terminal type the following.
+```
+  docker run hellow-world"
+```
+To verifiy container.
+Switch to the containers tab.
+     Under the name tab and click on the "highlighted blue" and view the logs.
+         OR
+Use the following command.
+```
+  docker ps -a
+```
+
+
 ## Installation Instructions (Windows)
 
 To get started with the project, ensure you have the following installed:
