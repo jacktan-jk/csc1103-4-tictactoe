@@ -61,7 +61,7 @@ Under the action tab click on "Run"
           OR
 From terminal type the following.
 ```
-  docker run hellow-world"
+  docker run hello-world
 ```
 To verifiy container.
 Switch to the containers tab.
@@ -93,7 +93,7 @@ Use the following command.
      ```
 5. Build and Run Docker
      ```
-      docker -compose up --build -d
+      docker-compose up --build -d
      ```
 
 ## Installation Instructions (Windows)
