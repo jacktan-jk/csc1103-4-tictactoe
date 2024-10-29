@@ -7,20 +7,20 @@ sudo apt-get install -y \
        docker-ce \
        x11-xserver-utils \
 ```
-### Building the Project via Docker
+### Building the Project via Docker (Linux)
 After setting up WSL2 and Docker, you can choose to either load a Docker image or build the Docker image yourself.
-#### Loading Docker Image
+#### **[OPTIONAL]** Loading Docker Image
 ```
 sudo docker load -i FILE_NAME.tar
 ```
 
-#### Build and Run Docker
+#### Build and Run TicTacToe Application on Docker (Linux)
 ```
 sudo ./run_docker.sh
 ```
 > [!WARNING]
 > **Warning for Docker Building:**
-> If `compile.sh` or `run_docker.sh` is not found after building, run the following command to convert it to Unix line endings:
+> If `compile.sh` or `run_docker.sh` is not found and it's clearly in the directory, run the following command to convert it to Unix line endings:
 > ```
 > dos2unix SCRIPT_NAME.sh
 > ```
@@ -72,7 +72,7 @@ Use the following command.
   docker ps -a
 ```
 
-## Run TicTaeToe Application on Docker (macOS)
+## Run TicTacToe Application on Docker (MacOS)
 >[!IMPORTANT]
 >**Pre-requisite application to be install.
 >
@@ -118,21 +118,21 @@ To get started with the project, ensure you have the following installed:
      wsl -l -v
      ```
 
-### Building the Project via Docker
+### Building the Project via Docker (Windows)
 After setting up WSL2 and Docker, you can choose to either load a Docker image or build the Docker image yourself.
-#### Loading Docker Image
+#### **[OPTIONAL]** Loading Docker Image
 ```
 docker load -i FILE_NAME.tar
 ```
 
-#### Build and Run Docker
+#### Build and Run TicTacToe Application on Docker (Windows)
 ```
 ./run_docker.sh
 ```
 
 > [!WARNING]
 > **Warning for Docker Building:**
-> If `compile.sh` or `run_docker.sh` is not found after building, run the following command to convert it to Unix line endings:
+> If `compile.sh` or `run_docker.sh` is not found and it's clearly in the directory, run the following command to convert it to Unix line endings:
 > ```
 > dos2unix SCRIPT_NAME.sh
 > ```
