@@ -1,0 +1,7 @@
+*.exe
+/app
+/dlls
+ldd_output.txt
+*.pdf
+*.tar
+*.code-workspace
