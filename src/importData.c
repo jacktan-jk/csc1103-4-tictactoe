@@ -1,41 +1,51 @@
 #include <importData.h>
 
-void readDataset(const char* filename) {
+int len_train = 0;
+int len_test = 0;
+int randomNo[DATA_SIZE];
+
+void readDataset(const char* filename, bool split) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error opening file.\n");
     }
+    
+    if(split)
+    {
+        // get an array of random int where each position is different
+        getRandomNo(randomNo);
+    }
 
     char line[100];
-    
-    // get an array of random int where each position is different
-    getRandomNo(randomNo);
-
     for (int i = 0; i < DATA_SIZE && fgets(line, sizeof(line), file); i++) {
         // Get first token with delimiter being ","
         char *token = strtok(line, ",");
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 if (token != NULL) {
-                    data[randomNo[i]].grid[row][col] = token[0];
+                    data[split ? randomNo[i] : i].grid[row][col] = token[0];
                     token = strtok(NULL, ",");
                 }
             }
         }
 
         if (token != NULL) {
-            strncpy(data[randomNo[i]].outcome, token, sizeof(data[randomNo[i]].outcome) - 1);
+            strncpy(data[split ? randomNo[i] : i].outcome, token, sizeof(data[split ? randomNo[i] : i].outcome) - 1);
         }
     }
     fclose(file);
-    splitFile();
+
+    if(split)
+    {
+        splitFile();
+    } 
 }
 
 // split into 80 - 20; write into training and testing file accordingly
 void splitFile() {
     // get 80% and 20% respectively
-    int eighty = 0.8 * DATA_SIZE;
-    int twenty = 0.2 * DATA_SIZE;
+    int eighty = len_train = 0.8 * DATA_SIZE;
+    int twenty = len_test = 0.2 * DATA_SIZE;
 
     // write into training dataset
     FILE *trainFile;
@@ -96,6 +106,30 @@ void getRandomNo(int random[DATA_SIZE]) {
     }
 }
 
+int getTrainingData(struct Dataset *d)
+{
+    if(data == NULL)
+    {
+        return ERROR;
+    }
+    memset(data, 0, len_train);
+    readDataset(trainingFile, false);
+    d = data;
+    return len_train;
+}
+
+int getTestingData(struct Dataset *d)
+{
+    if(data == NULL)
+    {
+        return ERROR;
+    }
+    memset(data, 0, len_test);
+    readDataset(testingFile, false);
+    d = data;
+    return len_test;
+}
+
 // Assign an index for each move "x", "o" or "b"
 int assignMoveIndex(char move) {
     switch(move) {
@@ -108,6 +142,21 @@ int assignMoveIndex(char move) {
 
 // int main()
 // {
-//     readDataset(RES_PATH""DATA_PATH);
+//     readDataset(RES_PATH""DATA_PATH, true);
+//     struct Dataset *slut;
+//     int len = getTrainingData(slut);
+//     printf("%d\n", len);
+//     for(int i = 0; i < len; i++)
+//     {
+//         printf("%d ", i);
+//         for(int j = 0; j < 3; j++)
+//         {
+//             for(int k = 0; k < 3; k++)
+//             {
+//                 printf("%c,", data[i].grid[j][k]);
+//             }
+//         }
+//         printf("%s\n", data[i].outcome);
+//     }
 //     return 0;
 // }
