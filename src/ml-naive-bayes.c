@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-// changed to 100 for testing. make sure to chg back
-#define DATA_SIZE 100
+#define DATA_SIZE 958
+#define TRAINING_DATA_SIZE 0.8 * 958
+#define TESTING_DATA_SIZE 0.2 * 958
 #define CLASSES 2
 
 
@@ -16,8 +17,8 @@ struct Dataset {
 struct Dataset data[DATA_SIZE];
 
 // to write to directory before 
-const char *trainingFile = "../training-tic-tac-toe.data";
-const char *testingFile = "../testing-tic-tac-toe.data";
+const char *trainingFile = "training-tic-tac-toe.data";
+const char *testingFile = "testing-tic-tac-toe.data";
 
 int randomNo[DATA_SIZE];
 
@@ -108,7 +109,7 @@ void splitFile() {
 
 }
 
-void readDataset(const char* filename) {
+void processDataset(const char* filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error opening file.\n");
@@ -135,25 +136,54 @@ void readDataset(const char* filename) {
             }
         }
 
-        if (token != NULL) {
+        if (token !=  NULL) {
             strncpy(data[randomNo[i]].outcome, token, sizeof(data[randomNo[i]].outcome) - 1); 
+        }
+    }
+
+    fclose(file);
+
+    splitFile();
+}
+
+void readTrainingDataset(const char* filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        printf("Error opening file.\n");
+    }
+
+    char line[100];
+
+    for (int i = 0; i < TRAINING_DATA_SIZE && fgets(line, sizeof(line), file); i++) {
+        // Get first token with delimiter being ","
+        char *token = strtok(line, ",");
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (token != NULL) {
+                    data[i].grid[row][col] = token[0]; 
+                    token = strtok(NULL, ",");
+                }
+            }
+        }
+        if (token != NULL) {
+            strncpy(data[i].outcome, token, sizeof(data[i].outcome) - 1); 
             // Get outcome class count
-            if (strcmp(data[randomNo[i]].outcome, "positive") == 0) {
+            if (strcmp(data[i].outcome, "positive") == 0) {
                 positive_count++;
                 for (int row = 0; row < 3; row++) {
                     for (int col = 0; col < 3; col++) {
-                        int moveIndex = assignMoveIndex(data[randomNo[i]].grid[row][col]);
+                        int moveIndex = assignMoveIndex(data[i].grid[row][col]);
                         if (moveIndex != -1) {
                             positiveMoveCount[row][col][moveIndex]++;
                         }
                     }
                 }
             }
-            else if (strcmp(data[randomNo[i]].outcome, "negative") == 0) {
+            else if (strcmp(data[i].outcome, "negative") == 0) {
                 negative_count++;
                 for (int row = 0; row < 3; row++) {
                     for (int col = 0; col < 3; col++) {
-                        int moveIndex = assignMoveIndex(data[randomNo[i]].grid[row][col]);
+                        int moveIndex = assignMoveIndex(data[i].grid[row][col]);
                         if (moveIndex != -1) {
                             negativeMoveCount[row][col][moveIndex]++;
                         }
@@ -161,30 +191,46 @@ void readDataset(const char* filename) {
                 }
             }
         }
-
-
-
         // Output board and outcome
-        // printf("\n------------------");
-        // printf("\nBoard for Game %d: \n", i + 1);
-        // for (int row = 0; row < 3; row++) {
-        //     for (int col = 0; col < 3; col++) {
-        //         printf("%c ", data[i].grid[row][col]);
-        //     }
-        //     printf("\n");
-        // }
-        // printf("\nOutcome: %s\n", data[i].outcome);
-        // printf("------------------\n");
+        printf("\n------------------");
+        printf("\nBoard for Game %d: \n", i + 1);
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                printf("%c ", data[i].grid[row][col]);
+            }
+            printf("\n");
+        }
+        printf("\nOutcome: %s\n", data[i].outcome);
+        printf("------------------\n");
     }
-
     fclose(file);
-
-    splitFile();
-
-
 }
 
+void readTestingDataset(const char* filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        printf("Error opening file.\n");
+    }
 
+    char line[100];
+
+    for (int i = 0; i < TESTING_DATA_SIZE && fgets(line, sizeof(line), file); i++) {
+        // Get first token with delimiter being ","
+        char *token = strtok(line, ",");
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (token != NULL) {
+                    data[i].grid[row][col] = token[0]; 
+                    token = strtok(NULL, ",");
+                }
+            }
+        }
+        if (token != NULL) {
+            strncpy(data[i].outcome, token, sizeof(data[i].outcome) - 1); 
+        }
+    }
+    fclose(file);
+}
 
 void calculateProbabilities(int dataset_size) {
     // Calculate class probability
@@ -193,20 +239,23 @@ void calculateProbabilities(int dataset_size) {
     printf("Positive Class Probability: %lf\n", positiveClassProbability);
     printf("Negative Class Probability: %lf\n", negativeClassProbability);
 
-    // Calculate conditional probability
+    // Calculate conditional probability with laplace smoothing
+    int laplace_smoothing = 1;  
     for (int row = 0; row < 3; row++) {
         for (int col = 0; col < 3; col++) {
             for (int moveIndex = 0; moveIndex < 3; moveIndex++) {
                 char move;
                 if (moveIndex == 0) {
                     move = 'x';
-                } else if (moveIndex == 1) {
+                } 
+                else if (moveIndex == 1) {
                     move = 'o';
-                } else {
+                } 
+                else {
                     move = 'b';
                 }
-                double positiveProbability = (double) positiveMoveCount[row][col][moveIndex]/positive_count;
-                double negativeProbability = (double) negativeMoveCount[row][col][moveIndex]/negative_count;
+                double positiveProbability = (double) (positiveMoveCount[row][col][moveIndex] + laplace_smoothing)/(positive_count + 3 * laplace_smoothing);
+                double negativeProbability = (double) (negativeMoveCount[row][col][moveIndex] + laplace_smoothing)/(negative_count + 3 * laplace_smoothing);
                 if (positive_count == 0) {
                     printf("Probability of %c (positive) at grid(%d,%d): No positive outcomes\n", move, row, col);
                     printf("Probability of %c (negative) at grid(%d,%d): %lf\n", move, row, col, negativeProbability);
@@ -242,7 +291,8 @@ void predictOutcome(char grid[3][3]) {
             }
         }
     }
-
+    
+    // Output probabilities for debugging
     printf("\nPositive Probability: %lf\n", positiveProbability);
     printf("Negative Probability: %lf\n", negativeProbability);
 
@@ -257,46 +307,118 @@ void predictOutcome(char grid[3][3]) {
     }
 }
 
+// Get move and position with highest probability for bot
+char getBestPosition(char grid[3][3], char player) {
+
+    // Determine whether bot is X or O depending on current player
+    char bot;
+
+    if (player == 'x') {
+        bot = 'o';
+    } 
+    else {
+        bot = 'x';
+    }
+    
+    char bestMove = 'b';
+    int bestRow = -1;
+    int bestCol = -1;
+    double highestProbability = 0.0;
+
+    int bot_count;
+    int (*botMoveCount)[3][3];
+ 
+    // Use positive or negative count for calculating probability depending on whether bot is X or O
+    // Note that for the dataset, negative outcome is for X, meaning the position of O in negative outcomes are good for the bot playing as O
+    if (bot == 'x') {
+        bot_count = positive_count;
+        botMoveCount = positiveMoveCount;
+
+    } 
+    else {
+        bot_count = negative_count;
+        botMoveCount = negativeMoveCount;
+    }
+
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+            // If the grid position is empty
+            if (grid[row][col] == 'b') {
+                // Calculate probability for X or O to determine best move for bot
+                for (int moveIndex = 0; moveIndex < 2; moveIndex++) { 
+                    char move;
+                    if (moveIndex == 0) {
+                        move = 'x';
+                    } 
+                    else {
+                        move = 'o';
+                    }
+
+                    double moveProbability;
+                    
+                    if (bot == 'x') {
+                        // Calculate probability for move 'x'
+                        if (bot_count > 0) {
+                            moveProbability = (double) botMoveCount[row][col][0] / bot_count;
+                        } else {
+                            moveProbability = 0.0;
+                        }
+                    } else {
+                        // Calculate probability for move 'o'
+                        if (bot_count > 0) {
+                            moveProbability = (double) botMoveCount[row][col][1] / bot_count;
+                        } else {
+                            moveProbability = 0.0;
+                        }
+                    }
+
+                    // Update best move and position for bot if it has higher probability
+                    if (moveProbability > highestProbability) {
+                        highestProbability = moveProbability;
+                        bestMove = bot;
+                        bestRow = row;
+                        bestCol = col;
+                    }
+                }
+            }
+        }
+    }
+
+    // Return best position
+    if (bestRow != -1 && bestCol != -1) {
+        grid[bestRow][bestCol] = bestMove;
+        printf("\nBest move: %c at grid (%d, %d) with probability: %lf\n", bestMove, bestRow, bestCol, highestProbability);
+        return grid[bestRow][bestCol];
+    } else {
+        printf("\nNo valid move found.\n");
+        return 'b'; // Indicate no valid move found
+    }
+}
+
 
 int main() {
-    readDataset("../tic-tac-toe.data");
+    processDataset("tic-tac-toe.data");
+    readTrainingDataset("training-tic-tac-toe.data");
+    readTestingDataset("testing-tic-tac-toe.data");
+    //Testing gameboard for getBestPosition
+    char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
+    getBestPosition(gameBoard, 'o');
 
-    //     for (int a = 0; DATA_SIZE > a; a++) {
-    //     for (int row = 0; 3 > row; row++) {
-    //         for (int col = 0; 3 > col; col++) {
-    //             // printf("%c ", data[a].grid[row][col]);
+    // // Demo for ML-Naive-Bayes prediction
+    // calculateProbabilities(TRAINING_DATA_SIZE);
+    // for (int i = 0; i < TESTING_DATA_SIZE; i++) {
+    //     // Output board and outcome
+    //     printf("\n------------------");
+    //     printf("\nBoard for test Game %d: \n", i + 1);
+    //     for (int row = 0; row < 3; row++) {
+    //         for (int col = 0; col < 3; col++) {
+    //             printf("%c ", data[i].grid[row][col]);
     //         }
     //         printf("\n");
     //     }
-
+    //     predictOutcome(data[i].grid);
+    //     printf("------------------\n");
     // }
-
-    // for (int i = 0; DATA_SIZE > i; i++) {
-    //     printf("%d: %s\n", i, data[i]);
-    // }
-
-    // printf("test: %c\n", data[0].grid[0][1]);
-
-    // for (int a = 0; DATA_SIZE > a; a++) {
-    //     printf("%d,", randomNo[a]);
-    // }
-
-
-    
-
-    // calculateProbabilities(DATA_SIZE);
-    // char testBoard[3][3] = {{'x', 'x', 'x'}, {'x', 'o', 'o'}, {'x', 'o', 'o'}};
-    // printf("\n------------------");
-    // printf("\nBoard for Test Game:\n");
-    // for (int row = 0; row < 3; row++) {
-    //     for (int col = 0; col < 3; col++) {
-    //         printf("%c ", testBoard[row][col]);
-    //     }
-    //     printf("\n");
-    // }
-    // printf("------------------\n");
-
-    // predictOutcome(testBoard);
 
     return 0;
 }
