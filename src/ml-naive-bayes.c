@@ -124,42 +124,41 @@ struct Position getBestPosition(char grid[3][3], char player) {
     for (int row = 0; row < 3; row++) {
         for (int col = 0; col < 3; col++) {
             // If the grid position is empty
-            if (grid[row][col] == 'b') {
-                // Calculate probability for X or O to determine best move for bot
-                for (int moveIndex = 0; moveIndex < 2; moveIndex++) { 
-                    char move;
-                    if (moveIndex == 0) {
-                        move = 'x';
-                    } 
-                    else {
-                        move = 'o';
-                    }
-
-                    double moveProbability;
-                    
-                    if (bot == 'x') {
-                        // Calculate probability for move 'x'
-                        if (bot_count > 0) {
-                            moveProbability = (double) botMoveCount[row][col][0] / bot_count;
-                        } else {
-                            moveProbability = 0.0;
-                        }
+            if (grid[row][col] != 'b') 
+            {
+                continue;
+            }
+            
+            // Calculate probability for X or O to determine best move for bot
+            for (int moveIndex = 0; moveIndex < 2; moveIndex++) 
+            {
+                double moveProbability;
+                
+                if (bot == 'x') 
+                {
+                    // Calculate probability for move 'x'
+                    if (bot_count > 0) {
+                        moveProbability = (double) botMoveCount[row][col][0] / bot_count;
                     } else {
-                        // Calculate probability for move 'o'
-                        if (bot_count > 0) {
-                            moveProbability = (double) botMoveCount[row][col][1] / bot_count;
-                        } else {
-                            moveProbability = 0.0;
-                        }
+                        moveProbability = 0.0;
                     }
+                } 
+                else
+                {
+                    // Calculate probability for move 'o'
+                    if (bot_count > 0) {
+                        moveProbability = (double) botMoveCount[row][col][1] / bot_count;
+                    } else {
+                        moveProbability = 0.0;
+                    }
+                }
 
-                    // Update best move and position for bot if it has higher probability
-                    if (moveProbability > highestProbability) {
-                        highestProbability = moveProbability;
-                        bestMove = bot;
-                        bestRow = row;
-                        bestCol = col;
-                    }
+                // Update best move and position for bot if it has higher probability
+                if (moveProbability > highestProbability) {
+                    highestProbability = moveProbability;
+                    bestMove = bot;
+                    bestRow = row;
+                    bestCol = col;
                 }
             }
         }
@@ -176,14 +175,46 @@ struct Position getBestPosition(char grid[3][3], char player) {
     }
 }
 
+void initData(struct Dataset *data, int len)
+{
+    for (int i = 0; i < len; i++) 
+    {
+        // Get outcome class count
+        if (strcmp(data[i].outcome, "positive") == 0) 
+        {
+            positive_count++;
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    int moveIndex = assignMoveIndex(data[i].grid[row][col]);
+                    if (moveIndex != -1) {
+                        positiveMoveCount[row][col][moveIndex]++;
+                    }
+                }
+            }
+        }
+        else if (strcmp(data[i].outcome, "negative") == 0) 
+        {
+            negative_count++;
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    int moveIndex = assignMoveIndex(data[i].grid[row][col]);
+                    if (moveIndex != -1) {
+                        negativeMoveCount[row][col][moveIndex]++;
+                    }
+                }
+            }
+        }
+    }
+}
+
 int main() {
 
     int retVal = SUCCESS;
+    int data_len = 0;
+    struct Dataset *d = malloc(DATA_SIZE * sizeof(struct Dataset));;
+    data_len = getTrainingData(d);
     
-    struct Dataset *d;
-    retVal = getTrainingData(d);
-    
-    if(retVal == BAD_PARAM)
+    if(data_len == BAD_PARAM)
     {
         retVal = readDataset(RES_PATH""DATA_PATH, true);
         if(retVal == BAD_PARAM)
@@ -192,9 +223,10 @@ int main() {
             return ERROR;
         }
     }
-    //need to calculate here... im not sure which function
 
-    
+    initData(d, data_len);
+    free(d);
+
     //Testing gameboard for getBestPosition
     char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
     struct Position pos = getBestPosition(gameBoard, 'o');

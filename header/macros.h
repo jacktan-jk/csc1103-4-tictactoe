@@ -1,8 +1,11 @@
+#ifndef MACROS_H
+#define MACROS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-#include <strings.h>
+#include <string.h>
 
 #define PLAY 0x69
 #define TIE 0xFF
@@ -29,3 +32,5 @@
 #else
 #define PRINT_DEBUG(...)
 #endif
+
+#endif // MACROS_H

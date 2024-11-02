@@ -3,6 +3,7 @@
 int len_train = 0;
 int len_test = 0;
 int randomNo[DATA_SIZE];
+struct Dataset data[DATA_SIZE];
 
 int readDataset(const char* filename, bool split) {
     FILE *file = fopen(filename, "r");
@@ -47,7 +48,6 @@ int readDataset(const char* filename, bool split) {
 int splitFile() {
     // get 80% and 20% respectively
     int eighty = len_train = 0.8 * DATA_SIZE;
-    int twenty = len_test = 0.2 * DATA_SIZE;
 
     // write into training dataset
     FILE *trainFile;
@@ -113,10 +113,6 @@ void getRandomNo(int random[DATA_SIZE]) {
 
 int getTrainingData(struct Dataset *d)
 {
-    if(data == NULL)
-    {
-        return BAD_PARAM;
-    }
     memset(data, 0, len_train);
     readDataset(trainingFile, false);
     d = data;
@@ -125,10 +121,6 @@ int getTrainingData(struct Dataset *d)
 
 int getTestingData(struct Dataset *d)
 {
-    if(data == NULL)
-    {
-        return BAD_PARAM;
-    }
     memset(data, 0, len_test);
     readDataset(testingFile, false);
     d = data;
