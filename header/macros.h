@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
+#include <strings.h>
 
 #define PLAY 0x69
 #define TIE 0xFF
@@ -15,6 +17,9 @@
 #define EMPTY 0
 #define PLAYER1 1
 #define BOT 2       //this is also used for player 2
+
+#define DATA_SIZE 958
+#define CLASSES 2
 
 #define DEBUG 1
 
