@@ -17,7 +17,7 @@ struct Dataset data[DATA_SIZE];
 const char *trainingFile = RES_PATH""TRAIN_PATH""DATA_PATH;
 const char *testingFile =  RES_PATH""TEST_PATH""DATA_PATH;
 
-void readDataset(const char* filename, bool split);
-void splitFile();
+int readDataset(const char* filename, bool split);
+int splitFile();
 void getRandomNo(int random[DATA_SIZE]);
 int assignMoveIndex(char move);

@@ -10,6 +10,7 @@
 
 #define SUCCESS 0
 #define ERROR -1
+#define BAD_PARAM -5
 
 #define MODE_2P 0
 #define MODE_BOT 1

@@ -4,10 +4,11 @@ int len_train = 0;
 int len_test = 0;
 int randomNo[DATA_SIZE];
 
-void readDataset(const char* filename, bool split) {
+int readDataset(const char* filename, bool split) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error opening file.\n");
+        return ERROR;
     }
     
     if(split)
@@ -37,12 +38,13 @@ void readDataset(const char* filename, bool split) {
 
     if(split)
     {
-        splitFile();
-    } 
+        return splitFile();
+    }
+    return SUCCESS;
 }
 
 // split into 80 - 20; write into training and testing file accordingly
-void splitFile() {
+int splitFile() {
     // get 80% and 20% respectively
     int eighty = len_train = 0.8 * DATA_SIZE;
     int twenty = len_test = 0.2 * DATA_SIZE;
@@ -52,6 +54,7 @@ void splitFile() {
     trainFile = fopen(trainingFile, "w");
     if (!trainFile) {
         printf("Error opening file. \n");
+        return BAD_PARAM;
     }
 
     for (int i = 0; eighty > i; i++) {
@@ -70,6 +73,7 @@ void splitFile() {
     testFile = fopen(testingFile, "w");
     if (!testFile) {
         printf("Error opening file. \n");
+        return BAD_PARAM;
     }
 
     for (int i = eighty; DATA_SIZE > i; i++) 
@@ -84,6 +88,7 @@ void splitFile() {
         fprintf(testFile, "%s\n", data[i].outcome);
     }
     fclose(testFile);
+    return SUCCESS;
 }
 
 void getRandomNo(int random[DATA_SIZE]) {
@@ -110,7 +115,7 @@ int getTrainingData(struct Dataset *d)
 {
     if(data == NULL)
     {
-        return ERROR;
+        return BAD_PARAM;
     }
     memset(data, 0, len_train);
     readDataset(trainingFile, false);
@@ -122,7 +127,7 @@ int getTestingData(struct Dataset *d)
 {
     if(data == NULL)
     {
-        return ERROR;
+        return BAD_PARAM;
     }
     memset(data, 0, len_test);
     readDataset(testingFile, false);

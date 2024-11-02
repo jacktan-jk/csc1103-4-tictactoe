@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-
-#define DATA_SIZE 958
-#define TRAINING_DATA_SIZE 0.8 * DATA_SIZE
-#define TESTING_DATA_SIZE  0.2 * DATA_SIZE
-#define CLASSES 2
+#include <ml-naive-bayes.h>
 
 // Counters for positive and negative outcomes
 int positive_count = 0;
@@ -106,8 +98,7 @@ void predictOutcome(char grid[3][3]) {
 }
 
 // Get move and position with highest probability for bot
-char getBestPosition(char grid[3][3], char player) {
-
+struct Position getBestPosition(char grid[3][3], char player) {
     // Determine whether bot is X or O depending on current player
     char bot = (player == 'x' ? 'o' : 'x');    
     char bestMove = 'b';
@@ -176,18 +167,37 @@ char getBestPosition(char grid[3][3], char player) {
 
     // Return best position
     if (bestRow != -1 && bestCol != -1) {
-        grid[bestRow][bestCol] = bestMove;
+        grid[bestRow][bestCol] = bestMove;    
         printf("\nBest move: %c at grid (%d, %d) with probability: %lf\n", bestMove, bestRow, bestCol, highestProbability);
-        return grid[bestRow][bestCol];
+        return (struct Position){bestRow,bestCol};
     } else {
         printf("\nNo valid move found.\n");
-        return 'b'; // Indicate no valid move found
+        return (struct Position){ERROR,ERROR}; // Indicate no valid move found
     }
 }
 
 int main() {
+
+    int retVal = SUCCESS;
+    
+    struct Dataset *d;
+    retVal = getTrainingData(d);
+    
+    if(retVal == BAD_PARAM)
+    {
+        retVal = readDataset(RES_PATH""DATA_PATH, true);
+        if(retVal == BAD_PARAM)
+        {
+            PRINT_DEBUG("[ERROR] Data file not found!\n");
+            return ERROR;
+        }
+    }
+    //need to calculate here... im not sure which function
+
+    
     //Testing gameboard for getBestPosition
     char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
-    getBestPosition(gameBoard, 'o');
+    struct Position pos = getBestPosition(gameBoard, 'o');
+    printf("Returned POS: %d %d", pos.row, pos.col);
     return 0;
 }
