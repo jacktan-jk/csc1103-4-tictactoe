@@ -106,27 +106,19 @@ void getRandomNo(int random[DATA_SIZE]) {
     }
 }
 
-int getTrainingData(struct Dataset *d)
+int getTrainingData(struct Dataset **d) 
 {
-    if(data == NULL)
-    {
-        return ERROR;
-    }
-    memset(data, 0, len_train);
+    memset(data, 0, len_train * sizeof(struct Dataset));
     readDataset(trainingFile, false);
-    d = data;
+    *d = data;
     return len_train;
 }
 
-int getTestingData(struct Dataset *d)
+int getTestingData(struct Dataset **d) 
 {
-    if(data == NULL)
-    {
-        return ERROR;
-    }
-    memset(data, 0, len_test);
+    memset(data, 0, len_test * sizeof(struct Dataset));
     readDataset(testingFile, false);
-    d = data;
+    *d = data;
     return len_test;
 }
 
@@ -140,23 +132,23 @@ int assignMoveIndex(char move) {
     }
 }
 
-// int main()
-// {
-//     readDataset(RES_PATH""DATA_PATH, true);
-//     struct Dataset *slut;
-//     int len = getTrainingData(slut);
-//     printf("%d\n", len);
-//     for(int i = 0; i < len; i++)
-//     {
-//         printf("%d ", i);
-//         for(int j = 0; j < 3; j++)
-//         {
-//             for(int k = 0; k < 3; k++)
-//             {
-//                 printf("%c,", data[i].grid[j][k]);
-//             }
-//         }
-//         printf("%s\n", data[i].outcome);
-//     }
-//     return 0;
-// }
+int main() {
+    readDataset(RES_PATH "" DATA_PATH, true); // Load data initially
+
+    struct Dataset *test = NULL; // Initialize pointer
+    int len = getTrainingData(&test); // Pass address of pointer
+    printf("%d\n", len);
+    if (len > 0) { // Ensure len is valid before accessing test
+        for (int i = 0; i < len; i++) {
+            printf("%d ", i);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    printf("%c,", test[i].grid[j][k]);
+                }
+            }
+            printf("%s\n", test[i].outcome);
+        }
+    }
+
+    return 0;
+}
