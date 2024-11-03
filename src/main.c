@@ -123,7 +123,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
 
     if(retVal == WIN)
     {
-        blinkWin();
+        showWin();
         isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
         iGameState = WIN;
     }
@@ -151,7 +151,7 @@ void on_btnScore_clicked(GtkWidget *widget, gpointer data)
     clearBtn();
 }
 
-void blinkWin()
+void showWin()
 {
     for(int i=0; i<3; i++)
     {
@@ -185,7 +185,7 @@ int chkPlayerWin()
 
     if (iBoard[0][2] == iBoard[1][1] && iBoard[1][1] == iBoard[2][0] && iBoard[0][2] != 0) 
     {
-        iWinPos[0][2] = iWinPos[1][1] = iWinPos[0][2] = WIN;
+        iWinPos[0][2] = iWinPos[1][1] = iWinPos[2][0] = WIN;
         return WIN;
     }
 
