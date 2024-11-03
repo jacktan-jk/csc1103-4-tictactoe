@@ -88,35 +88,39 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
             return;
         }
 
-        struct Move botMove;
-        if (rand() % 100 < 70)
-        {
-            botMove = findBestMove(iBoard); 
+//        struct Move botMove;
+//        if (rand() % 100 < 70)
+//        {
+            //botMove = findBestMove(iBoard); 
+            struct Position botMove;
+            int retVal = initData();
+            botMove = getBestPosition(iBoard, 'x');
             iBoard[botMove.row][botMove.col] = BOT;
             gtk_button_set_label(GTK_BUTTON(btnGrid[botMove.row][botMove.col]), "X");
-        }
-        else
-        {
-            int randRow = rand() % 3;
-            int randCol = rand() % 3;
-            bool bIsDone = false;
+//        }
 
-            while(!bIsDone)
-            {
-                if(iBoard[randRow][randCol] == EMPTY)
-                {   
-                    iBoard[randRow][randCol] = BOT;
-                    PRINT_DEBUG("Random Move -> R:%d C:%d\n", randRow, randCol);
-                    gtk_button_set_label(GTK_BUTTON(btnGrid[randRow][randCol]), "X"); 
-                    bIsDone=!bIsDone;               
-                }
-                else
-                {
-                    randRow = rand() % 3;
-                    randCol = rand() % 3;
-                }
-            }
-        }
+        // else
+        // {
+        //     int randRow = rand() % 3;
+        //     int randCol = rand() % 3;
+        //     bool bIsDone = false;
+
+        //     while(!bIsDone)
+        //     {
+        //         if(iBoard[randRow][randCol] == EMPTY)
+        //         {   
+        //             iBoard[randRow][randCol] = BOT;
+        //             PRINT_DEBUG("Random Move -> R:%d C:%d\n", randRow, randCol);
+        //             gtk_button_set_label(GTK_BUTTON(btnGrid[randRow][randCol]), "X"); 
+        //             bIsDone=!bIsDone;               
+        //         }
+        //         else
+        //         {
+        //             randRow = rand() % 3;
+        //             randCol = rand() % 3;
+        //         }
+        //     }
+        // }
 
         retVal = chkPlayerWin();
     }
@@ -311,13 +315,6 @@ int main(int argc, char *argv[])
     // Start the GTK main loop
     gtk_main();
     
-    // struct allData test = getData();
-    // for (int a = 0; a < TRAINING_SET; a++) {
-    //     for (int b = 0; b < BOX; b++) {
-    //         printf("training data[%d][%d]: %s\n", a, b, test.trainingData[a][b]);
-    //     }
-    //     printf("%s\n", test.trainingOutput[a]);
-    // }
     return SUCCESS;
 }
 /*

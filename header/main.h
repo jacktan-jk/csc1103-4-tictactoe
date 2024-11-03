@@ -2,7 +2,7 @@
 
 #include <macros.h>
 #include <minimax.h>
- #include <readInput.h>
+#include <ml-naive-bayes.h>
 
 /*===============================================================================================
 GLOBAL DECLARATION

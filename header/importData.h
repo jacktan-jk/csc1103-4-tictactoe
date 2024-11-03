@@ -19,6 +19,5 @@ int splitFile();
 void getRandomNo(int random[DATA_SIZE]);
 int getTrainingData(struct Dataset **d);
 int getTestingData(struct Dataset **d);
-int assignMoveIndex(char move);
 
 #endif // IMPORTDATA_H

@@ -12,7 +12,7 @@ const char *testingFile =  RES_PATH""TEST_PATH""DATA_PATH;
 int readDataset(const char* filename, bool split) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        printf("Error opening file.\n");
+        PRINT_DEBUG("[ERROR] Error opening file.\n");
         return ERROR;
     }
     
@@ -57,7 +57,7 @@ int splitFile() {
     FILE *trainFile;
     trainFile = fopen(trainingFile, "w");
     if (!trainFile) {
-        printf("Error opening file. \n");
+        PRINT_DEBUG("[ERROR] Error opening file.\n");
         return BAD_PARAM;
     }
 
@@ -76,7 +76,7 @@ int splitFile() {
     FILE *testFile;
     testFile = fopen(testingFile, "w");
     if (!testFile) {
-        printf("Error opening file. \n");
+        PRINT_DEBUG("[ERROR] Error opening file.\n");
         return BAD_PARAM;
     }
 
@@ -130,33 +130,3 @@ int getTestingData(struct Dataset **d)
     *d = data;
     return len_test;
 }
-
-// Assign an index for each move "x", "o" or "b"
-int assignMoveIndex(char move) {
-    switch(move) {
-        case 'x': return 0;
-        case 'o': return 1;
-        case 'b': return 2;
-        default: return -1;
-    }
-}
-
-// int main() {
-//     readDataset(RES_PATH "" DATA_PATH, true); // Load data initially
-//     struct Dataset *test = NULL; // Initialize pointer
-//     int len = getTrainingData(&test); // Pass address of pointer
-//     printf("%d\n", len);
-//     if (len > 0) { // Ensure len is valid before accessing test
-//         for (int i = 0; i < len; i++) {
-//             printf("%d ", i);
-//             for (int j = 0; j < 3; j++) {
-//                 for (int k = 0; k < 3; k++) {
-//                     printf("%c,", test[i].grid[j][k]);
-//                 }
-//             }
-//             printf("%s\n", test[i].outcome);
-//         }
-//     }
-
-//     return 0;
-// }
