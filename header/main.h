@@ -22,6 +22,7 @@ struct stPlayerMode
 };
 #endif // MAIN_H  // End of include guard
 
+int doBOTmove();
 int chkPlayerWin();
 void clearBtn();
 void updateScoreBtn(gpointer data);

@@ -167,7 +167,7 @@ struct Position getBestPosition(int grid[3][3], char player) {
     // Return best position
     if (bestRow != ERROR && bestCol != ERROR) {
         grid[bestRow][bestCol] = bestMove;    
-        PRINT_DEBUG("\nBest move: %c at grid (%d, %d) with probability: %lf\n", bestMove, bestRow, bestCol, highestProbability);
+        PRINT_DEBUG("Best move: %c at grid (%d, %d) with probability: %lf\n", bestMove, bestRow, bestCol, highestProbability);
         return (struct Position){bestRow,bestCol};
     } else {
         PRINT_DEBUG("\nNo valid move found.\n");

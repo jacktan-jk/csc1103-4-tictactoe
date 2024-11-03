@@ -16,7 +16,8 @@
 #define BAD_PARAM -5
 
 #define MODE_2P 0
-#define MODE_BOT 1
+#define MODE_MM 1
+#define MODE_ML 2
 
 #define EMPTY 0
 #define PLAYER1 1
@@ -32,5 +33,10 @@
 #else
 #define PRINT_DEBUG(...)
 #endif
+
+struct Position {
+    int row;
+    int col;
+};
 
 #endif // MACROS_H

@@ -11,10 +11,10 @@ int min(int a, int b) {
     return (a < b) ? a : b;
 }
 
-struct Move findBestMove(int board[3][3]) 
+struct Position findBestMove(int board[3][3]) 
 { 
     int bestVal = -1000; 
-    struct Move bestMove; 
+    struct Position bestMove; 
     bestMove.row = -1; 
     bestMove.col = -1; 
   
