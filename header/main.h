@@ -2,6 +2,7 @@
 
 #include <macros.h>
 #include <minimax.h>
+ #include <readInput.h>
 
 /*===============================================================================================
 GLOBAL DECLARATION
@@ -18,7 +19,7 @@ struct stPlayerMode
 {
     char txt[2];
     int mode;
-} ;
+};
 #endif // MAIN_H  // End of include guard
 
 int chkPlayerWin();

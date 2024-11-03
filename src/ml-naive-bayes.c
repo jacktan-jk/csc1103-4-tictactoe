@@ -1,0 +1,225 @@
+#include <ml-naive-bayes.h>
+
+// Counters for positive and negative outcomes
+int positive_count = 0;
+int negative_count = 0;
+
+// Class probability for positive or negative outcomes
+double positiveClassProbability;
+double negativeClassProbability;
+
+// Counters for each move "x", "o" or "b" with their board position and their respective outcomes
+int positiveMoveCount[3][3][3];
+int negativeMoveCount[3][3][3];
+
+void calculateProbabilities(int dataset_size) {
+    // Calculate class probability
+    positiveClassProbability =  (double) positive_count/dataset_size;
+    negativeClassProbability = (double) negative_count/dataset_size;
+    printf("Positive Class Probability: %lf\n", positiveClassProbability);
+    printf("Negative Class Probability: %lf\n", negativeClassProbability);
+
+    // Calculate conditional probability with laplace smoothing
+    int laplace_smoothing = 1;  
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+            for (int moveIndex = 0; moveIndex < 3; moveIndex++) {
+                char move;
+                if (moveIndex == 0) {
+                    move = 'x';
+                } 
+                else if (moveIndex == 1) {
+                    move = 'o';
+                } 
+                else {
+                    move = 'b';
+                }
+                double positiveProbability = (double) (positiveMoveCount[row][col][moveIndex] + laplace_smoothing)/(positive_count + 3 * laplace_smoothing);
+                double negativeProbability = (double) (negativeMoveCount[row][col][moveIndex] + laplace_smoothing)/(negative_count + 3 * laplace_smoothing);
+                if (positive_count == 0) {
+                    printf("Probability of %c (positive) at grid(%d,%d): No positive outcomes\n", move, row, col);
+                    printf("Probability of %c (negative) at grid(%d,%d): %lf\n", move, row, col, negativeProbability);
+                }
+                else if (negative_count == 0) {
+                    printf("Probability of %c (positive) at grid(%d,%d): %lf\n", move, row, col, positiveProbability);
+                    printf("Probability of %c (negative) at grid(%d,%d): No negative outcomes\n", move, row, col);
+                }
+                else {
+                    printf("Probability of %c (positive) at grid(%d,%d): %lf\n", move, row, col, positiveProbability);
+                    printf("Probability of %c (negative) at grid(%d,%d): %lf\n", move, row, col, negativeProbability);
+                }
+            }
+        }
+    }
+}
+
+void predictOutcome(char grid[3][3]) {
+    double positiveProbability = positiveClassProbability;
+    double negativeProbability = negativeClassProbability;
+
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+            int moveIndex = assignMoveIndex(grid[row][col]);
+            
+            if (moveIndex != -1) {
+                if (positive_count > 0) {
+                    positiveProbability *= (double)positiveMoveCount[row][col][moveIndex] / positive_count;
+                }
+                else if (negative_count > 0) {
+                    negativeProbability *= (double)negativeMoveCount[row][col][moveIndex] / negative_count;
+                }
+            }
+        }
+    }
+    
+    // Output probabilities for debugging
+    printf("\nPositive Probability: %lf\n", positiveProbability);
+    printf("Negative Probability: %lf\n", negativeProbability);
+
+    if (positiveProbability > negativeProbability) {
+        printf("Predicted Outcome: Positive\n");
+    } 
+    else if (positiveProbability == 0 || negativeProbability == 0) {
+        printf("Unable to predict outcome based on available data.");
+    }
+    else {
+        printf("Predicted Outcome: Negative\n");
+    }
+}
+
+// Get move and position with highest probability for bot
+struct Position getBestPosition(char grid[3][3], char player) {
+    // Determine whether bot is X or O depending on current player
+    char bot = (player == 'x' ? 'o' : 'x');    
+    char bestMove = 'b';
+    int bestRow = -1;
+    int bestCol = -1;
+    double highestProbability = 0.0;
+
+    int bot_count;
+    int (*botMoveCount)[3][3];
+ 
+    // Use positive or negative count for calculating probability depending on whether bot is X or O
+    // Note that for the dataset, negative outcome is for X, meaning the position of O in negative outcomes are good for the bot playing as O
+    if (bot == 'x') {
+        bot_count = positive_count;
+        botMoveCount = positiveMoveCount;
+
+    } 
+    else {
+        bot_count = negative_count;
+        botMoveCount = negativeMoveCount;
+    }
+
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+            // If the grid position is empty
+            if (grid[row][col] != 'b') 
+            {
+                continue;
+            }
+            
+            // Calculate probability for X or O to determine best move for bot
+            for (int moveIndex = 0; moveIndex < 2; moveIndex++) 
+            {
+                double moveProbability;
+                
+                if (bot == 'x') 
+                {
+                    // Calculate probability for move 'x'
+                    if (bot_count > 0) {
+                        moveProbability = (double) botMoveCount[row][col][0] / bot_count;
+                    } else {
+                        moveProbability = 0.0;
+                    }
+                } 
+                else
+                {
+                    // Calculate probability for move 'o'
+                    if (bot_count > 0) {
+                        moveProbability = (double) botMoveCount[row][col][1] / bot_count;
+                    } else {
+                        moveProbability = 0.0;
+                    }
+                }
+
+                // Update best move and position for bot if it has higher probability
+                if (moveProbability > highestProbability) {
+                    highestProbability = moveProbability;
+                    bestMove = bot;
+                    bestRow = row;
+                    bestCol = col;
+                }
+            }
+        }
+    }
+
+    // Return best position
+    if (bestRow != -1 && bestCol != -1) {
+        grid[bestRow][bestCol] = bestMove;    
+        printf("\nBest move: %c at grid (%d, %d) with probability: %lf\n", bestMove, bestRow, bestCol, highestProbability);
+        return (struct Position){bestRow,bestCol};
+    } else {
+        printf("\nNo valid move found.\n");
+        return (struct Position){ERROR,ERROR}; // Indicate no valid move found
+    }
+}
+
+void initData(struct Dataset *data, int len)
+{
+    for (int i = 0; i < len; i++) 
+    {
+        // Get outcome class count
+        if (strcmp(data[i].outcome, "positive") == 0) 
+        {
+            positive_count++;
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    int moveIndex = assignMoveIndex(data[i].grid[row][col]);
+                    if (moveIndex != -1) {
+                        positiveMoveCount[row][col][moveIndex]++;
+                    }
+                }
+            }
+        }
+        else if (strcmp(data[i].outcome, "negative") == 0) 
+        {
+            negative_count++;
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    int moveIndex = assignMoveIndex(data[i].grid[row][col]);
+                    if (moveIndex != -1) {
+                        negativeMoveCount[row][col][moveIndex]++;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// int main() {
+
+//     int retVal = SUCCESS;
+//     retVal = readDataset(RES_PATH""DATA_PATH, true);
+//     struct Dataset *test = NULL; // Initialize pointer
+//     int len = getTrainingData(&test); // Pass address of pointer
+//     printf("%d\n", len);
+//     if (len > 0) { // Ensure len is valid before accessing test
+//         for (int i = 0; i < len; i++) {
+//             printf("%d ", i);
+//             for (int j = 0; j < 3; j++) {
+//                 for (int k = 0; k < 3; k++) {
+//                     printf("%c,", test[i].grid[j][k]);
+//                 }
+//             }
+//             printf("%s\n", test[i].outcome);
+//         }
+//     }
+//     initData(test, len);
+
+//     //Testing gameboard for getBestPosition
+//     char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
+//     struct Position pos = getBestPosition(gameBoard, 'o');
+//     printf("Returned POS: %d %d", pos.row, pos.col);
+//     return 0;
+// }

@@ -1,3 +1,6 @@
+#ifndef MACROS_H
+#define MACROS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -10,6 +13,7 @@
 
 #define SUCCESS 0
 #define ERROR -1
+#define BAD_PARAM -5
 
 #define MODE_2P 0
 #define MODE_BOT 1
@@ -18,6 +22,9 @@
 #define PLAYER1 1
 #define BOT 2       //this is also used for player 2
 
+#define DATA_SIZE 958
+#define CLASSES 2
+
 #define DEBUG 1
 
 #if DEBUG
@@ -25,3 +32,5 @@
 #else
 #define PRINT_DEBUG(...)
 #endif
+
+#endif // MACROS_H
