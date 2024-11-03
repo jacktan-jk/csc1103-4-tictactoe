@@ -5,6 +5,10 @@ int len_test = 0;
 int randomNo[DATA_SIZE];
 struct Dataset data[DATA_SIZE];
 
+// to write to directory before 
+const char *trainingFile = RES_PATH""TRAIN_PATH""DATA_PATH;
+const char *testingFile =  RES_PATH""TEST_PATH""DATA_PATH;
+
 int readDataset(const char* filename, bool split) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -139,7 +143,6 @@ int assignMoveIndex(char move) {
 
 // int main() {
 //     readDataset(RES_PATH "" DATA_PATH, true); // Load data initially
-
 //     struct Dataset *test = NULL; // Initialize pointer
 //     int len = getTrainingData(&test); // Pass address of pointer
 //     printf("%d\n", len);

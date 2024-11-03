@@ -13,7 +13,6 @@ struct Position {
     int col;
 };
 
-int assignMoveIndex(char move);
 void calculateProbabilities(int dataset_size);
 void predictOutcome(char grid[3][3]);
 void initData(struct Dataset *data, int len);

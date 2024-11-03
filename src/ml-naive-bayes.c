@@ -12,16 +12,6 @@ double negativeClassProbability;
 int positiveMoveCount[3][3][3];
 int negativeMoveCount[3][3][3];
 
-// Assign an index for each move "x", "o" or "b"
-int assignMoveIndex(char move) {
-    switch(move) {
-        case 'x': return 0;
-        case 'o': return 1;
-        case 'b': return 2;
-        default: return -1;
-    }
-}
-
 void calculateProbabilities(int dataset_size) {
     // Calculate class probability
     positiveClassProbability =  (double) positive_count/dataset_size;
@@ -207,29 +197,29 @@ void initData(struct Dataset *data, int len)
     }
 }
 
-int main() {
+// int main() {
 
-    int retVal = SUCCESS;
-    int data_len = 0;
-    struct Dataset *d = malloc(DATA_SIZE * sizeof(struct Dataset));;
-    data_len = getTrainingData(d);
-    
-    if(data_len == BAD_PARAM)
-    {
-        retVal = readDataset(RES_PATH""DATA_PATH, true);
-        if(retVal == BAD_PARAM)
-        {
-            PRINT_DEBUG("[ERROR] Data file not found!\n");
-            return ERROR;
-        }
-    }
+//     int retVal = SUCCESS;
+//     retVal = readDataset(RES_PATH""DATA_PATH, true);
+//     struct Dataset *test = NULL; // Initialize pointer
+//     int len = getTrainingData(&test); // Pass address of pointer
+//     printf("%d\n", len);
+//     if (len > 0) { // Ensure len is valid before accessing test
+//         for (int i = 0; i < len; i++) {
+//             printf("%d ", i);
+//             for (int j = 0; j < 3; j++) {
+//                 for (int k = 0; k < 3; k++) {
+//                     printf("%c,", test[i].grid[j][k]);
+//                 }
+//             }
+//             printf("%s\n", test[i].outcome);
+//         }
+//     }
+//     initData(test, len);
 
-    initData(d, data_len);
-    free(d);
-
-    //Testing gameboard for getBestPosition
-    char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
-    struct Position pos = getBestPosition(gameBoard, 'o');
-    printf("Returned POS: %d %d", pos.row, pos.col);
-    return 0;
-}
+//     //Testing gameboard for getBestPosition
+//     char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
+//     struct Position pos = getBestPosition(gameBoard, 'o');
+//     printf("Returned POS: %d %d", pos.row, pos.col);
+//     return 0;
+// }

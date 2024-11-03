@@ -14,15 +14,11 @@ struct Dataset {
     char outcome[9];
 };
 
-// to write to directory before 
-const char *trainingFile = RES_PATH""TRAIN_PATH""DATA_PATH;
-const char *testingFile =  RES_PATH""TEST_PATH""DATA_PATH;
-
 int readDataset(const char* filename, bool split);
 int splitFile();
 void getRandomNo(int random[DATA_SIZE]);
-int getTrainingData(struct Dataset *d);
-int getTestingData(struct Dataset *d);
+int getTrainingData(struct Dataset **d);
+int getTestingData(struct Dataset **d);
 int assignMoveIndex(char move);
 
 #endif // IMPORTDATA_H
