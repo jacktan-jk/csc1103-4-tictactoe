@@ -159,7 +159,7 @@ docker load -i FILE_NAME.tar
 
 ## **[^1]PM-CSC1103 REQUIRMENTS**
 - [X] Improve Minimax memory usage
-- [ ] Implement ML Algorithm (80:20)
+- [X] Implement ML Algorithm (80:20)
     > [TIP]
     > Linear regression, Navie bayes, Neural network and Reinforcement learning
 - [ ] Plot the confusion matrix for the training and testing accuracy

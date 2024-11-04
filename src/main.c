@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
 
     // Create a button for the score display
     score_button = gtk_button_new_with_label("");
-    gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(GTK_BIN(score_button))), "<b>Player 1 (O): 0</b>     |     TIE: 0     |     Player 2 (X): 0     |    [2P]    "); 
+    gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(GTK_BIN(score_button))), "<b>Player 1 (O): 0</b>   |   TIE: 0   |   Player 2 (X): 0   |  [2P]  "); 
     g_signal_connect(score_button, "clicked", G_CALLBACK(on_btnScore_clicked), score_button);
     gtk_grid_attach(GTK_GRID(grid), score_button, 0, 3, 3, 1); // Attach score button below the grid
 
