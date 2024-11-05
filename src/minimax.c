@@ -209,11 +209,48 @@ int evaluate(int b[3][3])
     return 0; 
 } 
 
-bool isMovesLeft(int board[3][3]) 
-{ 
-    for (int i = 0; i<3; i++) 
-        for (int j = 0; j<3; j++) 
-            if (board[i][j] == EMPTY) 
-                return true; 
-    return false; 
-} 
+bool isMovesLeft(int board[3][3]) {
+    int result;
+    
+        __asm__ (
+        "xor %%rbx, %%rbx;"          // rbx = i = 0
+        "outer_loop:;"
+        "cmp $3, %%ebx;"             // if i >= 3, return false
+        "jge return_false;"
+
+        "xor %%rcx, %%rcx;"          // rcx = j = 0
+        "inner_loop:;"
+        "cmp $3, %%ecx;"             // if j >= 3, increment i
+        "jge increment_i;"
+
+        // Calculate board[i][j]
+        "mov %%rbx, %%rdx;"          // Copy i to rdx
+        "imul $12, %%rdx, %%rdx;"    // rdx = i * 12 (calculate row offset)
+        "add %1, %%rdx;"             // rdx = board + (i * 12), points to board[i]
+        "mov (%%rdx, %%rcx, 4), %%eax;" // Load board[i][j]
+
+        "test %%eax, %%eax;"         // Check if board[i][j] == 0
+        "jz return_true;"            // If board[i][j] == 0, return true
+
+        "inc %%rcx;"                 // Increment j
+        "jmp inner_loop;"
+
+        "increment_i:;"
+        "inc %%rbx;"                 // Increment i
+        "jmp outer_loop;"
+
+        "return_false:;"
+        "mov $0, %0;"                // Set result to 0 (false)
+        "jmp end;"
+
+        "return_true:;"
+        "mov $1, %0;"                // Set result to 1 (true)
+
+        "end:;"
+        : "=r" (result)              // Output operand
+        : "r" (board)                // Input operand
+        : "rbx", "rcx", "rdx", "rax" // Clobbered registers
+    );
+    
+    return result;
+}
