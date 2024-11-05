@@ -1,16 +1,28 @@
-FROM ubuntu:22.04
+# Use Ubuntu as the base image
+FROM --platform=linux/arm/v7 ubuntu:22.04
+
+# Enable ARM architecture
+RUN dpkg --add-architecture armhf
+
+# Update the package lists to include the new architecture
+RUN apt-get update
 
 # Install necessary packages, including development tools and libraries
 RUN apt-get update && apt-get install -y \
     gcc \
     make \
+    build-essential \
+    gcc-arm-linux-gnueabihf \
     pkg-config \
-    libgtk-3-dev \
+    libc6-dev-armhf-cross \
+    libgtk-3-dev:armhf \  
+    libc6-dev \
     libsystemd-dev \
     libjpeg-dev \
     libwebp-dev \
     libzstd-dev \
     x11-apps \
+    xorg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
