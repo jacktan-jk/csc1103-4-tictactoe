@@ -166,7 +166,7 @@ docker load -i FILE_NAME.tar
 - [ ] Calculate the number of times the computer wins as a gauge of difficulty level. 
  
 ## **[^2]COA-CSC1104 REQUIRMENTS**
-- [ ] Replace one function with assembly
+- [X] Replace one function with assembly
     > [TIP]
     > Use inline assembly code in C source file, or linking separate C and assembly object files.
 

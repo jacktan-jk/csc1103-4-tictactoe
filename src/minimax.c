@@ -3,12 +3,37 @@
 int depthCounter = 0;
 
 int max(int a, int b) {
-    return (a > b) ? a : b;
+    int result;
+    __asm__ (
+        "movl %1, %%eax;"      // Move 'a' to eax
+        "movl %2, %%ebx;"      // Move 'b' to ebx
+        "cmpl %%ebx, %%eax;"   // Compare eax and ebx
+        "jge 1f;"              // If a >= b, jump to label 1
+        "movl %%ebx, %%eax;"   // Otherwise, move ebx to eax
+        "1:;"
+        "movl %%eax, %0;"      // Move result back to C variable
+        : "=r" (result)        // Output
+        : "r" (a), "r" (b)     // Inputs
+        : "%eax", "%ebx"       // Clobbered registers
+    );
+    return result;
 }
 
-// Helper function to get the minimum of two integers
 int min(int a, int b) {
-    return (a < b) ? a : b;
+    int result;
+    __asm__ (
+        "movl %1, %%eax;"      // Move 'a' to eax
+        "movl %2, %%ebx;"      // Move 'b' to ebx
+        "cmpl %%ebx, %%eax;"   // Compare eax and ebx
+        "jle 1f;"              // If a <= b, jump to label 1
+        "movl %%ebx, %%eax;"   // Otherwise, move ebx to eax
+        "1:;"
+        "movl %%eax, %0;"      // Move result back to C variable
+        : "=r" (result)        // Output
+        : "r" (a), "r" (b)     // Inputs
+        : "%eax", "%ebx"       // Clobbered registers
+    );
+    return result;
 }
 
 struct Position findBestMove(int board[3][3]) 
