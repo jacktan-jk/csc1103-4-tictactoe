@@ -52,6 +52,7 @@ int readDataset(const char* filename, bool split) {
 int splitFile() {
     // get 80% and 20% respectively
     int eighty = len_train = 0.8 * DATA_SIZE;
+    len_test = 0.2 * DATA_SIZE;
 
     // write into training dataset
     FILE *trainFile;
