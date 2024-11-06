@@ -53,20 +53,30 @@ void calculateProbabilities(int dataset_size) {
     }
 }
 
-void predictOutcome(char grid[3][3]) {
+void predictOutcome(struct Dataset board) {
     double positiveProbability = positiveClassProbability;
     double negativeProbability = negativeClassProbability;
 
+    if(positiveProbability == 0){
+        positiveProbability = 1;
+    }
+
+    if (negativeProbability == 0){
+        negativeProbability = 1;
+    }
+
     for (int row = 0; row < 3; row++) {
         for (int col = 0; col < 3; col++) {
-            int moveIndex = assignMoveIndex(grid[row][col]);
-            
+            int moveIndex = assignMoveIndex(board.grid[row][col]);
             if (moveIndex != -1) {
+                //printf("\nPC_%d, NC_%d, pMC_%d, nMC_%d",positive_count,negative_count,positiveMoveCount[row][col][moveIndex],negativeMoveCount[row][col][moveIndex]);
                 if (positive_count > 0) {
-                    positiveProbability *= (double)positiveMoveCount[row][col][moveIndex] / positive_count;
+                    positiveProbability *= (double)positiveMoveCount[row][col][moveIndex] / (double)positive_count;
+                    //printf("\npP %lf", positiveProbability);
                 }
                 else if (negative_count > 0) {
-                    negativeProbability *= (double)negativeMoveCount[row][col][moveIndex] / negative_count;
+                    negativeProbability *= (double)negativeMoveCount[row][col][moveIndex] / (double)negative_count;
+                    //printf("nP %lf", negativeProbability);
                 }
             }
         }
@@ -197,29 +207,60 @@ void initData(struct Dataset *data, int len)
     }
 }
 
-// int main() {
+void rbset(){
+    int retVal = SUCCESS;
+    retVal = readDataset(RES_PATH""DATA_PATH, true);
+}
 
-//     int retVal = SUCCESS;
-//     retVal = readDataset(RES_PATH""DATA_PATH, true);
-//     struct Dataset *test = NULL; // Initialize pointer
-//     int len = getTrainingData(&test); // Pass address of pointer
-//     printf("%d\n", len);
-//     if (len > 0) { // Ensure len is valid before accessing test
-//         for (int i = 0; i < len; i++) {
-//             printf("%d ", i);
-//             for (int j = 0; j < 3; j++) {
-//                 for (int k = 0; k < 3; k++) {
-//                     printf("%c,", test[i].grid[j][k]);
-//                 }
-//             }
-//             printf("%s\n", test[i].outcome);
-//         }
-//     }
-//     initData(test, len);
+/*char[3][3] buildSet(struct Dataset *data){
 
-//     //Testing gameboard for getBestPosition
-//     char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
-//     struct Position pos = getBestPosition(gameBoard, 'o');
-//     printf("Returned POS: %d %d", pos.row, pos.col);
-//     return 0;
-// }
+    char[3][3] x;
+
+    for (int j = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            x[i][j] = data.grid[i][j]
+        }
+    }
+}*/
+
+int main() {
+
+    rbset();
+    struct Dataset *test = NULL; // Initialize pointer
+    int len = getTrainingData(&test); // Pass address of pointer
+    printf("%d\n", len);
+    if (len > 0) { // Ensure len is valid before accessing test
+        for (int i = 0; i < len; i++) {
+            printf("%d ", i);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    printf("%c,", test[i].grid[j][k]);
+                }
+            }
+            printf("%s\n", test[i].outcome);
+        }
+    }
+    initData(test, len);
+
+    struct Dataset *train = NULL;
+    int lenTest = getTestingData(&train);
+    printf("test_%d\n", lenTest);
+    if (lenTest > 0) { // Ensure len is valid before accessing test
+        for (int i = 0; i < lenTest; i++) {
+            printf("%d ", i);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    printf("%c,", train[i].grid[j][k]);
+                }
+            }
+            printf("%s\n", train[i].outcome);
+        }
+    }
+
+    predictOutcome(train[0]);
+    //Testing gameboard for getBestPosition
+    char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
+    struct Position pos = getBestPosition(gameBoard, 'o');
+    printf("Returned POS: %d %d", pos.row, pos.col);
+    return 0;
+}
