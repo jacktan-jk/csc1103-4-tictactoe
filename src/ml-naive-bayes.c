@@ -12,6 +12,8 @@ double negativeClassProbability;
 int positiveMoveCount[3][3][3];
 int negativeMoveCount[3][3][3];
 
+int cM[4] = {0,0,0,0};
+
 void calculateProbabilities(int dataset_size) {
     // Calculate class probability
     positiveClassProbability =  (double) positive_count/dataset_size;
@@ -53,7 +55,7 @@ void calculateProbabilities(int dataset_size) {
     }
 }
 
-void predictOutcome(struct Dataset board) {
+int predictOutcome(struct Dataset board) {
     double positiveProbability = positiveClassProbability;
     double negativeProbability = negativeClassProbability;
 
@@ -69,18 +71,29 @@ void predictOutcome(struct Dataset board) {
         for (int col = 0; col < 3; col++) {
             int moveIndex = assignMoveIndex(board.grid[row][col]);
             if (moveIndex != -1) {
-                //printf("\nPC_%d, NC_%d, pMC_%d, nMC_%d",positive_count,negative_count,positiveMoveCount[row][col][moveIndex],negativeMoveCount[row][col][moveIndex]);
+                printf("\nPC_%d, NC_%d, pMC_%d, nMC_%d",positive_count,negative_count,positiveMoveCount[row][col][moveIndex],negativeMoveCount[row][col][moveIndex]);
                 if (positive_count > 0) {
                     positiveProbability *= (double)positiveMoveCount[row][col][moveIndex] / (double)positive_count;
                     //printf("\npP %lf", positiveProbability);
                 }
-                else if (negative_count > 0) {
+
+                if (negative_count > 0) {
                     negativeProbability *= (double)negativeMoveCount[row][col][moveIndex] / (double)negative_count;
                     //printf("nP %lf", negativeProbability);
                 }
             }
         }
     }
+
+    if (positiveProbability == 1){
+        positiveProbability = 0;
+    }
+
+    if (negativeProbability == 1){
+        negativeProbability = 0;
+    }
+
+    printf("\nPC_%d, NC_%d",positive_count,negative_count);
     
     // Output probabilities for debugging
     printf("\nPositive Probability: %lf\n", positiveProbability);
@@ -88,12 +101,15 @@ void predictOutcome(struct Dataset board) {
 
     if (positiveProbability > negativeProbability) {
         printf("Predicted Outcome: Positive\n");
+        return 1;
     } 
     else if (positiveProbability == 0 || negativeProbability == 0) {
         printf("Unable to predict outcome based on available data.");
+        return -1;
     }
     else {
         printf("Predicted Outcome: Negative\n");
+        return 0;
     }
 }
 
@@ -212,16 +228,65 @@ void rbset(){
     retVal = readDataset(RES_PATH""DATA_PATH, true);
 }
 
-/*char[3][3] buildSet(struct Dataset *data){
+void cm_value(int actual, int predicted){
+    //printf("\nactual_%i, predicted_%i\n",actual,predicted);
 
-    char[3][3] x;
+    if(actual == -1 || predicted == -1){
+        printf("ERROR either value is -1");
+    }
 
-    for (int j = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            x[i][j] = data.grid[i][j]
+    if (actual == 1){
+        if (predicted == 1){
+            cM[0] += 1; //true positive
+        }else{
+            cM[1] += 1; //true negative
+        }
+    }else{
+        if (predicted == 1){
+            cM[2] += 1; //false positive
+        }else{
+            cM[3] += 1; //false negative
         }
     }
-}*/
+}
+
+void calc_confusion_matrix(){
+    int predicted;
+    int actual;
+    struct Dataset *train = NULL;
+    int lenTest = getTestingData(&train);
+    printf("test_%d\n", lenTest);
+    if (lenTest > 0) { // Ensure len is valid before accessing test
+        for (int i = 0; i < lenTest; i++) {
+            printf("%d ", i);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    //printf("%c,", train[i].grid[j][k]);
+
+                }
+            }
+            printf("%s\n", train[i].outcome);
+            if (strcmp(train[i].outcome,"positive") == 0){
+                actual = 1;
+            } else if (strcmp(train[i].outcome,"negative") == 0){
+                actual = 0;
+            } else {
+                actual = -1;
+            }
+            predicted = predictOutcome(train[i]);
+            printf("actual: %i, predicted: %i\n",actual,predicted);
+            cm_value(actual,predicted);
+        }
+    }
+
+    printf("\nTP: %d, TN: %d, FP: %d, FN: %d",cM[0],cM[1],cM[2],cM[3]);
+
+/*    printf("%s\n", train[190].outcome);
+    //cm_value(train[0].outcome, predicted);
+    printf("A_outcome %s\n",train[0].outcome);*/
+}
+
+
 
 int main() {
 
@@ -242,22 +307,8 @@ int main() {
     }
     initData(test, len);
 
-    struct Dataset *train = NULL;
-    int lenTest = getTestingData(&train);
-    printf("test_%d\n", lenTest);
-    if (lenTest > 0) { // Ensure len is valid before accessing test
-        for (int i = 0; i < lenTest; i++) {
-            printf("%d ", i);
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
-                    printf("%c,", train[i].grid[j][k]);
-                }
-            }
-            printf("%s\n", train[i].outcome);
-        }
-    }
+    calc_confusion_matrix();
 
-    predictOutcome(train[0]);
     //Testing gameboard for getBestPosition
     char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};
     struct Position pos = getBestPosition(gameBoard, 'o');

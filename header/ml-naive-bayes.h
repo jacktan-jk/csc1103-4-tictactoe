@@ -14,7 +14,7 @@ struct Position {
 };
 
 void calculateProbabilities(int dataset_size);
-void predictOutcome(char grid[3][3]);
+int predictOutcome(struct Dataset board);
 void initData(struct Dataset *data, int len);
 struct Position getBestPosition(char grid[3][3], char player);
 
