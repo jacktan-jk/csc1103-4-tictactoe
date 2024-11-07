@@ -15,39 +15,58 @@ struct Move findBestMove(int board[3][3])
 { 
     int bestVal = -1000; 
     struct Move bestMove; 
+
+    //(new line)
+    struct BoardState boardStates[MAX_BOARDS];
+    int boardCount = loadBoardStates(boardStates);
+
     bestMove.row = -1; 
     bestMove.col = -1; 
-  
-    // Traverse all cells, evaluate minimax function for 
-    // all empty cells. And return the cell with optimal 
-    // value.
-    for (int i = 0; i < 3; i++) 
-    { 
-        for (int j = 0; j < 3; j++) 
+
+    //(new line)
+    if (checkAndUpdateBestMove(board, &bestMove, boardStates, boardCount)) {
+        printf("Best move found in memory: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
+        
+    } else {
+        printf("Best move not found in memory");
+        // Traverse all cells, evaluate minimax function for 
+        // all empty cells. And return the cell with optimal 
+        // value.
+        for (int i = 0; i < 3; i++) 
         { 
-            // Check if cell is empty 
-            if (board[i][j] == EMPTY) 
+            for (int j = 0; j < 3; j++) 
             { 
-                // Make the move 
-                board[i][j] = BOT; 
-  
-                // compute evaluation function for this 
-                // move. 
-                int moveVal = minimax(board, 0, false);
-                PRINT_DEBUG("[DEBUG] Depth exited at -> %d\n", depthCounter);
-                // Undo the move 
-                board[i][j] = EMPTY; 
-  
-                // If the value of the current move is more than the best value, then update best move 
-                if (moveVal > bestVal) 
+                // Check if cell is empty 
+                if (board[i][j] == EMPTY) 
                 { 
-                    bestMove.row = i; 
-                    bestMove.col = j; 
-                    bestVal = moveVal; 
+                    // Make the move 
+                    board[i][j] = BOT; 
+
+                    // compute evaluation function for this 
+                    // move. 
+                    int moveVal = minimax(board, 0, false);
+                    PRINT_DEBUG("[DEBUG] Depth exited at -> %d\n", depthCounter);
+                    // Undo the move 
+                    board[i][j] = EMPTY; 
+
+                    // If the value of the current move is more than the best value, then update best move 
+                    if (moveVal > bestVal) 
+                    { 
+                        bestMove.row = i; 
+                        bestMove.col = j; 
+                        bestVal = moveVal; 
+                        printf("\n%d , %d\n\n", moveVal, bestVal);
+                    } 
                 } 
             } 
-        } 
+        }
+        writeBestMoveToFile(board, bestMove);
     }
+
+    //(new line)
+    printFileContents();
+    printf("\n");
+
     depthCounter=0;
     return bestMove; 
 }
@@ -192,3 +211,112 @@ bool isMovesLeft(int board[3][3])
                 return true; 
     return false; 
 } 
+
+//(new line)
+
+int loadBoardStates(struct BoardState boardStates[]) {
+    FILE *file = fopen(FILENAME, "r");
+    if (file == NULL) {
+        printf("File does not exist. Starting fresh.\n");
+        FILE *file = fopen(FILENAME, "w");
+        printf("Text file created.\n");
+        fclose(file);
+        return 0; // No boards loaded
+    }
+    printf("File exist. Checking.\n");
+    int count = 0;
+    char line[100];
+    while (fgets(line, sizeof(line), file) != NULL && count < MAX_BOARDS) {
+        // Parse the line
+        char *token = strtok(line, ",");
+        int index = 0;
+
+        // Read the board condition
+        while (token != NULL && index < 9) {
+            if (strcmp(token, "x") == 0) {
+                boardStates[count].board[index / 3][index % 3] = BOT;
+            } else if (strcmp(token, "o") == 0) {
+                boardStates[count].board[index / 3][index % 3] = PLAYER1;
+            } else {
+                boardStates[count].board[index / 3][index % 3] = EMPTY;
+            }
+            token = strtok(NULL, ",");
+            index++;
+        }
+
+        // Read the best move
+        if (token != NULL) {
+            boardStates[count].bestMove.row = atoi(token);
+            token = strtok(NULL, ",");
+            boardStates[count].bestMove.col = atoi(token);
+        }
+
+        count++;
+    }
+
+    fclose(file);
+    return count; // Return the number of boards loaded
+}
+
+bool checkAndUpdateBestMove(int board[3][3], struct Move *bestMove, struct BoardState boardStates[], int count) {
+    for (int i = 0; i < count; i++) {
+        if (memcmp(board, boardStates[i].board, sizeof(boardStates[i].board)) == 0) {
+            // Board matches, update the best move
+            *bestMove = boardStates[i].bestMove;
+            printf("\nfound match\n");
+            printf("\nBest Move = %d\n", bestMove);
+            return bestMove; // Board matches, return the best move
+            
+        }
+    }
+    printf("\nno match\n");
+    return false; // No matching board found
+}
+void writeBestMoveToFile(int board[3][3], struct Move bestMove) {
+    FILE *file = fopen(FILENAME, "a"); // Open the file for appending
+    if (file == NULL) {
+        printf("Error opening file for writing.\n");
+        return;
+    }
+
+    // Write the board state to the file
+    for (int j = 0; j < 3; j++) {
+        for (int k = 0; k < 3; k++) {
+            if (board[j][k] == PLAYER1) {
+                fprintf(file, "o,");
+                printf("o,");
+            } else if (board[j][k] == BOT) {
+                fprintf(file, "x,");
+                printf("x,");
+            } else {
+                fprintf(file, "b,");
+                printf("b,");
+            }
+        }
+    }
+    // Write the best move to the file
+    fprintf(file, "%d,%d\n", bestMove.row, bestMove.col);
+    if (fprintf(file, "%d,%d\n", bestMove.row, bestMove.col) < 0) {
+        printf("Error writing best move to file.\n");
+    }
+    printf("%d,%d\n", bestMove.row, bestMove.col);
+    printf("\nAttempting to write best move to file: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
+    printf("\nbestmove_row = %d, bestmove_col = %d\n", bestMove.row, bestMove.col);
+    printf("New best move written to file.\n");
+    fclose(file);
+}
+
+void printFileContents() {
+    FILE *file = fopen(FILENAME, "r");
+    if (file == NULL) {
+        printf("File does not exist or cannot be opened.\n");
+        return;
+    }
+
+    printf("Contents of %s:\n", FILENAME);
+    char line[100];
+    while (fgets(line, sizeof(line), file) != NULL) {
+        printf("%s", line);
+    }
+    fclose(file);
+}
