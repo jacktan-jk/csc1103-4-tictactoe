@@ -159,14 +159,14 @@ docker load -i FILE_NAME.tar
 
 ## **[^1]PM-CSC1103 REQUIRMENTS**
 - [X] Improve Minimax memory usage
-- [ ] Implement ML Algorithm (80:20)
+- [X] Implement ML Algorithm (80:20)
     > [TIP]
     > Linear regression, Navie bayes, Neural network and Reinforcement learning
 - [ ] Plot the confusion matrix for the training and testing accuracy
 - [ ] Calculate the number of times the computer wins as a gauge of difficulty level. 
  
 ## **[^2]COA-CSC1104 REQUIRMENTS**
-- [ ] Replace one function with assembly
+- [X] Replace one function with assembly
     > [TIP]
     > Use inline assembly code in C source file, or linking separate C and assembly object files.
 

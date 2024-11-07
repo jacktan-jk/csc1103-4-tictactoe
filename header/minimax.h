@@ -6,12 +6,6 @@
 #define FILE_BESTMOV "resources/bestmove.txt"
 #define MAX_BOARDS 10000 // Maximum number of boards we can store in memory
 
-// Define the Position struct
-struct Position {
-    int row;
-    int col;
-};
-
 // Define the BoardState struct
 struct BoardState {
     int board[3][3];
