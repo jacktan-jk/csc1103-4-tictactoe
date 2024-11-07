@@ -11,24 +11,22 @@ int min(int a, int b) {
     return (a < b) ? a : b;
 }
 
-struct Move findBestMove(int board[3][3]) 
+struct Position findBestMove(int board[3][3]) 
 { 
     int bestVal = -1000; 
-    struct Move bestMove; 
+    struct Position bestMove; 
 
-    //(new line)
     struct BoardState boardStates[MAX_BOARDS];
     int boardCount = loadBoardStates(boardStates);
 
-    bestMove.row = -1; 
-    bestMove.col = -1; 
+    bestMove.row = ERROR; 
+    bestMove.col = ERROR; 
 
-    //(new line)
     if (checkAndUpdateBestMove(board, &bestMove, boardStates, boardCount)) {
-        printf("Best move found in memory: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
+        PRINT_DEBUG("Best move found in memory: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
         
     } else {
-        printf("Best move not found in memory");
+        PRINT_DEBUG("Best move not found in memory\n");
         // Traverse all cells, evaluate minimax function for 
         // all empty cells. And return the cell with optimal 
         // value.
@@ -55,7 +53,6 @@ struct Move findBestMove(int board[3][3])
                         bestMove.row = i; 
                         bestMove.col = j; 
                         bestVal = moveVal; 
-                        printf("\n%d , %d\n\n", moveVal, bestVal);
                     } 
                 } 
             } 
@@ -63,10 +60,7 @@ struct Move findBestMove(int board[3][3])
         writeBestMoveToFile(board, bestMove);
     }
 
-    //(new line)
-    printFileContents();
-    printf("\n");
-
+    //printFileContents();
     depthCounter=0;
     return bestMove; 
 }
@@ -212,18 +206,16 @@ bool isMovesLeft(int board[3][3])
     return false; 
 } 
 
-//(new line)
-
 int loadBoardStates(struct BoardState boardStates[]) {
-    FILE *file = fopen(FILENAME, "r");
+    FILE *file = fopen(FILE_BESTMOV, "r");
     if (file == NULL) {
-        printf("File does not exist. Starting fresh.\n");
-        FILE *file = fopen(FILENAME, "w");
-        printf("Text file created.\n");
+        PRINT_DEBUG("%s <- File does not exist. Creating new file.\n", FILE_BESTMOV);
+        FILE *file = fopen(FILE_BESTMOV, "w");
+        PRINT_DEBUG("Text file created.\n");
         fclose(file);
         return 0; // No boards loaded
     }
-    printf("File exist. Checking.\n");
+    PRINT_DEBUG("File exist. Checking.\n");
     int count = 0;
     char line[100];
     while (fgets(line, sizeof(line), file) != NULL && count < MAX_BOARDS) {
@@ -250,7 +242,6 @@ int loadBoardStates(struct BoardState boardStates[]) {
             token = strtok(NULL, ",");
             boardStates[count].bestMove.col = atoi(token);
         }
-
         count++;
     }
 
@@ -258,24 +249,24 @@ int loadBoardStates(struct BoardState boardStates[]) {
     return count; // Return the number of boards loaded
 }
 
-bool checkAndUpdateBestMove(int board[3][3], struct Move *bestMove, struct BoardState boardStates[], int count) {
+bool checkAndUpdateBestMove(int board[3][3], struct Position *bestMove, struct BoardState boardStates[], int count) {
     for (int i = 0; i < count; i++) {
         if (memcmp(board, boardStates[i].board, sizeof(boardStates[i].board)) == 0) {
             // Board matches, update the best move
             *bestMove = boardStates[i].bestMove;
-            printf("\nfound match\n");
-            printf("\nBest Move = %d\n", bestMove);
+            PRINT_DEBUG("Found position in lookup table\n");
+            PRINT_DEBUG("Best Move = R:%d C:%d\n", bestMove->row, bestMove->col);
             return bestMove; // Board matches, return the best move
             
         }
     }
-    printf("\nno match\n");
+    PRINT_DEBUG("Position not found in lookup table\n");
     return false; // No matching board found
 }
-void writeBestMoveToFile(int board[3][3], struct Move bestMove) {
-    FILE *file = fopen(FILENAME, "a"); // Open the file for appending
+void writeBestMoveToFile(int board[3][3], struct Position bestMove) {
+    FILE *file = fopen(FILE_BESTMOV, "a"); // Open the file for appending
     if (file == NULL) {
-        printf("Error opening file for writing.\n");
+        PRINT_DEBUG("Error opening file for writing. -> %s\n", FILE_BESTMOV);
         return;
     }
 
@@ -284,39 +275,40 @@ void writeBestMoveToFile(int board[3][3], struct Move bestMove) {
         for (int k = 0; k < 3; k++) {
             if (board[j][k] == PLAYER1) {
                 fprintf(file, "o,");
-                printf("o,");
+                PRINT_DEBUG("o,");
             } else if (board[j][k] == BOT) {
                 fprintf(file, "x,");
-                printf("x,");
+                PRINT_DEBUG("x,");
             } else {
                 fprintf(file, "b,");
-                printf("b,");
+                PRINT_DEBUG("b,");
             }
         }
     }
     // Write the best move to the file
     fprintf(file, "%d,%d\n", bestMove.row, bestMove.col);
     if (fprintf(file, "%d,%d\n", bestMove.row, bestMove.col) < 0) {
-        printf("Error writing best move to file.\n");
+        PRINT_DEBUG("Error writing best move to file. -> %s\n", FILE_BESTMOV);
     }
-    printf("%d,%d\n", bestMove.row, bestMove.col);
-    printf("\nAttempting to write best move to file: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
-    printf("\nbestmove_row = %d, bestmove_col = %d\n", bestMove.row, bestMove.col);
-    printf("New best move written to file.\n");
+    PRINT_DEBUG("\nAttempting to write best move to file: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
+    PRINT_DEBUG("New best move written to file.\n\n");
     fclose(file);
 }
 
 void printFileContents() {
-    FILE *file = fopen(FILENAME, "r");
-    if (file == NULL) {
-        printf("File does not exist or cannot be opened.\n");
-        return;
-    }
+    if(DEBUG)
+    {
+        FILE *file = fopen(FILE_BESTMOV, "r");
+        if (file == NULL) {
+            PRINT_DEBUG("File does not exist or cannot be opened. -> %s\n", FILE_BESTMOV);
+            return;
+        }
 
-    printf("Contents of %s:\n", FILENAME);
-    char line[100];
-    while (fgets(line, sizeof(line), file) != NULL) {
-        printf("%s", line);
+        PRINT_DEBUG("Contents of %s:\n", FILE_BESTMOV);
+        char line[100];
+        while (fgets(line, sizeof(line), file) != NULL) {
+            PRINT_DEBUG("%s", line);
+        }
+        fclose(file);
     }
-    fclose(file);
 }

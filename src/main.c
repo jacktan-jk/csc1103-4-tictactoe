@@ -88,7 +88,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
             return;
         }
 
-        struct Move botMove;
+        struct Position botMove;
         if (rand() % 100 < 70)
         {
             botMove = findBestMove(iBoard); 
