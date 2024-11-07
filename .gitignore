@@ -7,3 +7,4 @@ ldd_output.txt
 *.code-workspace
 resources/testing-*
 resources/training-*
+*.txt
