@@ -1,4 +1,5 @@
 #include <ml-naive-bayes.h>
+#include <math.h>
 
 // Counters for positive and negative outcomes
 int positive_count = 0;
@@ -13,6 +14,11 @@ int positiveMoveCount[3][3][3];
 int negativeMoveCount[3][3][3];
 
 int cM[4] = {0,0,0,0};
+int test_PredictedErrors = 0;
+int train_PredictedErrors = 0;
+double probabilityErrors;
+int predicted;
+int actual;
 
 void calculateProbabilities(int dataset_size) {
     // Calculate class probability
@@ -71,7 +77,7 @@ int predictOutcome(struct Dataset board) {
         for (int col = 0; col < 3; col++) {
             int moveIndex = assignMoveIndex(board.grid[row][col]);
             if (moveIndex != -1) {
-                printf("\nPC_%d, NC_%d, pMC_%d, nMC_%d",positive_count,negative_count,positiveMoveCount[row][col][moveIndex],negativeMoveCount[row][col][moveIndex]);
+                //printf("\nPC_%d, NC_%d, pMC_%d, nMC_%d",positive_count,negative_count,positiveMoveCount[row][col][moveIndex],negativeMoveCount[row][col][moveIndex]);
                 if (positive_count > 0) {
                     positiveProbability *= (double)positiveMoveCount[row][col][moveIndex] / (double)positive_count;
                     //printf("\npP %lf", positiveProbability);
@@ -93,22 +99,22 @@ int predictOutcome(struct Dataset board) {
         negativeProbability = 0;
     }
 
-    printf("\nPC_%d, NC_%d",positive_count,negative_count);
+    //printf("\nPC_%d, NC_%d",positive_count,negative_count);
     
     // Output probabilities for debugging
-    printf("\nPositive Probability: %lf\n", positiveProbability);
-    printf("Negative Probability: %lf\n", negativeProbability);
+    //printf("\nPositive Probability: %lf\n", positiveProbability);
+    //printf("Negative Probability: %lf\n", negativeProbability);
 
     if (positiveProbability > negativeProbability) {
-        printf("Predicted Outcome: Positive\n");
+        //printf("Predicted Outcome: Positive\n");
         return 1;
     } 
     else if (positiveProbability == 0 || negativeProbability == 0) {
-        printf("Unable to predict outcome based on available data.");
+        //printf("Unable to predict outcome based on available data.");
         return -1;
     }
     else {
-        printf("Predicted Outcome: Negative\n");
+        //printf("Predicted Outcome: Negative\n");
         return 0;
     }
 }
@@ -250,22 +256,22 @@ void cm_value(int actual, int predicted){
     }
 }
 
+
+
 void calc_confusion_matrix(){
-    int predicted;
-    int actual;
     struct Dataset *train = NULL;
     int lenTest = getTestingData(&train);
-    printf("test_%d\n", lenTest);
+    //printf("test_%d\n", lenTest);
     if (lenTest > 0) { // Ensure len is valid before accessing test
         for (int i = 0; i < lenTest; i++) {
-            printf("%d ", i);
+            /*printf("%d ", i);
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
-                    //printf("%c,", train[i].grid[j][k]);
+                    printf("%c,", train[i].grid[j][k]);
 
                 }
-            }
-            printf("%s\n", train[i].outcome);
+            }*/
+            //printf("%s\n", train[i].outcome);
             if (strcmp(train[i].outcome,"positive") == 0){
                 actual = 1;
             } else if (strcmp(train[i].outcome,"negative") == 0){
@@ -274,10 +280,21 @@ void calc_confusion_matrix(){
                 actual = -1;
             }
             predicted = predictOutcome(train[i]);
-            printf("actual: %i, predicted: %i\n",actual,predicted);
+            //printf("actual: %i, predicted: %i\n",actual,predicted);
+
+            //probability of error calculation
+            if (actual != predicted){
+                test_PredictedErrors += 1;
+            }
+
             cm_value(actual,predicted);
         }
     }
+
+    double i = TESTING_DATA_SIZE; //assign macro to double as you cant cast macros
+    probabilityErrors = (1 / i)*test_PredictedErrors; //round to 2dp? not in spec though
+
+    printf("\nFor testing dataset: %d errors, %lf probability of error.", test_PredictedErrors,probabilityErrors);
 
     printf("\nTP: %d, TN: %d, FP: %d, FN: %d",cM[0],cM[1],cM[2],cM[3]);
 
@@ -286,14 +303,43 @@ void calc_confusion_matrix(){
     printf("A_outcome %s\n",train[0].outcome);*/
 }
 
+void calcTrainErrors(){
+    struct Dataset *test = NULL; // Initialize pointer
+    int len = getTrainingData(&test); // Pass address of pointer
+    printf("%d\n", len);
+    if (len > 0) { // Ensure len is valid before accessing test
+        for (int i = 0; i < len; i++) {
+            predicted = predictOutcome(test[i]);
 
+            if (strcmp(test[i].outcome,"positive") == 0){
+                actual = 1;
+            } else if (strcmp(test[i].outcome,"negative") == 0){
+                actual = 0;
+            } else {
+                actual = -1;
+            }
+
+            if (actual != predicted){
+                train_PredictedErrors += 1;
+            }
+
+            //printf("%s\n", test[i].outcome);
+        }
+    }
+
+    double i = TRAINING_DATA_SIZE; //assign macro to double var as you cant cast macros
+    probabilityErrors = (1 / i)*train_PredictedErrors; //round to 2dp? not in spec though
+
+    printf("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors,probabilityErrors);
+
+}
 
 int main() {
 
     rbset();
     struct Dataset *test = NULL; // Initialize pointer
     int len = getTrainingData(&test); // Pass address of pointer
-    printf("%d\n", len);
+    //printf("%d\n", len);
     if (len > 0) { // Ensure len is valid before accessing test
         for (int i = 0; i < len; i++) {
             printf("%d ", i);
@@ -307,6 +353,7 @@ int main() {
     }
     initData(test, len);
 
+    calcTrainErrors();
     calc_confusion_matrix();
 
     //Testing gameboard for getBestPosition
