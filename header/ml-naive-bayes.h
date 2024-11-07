@@ -5,7 +5,7 @@
 #include <importData.h>
 
 #define TRAINING_DATA_SIZE 0.8 * DATA_SIZE
-#define TESTING_DATA_SIZE  0.2 * DATA_SIZE
+#define TESTING_DATA_SIZE 0.2 * DATA_SIZE
 #define CLASSES 2
 
 int assignMoveIndex(char move);
