@@ -2,6 +2,7 @@
 
 #include <macros.h>
 #include <minimax.h>
+#include <ml-naive-bayes.h>
 
 /*===============================================================================================
 GLOBAL DECLARATION
@@ -18,12 +19,13 @@ struct stPlayerMode
 {
     char txt[2];
     int mode;
-} ;
+};
 #endif // MAIN_H  // End of include guard
 
+int doBOTmove();
 int chkPlayerWin();
 void clearBtn();
 void updateScoreBtn(gpointer data);
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data);
 void on_btnScore_clicked(GtkWidget *widget, gpointer data);
-void blinkWin();
+void showWin();

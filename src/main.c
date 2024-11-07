@@ -8,10 +8,13 @@ GLOBAL DECLARATION
 int iPlayer1_score = 0;
 int iPlayer2_score = 0;
 int iTie_score = 0;
-bool isPlayer1Turn = true;
 int iBoard[3][3];
 int iGameState = PLAY;
 int iWinPos[3][3];
+
+bool isPlayer1Turn = true;
+bool isMLAvail = true;
+
 struct stPlayerMode playerMode = {"2P", MODE_2P};
 
 GtkWidget *btnGrid[3][3];
@@ -42,11 +45,11 @@ void updateScoreBtn(gpointer data)
     // Update the score display
     char score_text[100];
     if (isPlayer1Turn == true) {
-        snprintf(score_text, sizeof(score_text),"<b>Player 1 (O): %d</b>     |     TIE: %d     |     Player 2 (X): %d     |    [%s]    ", iPlayer1_score, iTie_score, iPlayer2_score, playerMode.txt);
+        snprintf(score_text, sizeof(score_text),"<b>Player 1 (O): %d</b>   |   TIE: %d   |   Player 2 (X): %d   |  [%s]  ", iPlayer1_score, iTie_score, iPlayer2_score, playerMode.txt);
     } 
     else 
     {
-        snprintf(score_text, sizeof(score_text),"Player 1 (O): %d     |     TIE: %d     |     <b>Player 2 (X): %d</b>     |    [%s]    ", iPlayer1_score, iTie_score, iPlayer2_score, playerMode.txt);
+        snprintf(score_text, sizeof(score_text),"Player 1 (O): %d   |   TIE: %d   |   <b>Player 2 (X): %d</b>   |  [%s]  ", iPlayer1_score, iTie_score, iPlayer2_score, playerMode.txt);
     }
     gtk_button_set_label(GTK_BUTTON(data), score_text); // Update the score button label
     gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(GTK_BIN(data))), score_text);
@@ -83,47 +86,18 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         isPlayer1Turn = !isPlayer1Turn;
         updateScoreBtn(data);
 
-        if(playerMode.mode != MODE_BOT)
+        if(playerMode.mode == MODE_2P)
         {
             return;
         }
 
-        struct Position botMove;
-        if (rand() % 100 < 70)
-        {
-            botMove = findBestMove(iBoard); 
-            iBoard[botMove.row][botMove.col] = BOT;
-            gtk_button_set_label(GTK_BUTTON(btnGrid[botMove.row][botMove.col]), "X");
-        }
-        else
-        {
-            int randRow = rand() % 3;
-            int randCol = rand() % 3;
-            bool bIsDone = false;
-
-            while(!bIsDone)
-            {
-                if(iBoard[randRow][randCol] == EMPTY)
-                {   
-                    iBoard[randRow][randCol] = BOT;
-                    PRINT_DEBUG("Random Move -> R:%d C:%d\n", randRow, randCol);
-                    gtk_button_set_label(GTK_BUTTON(btnGrid[randRow][randCol]), "X"); 
-                    bIsDone=!bIsDone;               
-                }
-                else
-                {
-                    randRow = rand() % 3;
-                    randCol = rand() % 3;
-                }
-            }
-        }
-
+        doBOTmove();
         retVal = chkPlayerWin();
     }
-
+    
     if(retVal == WIN)
     {
-        blinkWin();
+        showWin();
         isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
         iGameState = WIN;
     }
@@ -134,7 +108,7 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         iGameState = TIE;
     }
 
-    if(playerMode.mode == MODE_BOT)
+    if(playerMode.mode != MODE_2P)
     {
         isPlayer1Turn = !isPlayer1Turn;
     }
@@ -144,14 +118,30 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
 
 void on_btnScore_clicked(GtkWidget *widget, gpointer data) 
 {
-    playerMode.mode = !playerMode.mode;
-    strncpy(playerMode.txt, playerMode.mode == MODE_2P ? "2P" : "1P", sizeof(playerMode.txt));
+    playerMode.mode = (playerMode.mode > 1 ? MODE_2P : ++playerMode.mode);
+    switch(playerMode.mode)
+    {
+        case MODE_MM:
+            strncpy(playerMode.txt, "MM", sizeof(playerMode.txt));
+            break;
+        case MODE_ML:
+            if(isMLAvail)
+            {
+                strncpy(playerMode.txt, "ML", sizeof(playerMode.txt));
+                break;
+            }
+
+        default:
+            playerMode.mode=MODE_2P;
+            strncpy(playerMode.txt, "2P", sizeof(playerMode.txt));
+    }
+    PRINT_DEBUG("playerMode: %d\n",playerMode.mode);
     isPlayer1Turn = true;
     updateScoreBtn(data);
     clearBtn();
 }
 
-void blinkWin()
+void showWin()
 {
     for(int i=0; i<3; i++)
     {
@@ -173,6 +163,50 @@ END OF GUI FUNCTIONS
 /*===============================================================================================
 LOGIC FUNCTIONS
 ===============================================================================================*/
+int doBOTmove()
+{
+    struct Position botMove;
+    if(playerMode.mode == MODE_MM)
+    {
+        if (rand() % 100 < 70)
+        {
+            botMove = findBestMove(iBoard); 
+        }
+        else
+        {
+            int randRow = rand() % 3;
+            int randCol = rand() % 3;
+            bool bIsDone = false;
+
+            while(!bIsDone)
+            {
+                if(iBoard[randRow][randCol] == EMPTY)
+                {   
+                    PRINT_DEBUG("Random Move -> R:%d C:%d\n", randRow, randCol);
+                    botMove.row = randRow;
+                    botMove.col = randCol;
+                    bIsDone=!bIsDone;               
+                }
+                else
+                {
+                    randRow = rand() % 3;
+                    randCol = rand() % 3;
+                }
+            }
+        }
+    }
+    else //ML mode, sets ML as default if for some reason playermode.mode has expected value.
+    {
+        if(isMLAvail)
+        {
+            botMove = getBestPosition(iBoard, 'x');
+        }
+    }
+
+    iBoard[botMove.row][botMove.col] = BOT;
+    gtk_button_set_label(GTK_BUTTON(btnGrid[botMove.row][botMove.col]), "X");
+    return SUCCESS;
+}
 
 int chkPlayerWin()
 {
@@ -185,7 +219,7 @@ int chkPlayerWin()
 
     if (iBoard[0][2] == iBoard[1][1] && iBoard[1][1] == iBoard[2][0] && iBoard[0][2] != 0) 
     {
-        iWinPos[0][2] = iWinPos[1][1] = iWinPos[0][2] = WIN;
+        iWinPos[0][2] = iWinPos[1][1] = iWinPos[2][0] = WIN;
         return WIN;
     }
 
@@ -232,7 +266,14 @@ MAIN
 
 int main(int argc, char *argv[]) 
 {
+    int retVal = SUCCESS;
     srand(time(NULL));
+    
+    retVal = initData();
+    if(retVal != SUCCESS) //disable ML
+    {
+        isMLAvail = false;
+    }
 
     GtkWidget *window;
     GtkWidget *grid;
@@ -271,7 +312,7 @@ int main(int argc, char *argv[])
 
     // Create a button for the score display
     score_button = gtk_button_new_with_label("");
-    gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(GTK_BIN(score_button))), "<b>Player 1 (O): 0</b>     |     TIE: 0     |     Player 2 (X): 0     |    [2P]    "); 
+    gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(GTK_BIN(score_button))), "<b>Player 1 (O): 0</b>   |   TIE: 0   |   Player 2 (X): 0   |  [2P]  "); 
     g_signal_connect(score_button, "clicked", G_CALLBACK(on_btnScore_clicked), score_button);
     gtk_grid_attach(GTK_GRID(grid), score_button, 0, 3, 3, 1); // Attach score button below the grid
 
@@ -310,7 +351,7 @@ int main(int argc, char *argv[])
 
     // Start the GTK main loop
     gtk_main();
-
+    
     return SUCCESS;
 }
 /*

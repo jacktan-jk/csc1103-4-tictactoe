@@ -1,6 +1,7 @@
 #!/bin/sh
-rm -f tictactoe.exe
-gcc -Iheader `pkg-config --cflags --static gtk+-3.0` -o tictactoe src/main.c src/minimax.c `pkg-config --libs --static gtk+-3.0`
+rm -f tictactoe.exe 2>/dev/null
+
+gcc -Iheader `pkg-config --cflags --static gtk+-3.0` -o tictactoe src/main.c src/minimax.c src/importData.c src/ml-naive-bayes.c `pkg-config --libs --static gtk+-3.0`
 
 if [ $? -eq 0 ]; then
 	OS=$(uname)

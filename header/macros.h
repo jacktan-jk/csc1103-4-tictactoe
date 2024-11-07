@@ -1,3 +1,6 @@
+#ifndef MACROS_H
+#define MACROS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -10,18 +13,30 @@
 
 #define SUCCESS 0
 #define ERROR -1
+#define BAD_PARAM -5
 
 #define MODE_2P 0
-#define MODE_BOT 1
+#define MODE_MM 1
+#define MODE_ML 2
 
 #define EMPTY 0
 #define PLAYER1 1
 #define BOT 2       //this is also used for player 2
 
-#define DEBUG 1
+#define DATA_SIZE 958
+#define CLASSES 2
+
+#define DEBUG 1 //set 0 to disable debug msg
 
 #if DEBUG
 #define PRINT_DEBUG(...) printf(__VA_ARGS__);
 #else
 #define PRINT_DEBUG(...)
 #endif
+
+struct Position {
+    int row;
+    int col;
+};
+
+#endif // MACROS_H

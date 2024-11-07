@@ -25,8 +25,9 @@ while getopts ":s" opt; do
     esac
 done
 
-rm docker_tictactoe.tar
-rm tictactoe.exe
+rm docker_tictactoe.tar 2>/dev/null
+rm tictactoe.exe 2>/dev/null
+
 dos2unix compile.sh
 
 # Build the Docker image

@@ -3,12 +3,37 @@
 int depthCounter = 0;
 
 int max(int a, int b) {
-    return (a > b) ? a : b;
+    int result;
+    __asm__ (
+        "movl %1, %%eax;"      // Move 'a' to eax
+        "movl %2, %%ebx;"      // Move 'b' to ebx
+        "cmpl %%ebx, %%eax;"   // Compare eax and ebx
+        "jge 1f;"              // If a >= b, jump to label 1
+        "movl %%ebx, %%eax;"   // Otherwise, move ebx to eax
+        "1:;"
+        "movl %%eax, %0;"      // Move result back to C variable
+        : "=r" (result)        // Output
+        : "r" (a), "r" (b)     // Inputs
+        : "%eax", "%ebx"       // Clobbered registers
+    );
+    return result;
 }
 
-// Helper function to get the minimum of two integers
 int min(int a, int b) {
-    return (a < b) ? a : b;
+    int result;
+    __asm__ (
+        "movl %1, %%eax;"      // Move 'a' to eax
+        "movl %2, %%ebx;"      // Move 'b' to ebx
+        "cmpl %%ebx, %%eax;"   // Compare eax and ebx
+        "jle 1f;"              // If a <= b, jump to label 1
+        "movl %%ebx, %%eax;"   // Otherwise, move ebx to eax
+        "1:;"
+        "movl %%eax, %0;"      // Move result back to C variable
+        : "=r" (result)        // Output
+        : "r" (a), "r" (b)     // Inputs
+        : "%eax", "%ebx"       // Clobbered registers
+    );
+    return result;
 }
 
 struct Position findBestMove(int board[3][3]) 
@@ -26,7 +51,6 @@ struct Position findBestMove(int board[3][3])
         PRINT_DEBUG("Best move found in memory: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
         
     } else {
-        PRINT_DEBUG("Best move not found in memory\n");
         // Traverse all cells, evaluate minimax function for 
         // all empty cells. And return the cell with optimal 
         // value.
@@ -197,14 +221,51 @@ int evaluate(int b[3][3])
     return 0; 
 } 
 
-bool isMovesLeft(int board[3][3]) 
-{ 
-    for (int i = 0; i<3; i++) 
-        for (int j = 0; j<3; j++) 
-            if (board[i][j] == EMPTY) 
-                return true; 
-    return false; 
-} 
+bool isMovesLeft(int board[3][3]) {
+    int result;
+    
+        __asm__ (
+        "xor %%rbx, %%rbx;"          // rbx = i = 0
+        "outer_loop:;"
+        "cmp $3, %%ebx;"             // if i >= 3, return false
+        "jge return_false;"
+
+        "xor %%rcx, %%rcx;"          // rcx = j = 0
+        "inner_loop:;"
+        "cmp $3, %%ecx;"             // if j >= 3, increment i
+        "jge increment_i;"
+
+        // Calculate board[i][j]
+        "mov %%rbx, %%rdx;"          // Copy i to rdx
+        "imul $12, %%rdx, %%rdx;"    // rdx = i * 12 (calculate row offset)
+        "add %1, %%rdx;"             // rdx = board + (i * 12), points to board[i]
+        "mov (%%rdx, %%rcx, 4), %%eax;" // Load board[i][j]
+
+        "test %%eax, %%eax;"         // Check if board[i][j] == 0
+        "jz return_true;"            // If board[i][j] == 0, return true
+
+        "inc %%rcx;"                 // Increment j
+        "jmp inner_loop;"
+
+        "increment_i:;"
+        "inc %%rbx;"                 // Increment i
+        "jmp outer_loop;"
+
+        "return_false:;"
+        "mov $0, %0;"                // Set result to 0 (false)
+        "jmp end;"
+
+        "return_true:;"
+        "mov $1, %0;"                // Set result to 1 (true)
+
+        "end:;"
+        : "=r" (result)              // Output operand
+        : "r" (board)                // Input operand
+        : "rbx", "rcx", "rdx", "rax" // Clobbered registers
+    );
+    
+    return result;
+}
 
 int loadBoardStates(struct BoardState boardStates[]) {
     FILE *file = fopen(FILE_BESTMOV, "r");
