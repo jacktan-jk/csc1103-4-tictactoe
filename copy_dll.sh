@@ -1,5 +1,7 @@
 #!/bin/bash
+target_exe=$1
 
+ldd $target_exe > ldd_output.txt
 # Directory to copy the DLLs to
 target_dir="./dlls"
 
@@ -17,3 +19,5 @@ while IFS= read -r line; do
         cp "$dll_path" "$target_dir"
     fi
 done < ldd_output.txt
+
+rm ldd_output.txt
