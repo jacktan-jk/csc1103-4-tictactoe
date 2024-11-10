@@ -85,7 +85,7 @@ int predictOutcome(struct Dataset board) {
             int moveIndex = assignMoveIndex(board.grid[row][col]);
             if (moveIndex != -1)
             {
-                PRINT_DEBUG("\nPC_%d, NC_%d, pMC_%d, nMC_%d",positive_count,negative_count,positiveMoveCount[row][col][moveIndex],negativeMoveCount[row][col][moveIndex]);
+                //PRINT_DEBUG("\nPC_%d, NC_%d, pMC_%d, nMC_%d",positive_count,negative_count,positiveMoveCount[row][col][moveIndex],negativeMoveCount[row][col][moveIndex]);
                 if (positive_count > 0)
                 {
                     positiveProbability *= (double)positiveMoveCount[row][col][moveIndex] / (double)positive_count;
@@ -110,18 +110,18 @@ int predictOutcome(struct Dataset board) {
     }
 
     // Output probabilities for debugging
-    PRINT_DEBUG("\nPositive: %lf, Negative: %lf Probability: \n", positiveProbability, negativeProbability);
+    //PRINT_DEBUG("\nPositive: %lf, Negative: %lf Probability: \n", positiveProbability, negativeProbability);
 
     if (positiveProbability > negativeProbability) {
-        PRINT_DEBUG("Predicted Outcome: Positive\n");
+        //PRINT_DEBUG("Predicted Outcome: Positive\n");
         return 1;
     } 
     else if (positiveProbability == 0 || negativeProbability == 0) {
-        PRINT_DEBUG("Unable to predict outcome based on available data.");
+        //PRINT_DEBUG("Unable to predict outcome based on available data.");
         return -1;
     }
     else {
-        PRINT_DEBUG("Predicted Outcome: Negative\n");
+        //PRINT_DEBUG("Predicted Outcome: Negative\n");
         return 0;
     }
 }
@@ -238,7 +238,7 @@ void initData(struct Dataset *data, int len)
 
 void assignCMValue(int actual, int predicted)
 {
-    PRINT_DEBUG("\nactual_%i, predicted_%i\n",actual,predicted);
+    //PRINT_DEBUG("\nactual_%i, predicted_%i\n",actual,predicted);
 
     if(actual == -1 || predicted == -1)
     {
@@ -273,7 +273,7 @@ void calcConfusionMatrix()
 {
     struct Dataset *test = NULL;
     int len = getTestingData(&test);
-    PRINT_DEBUG("Test_Data length: %d\n", lenTest);
+    //PRINT_DEBUG("Test_Data length: %d\n", len);
     if (len > 0) { // Ensure len is valid before accessing test
         for (int i = 0; i < len; i++)
         {
@@ -284,8 +284,8 @@ void calcConfusionMatrix()
 
                 }
             }*/
-            actual = getTruthValue(train[i].outcome);
-            predicted = predictOutcome(train[i]);
+            actual = getTruthValue(test[i].outcome);
+            predicted = predictOutcome(test[i]);
 
             //probability of error calculation
             if (actual != predicted)
@@ -338,7 +338,7 @@ void calcTrainErrors()
         {
             predicted = predictOutcome(test[i]);
             actual = getTruthValue(test[i].outcome);
-            PRINT_DEBUG("Actual dataset outcome: %s, Dataset outcome: %d, Predicted outcome: %d\n", test[i].outcome, actual, predicted);
+            //PRINT_DEBUG("Actual dataset outcome: %s, Dataset outcome: %d, Predicted outcome: %d\n", test[i].outcome, actual, predicted);
             if (actual != predicted)
             {
                 train_PredictedErrors += 1;
@@ -370,10 +370,10 @@ void debugDataset(struct Dataset *data, int len)
             {
                 for (int k = 0; k < 3; k++)
                 {
-                    printf("%c,", data.grid[j][k]);
+                    printf("%c,", data -> grid[j][k]);
                 }
             }
-            printf("%s\n", data.outcome);
+            printf("%s\n", data -> outcome);
         }
     }
 }
@@ -391,7 +391,7 @@ int main() {
 
     initData(train, len);
 
-    PRINT_DEBUG("TV: %d %d %d\n", getTruthValue("positive"), getTruthValue("negative"), getTruthValue("asdf"));
+    //PRINT_DEBUG("TV: %d %d %d\n", getTruthValue("positive"), getTruthValue("negative"), getTruthValue("asdf"));
     calcTrainErrors();
     calcConfusionMatrix();
 
