@@ -99,12 +99,14 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     if (retVal == WIN)
     {
         showWin();
+        PRINT_DEBUG("[DEBUG] GAME RESULT -> %s Win\n", isPlayer1Turn ? "Player 1": playerMode.mode == MODE_2P ? "Player 2" : "BOT");
         isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
         iGameState = WIN;
     }
 
     if (retVal == TIE)
     {
+        PRINT_DEBUG("[DEBUG] GAME RESULT -> TIE\n");
         iTie_score++;
         iGameState = TIE;
     }
