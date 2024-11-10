@@ -45,7 +45,7 @@ struct Position findBestMove(int board[3][3])
     int boardCount = loadBoardStates(boardStates);
 
     bestMove.row = ERROR; 
-    bestMove.col = ERROR; 
+    bestMove.col = ERROR;
 
     if (checkAndUpdateBestMove(board, &bestMove, boardStates, boardCount)) {
         PRINT_DEBUG("Best move found in memory: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
@@ -84,7 +84,6 @@ struct Position findBestMove(int board[3][3])
         writeBestMoveToFile(board, bestMove);
     }
 
-    //printFileContents();
     depthCounter=0;
     return bestMove; 
 }
@@ -352,24 +351,6 @@ void writeBestMoveToFile(int board[3][3], struct Position bestMove) {
         PRINT_DEBUG("Error writing best move to file. -> %s\n", FILE_BESTMOV);
     }
     PRINT_DEBUG("\nAttempting to write best move to file: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
-    PRINT_DEBUG("New best move written to file.\n\n");
+    PRINT_DEBUG("New best move written to file.\n");
     fclose(file);
-}
-
-void printFileContents() {
-    if(DEBUG)
-    {
-        FILE *file = fopen(FILE_BESTMOV, "r");
-        if (file == NULL) {
-            PRINT_DEBUG("File does not exist or cannot be opened. -> %s\n", FILE_BESTMOV);
-            return;
-        }
-
-        PRINT_DEBUG("Contents of %s:\n", FILE_BESTMOV);
-        char line[100];
-        while (fgets(line, sizeof(line), file) != NULL) {
-            PRINT_DEBUG("%s", line);
-        }
-        fclose(file);
-    }
 }
