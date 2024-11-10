@@ -20,9 +20,6 @@ double probabilityErrors;
 int predicted;
 int actual;
 
-int getTruthValue(char* str1);
-void debugDataset(struct Dataset *data, int len);
-
 void calculateProbabilities(int dataset_size) {
     // Calculate class probability
     positiveClassProbability =  (double) positive_count/dataset_size;
@@ -234,6 +231,9 @@ void initData(struct Dataset *data, int len)
             }
         }
     }
+
+    calcTrainErrors();
+    calcConfusionMatrix();
 }
 
 void assignCMValue(int actual, int predicted)
@@ -249,22 +249,22 @@ void assignCMValue(int actual, int predicted)
     {
         if (predicted == 1)
         {
-            cM[0] += 1; //true positive
+            cM[0] += 1; //True positive
         }
         else
         {
-            cM[1] += 1; //true negative
+            cM[1] += 1; //False negative
         }
     }
     else
     {
         if (predicted == 1)
         {
-            cM[2] += 1; //false positive
+            cM[2] += 1; //False positive
         }
         else
         {
-            cM[3] += 1; //false negative
+            cM[3] += 1; //True negative
         }
     }
 }
@@ -300,7 +300,7 @@ void calcConfusionMatrix()
     probabilityErrors = (1 / i)*test_PredictedErrors; //round to 2dp? not in spec though
 
     printf("\nFor testing dataset: %d errors, %lf probability of error.", test_PredictedErrors,probabilityErrors);
-    printf("\nTP: %d, TN: %d, FP: %d, FN: %d",cM[0],cM[1],cM[2],cM[3]);
+    printf("\nTP: %d, FN: %d, FP: %d, TN: %d",cM[0],cM[1],cM[2],cM[3]);
 
 /*    printf("%s\n", train[190].outcome);
     //assignCMValue(train[0].outcome, predicted);
@@ -392,8 +392,6 @@ int main() {
     initData(train, len);
 
     //PRINT_DEBUG("TV: %d %d %d\n", getTruthValue("positive"), getTruthValue("negative"), getTruthValue("asdf"));
-    calcTrainErrors();
-    calcConfusionMatrix();
 
     //Testing gameboard for getBestPosition
     char gameBoard[3][3] = {{'x', 'x', 'o'}, {'b', 'o', 'x'}, {'b', 'b', 'b'}};

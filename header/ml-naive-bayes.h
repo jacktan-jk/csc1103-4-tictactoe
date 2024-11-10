@@ -14,8 +14,16 @@ struct Position {
 };
 
 void calculateProbabilities(int dataset_size);
-int predictOutcome(struct Dataset board);
 void initData(struct Dataset *data, int len);
+int predictOutcome(struct Dataset board);
+void calcTrainErrors();
+void calcConfusionMatrix();
 struct Position getBestPosition(char grid[3][3], char player);
+
+int getTruthValue(char* str1);
+void assignCMValue(int actual, int predicted);
+void debugDataset(struct Dataset *data, int len);
+
+
 
 #endif // ML_NAIVE_BAYES_H
