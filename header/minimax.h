@@ -7,14 +7,15 @@
 #define MAX_BOARDS 10000 // Maximum number of boards we can store in memory
 
 // Define the BoardState struct
-struct BoardState {
+struct BoardState
+{
     int board[3][3];
     struct Position bestMove;
 };
 
 int max(int a, int b);
 int min(int a, int b);
-struct Position findBestMove(int board[3][3]) ;
+struct Position findBestMove(int board[3][3]);
 int minimax(int board[3][3], int depth, bool isMax);
 int evaluate(int b[3][3]);
 bool isMovesLeft(int board[3][3]);

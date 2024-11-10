@@ -22,12 +22,12 @@
 
 #define EMPTY 0
 #define PLAYER1 1
-#define BOT 2       //this is also used for player 2
+#define BOT 2 // this is also used for player 2
 
 #define DATA_SIZE 958
 #define CLASSES 2
 
-#define DEBUG 1 //set 0 to disable debug msg
+#define DEBUG 1 // set 0 to disable debug msg
 
 #if DEBUG
 #define PRINT_DEBUG(...) printf(__VA_ARGS__);
@@ -35,7 +35,8 @@
 #define PRINT_DEBUG(...)
 #endif
 
-struct Position {
+struct Position
+{
     int row;
     int col;
 };

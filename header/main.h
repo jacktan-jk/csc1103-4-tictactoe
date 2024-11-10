@@ -8,9 +8,9 @@
 GLOBAL DECLARATION
 ===============================================================================================*/
 
-#ifndef MAIN_H  // Start of include guard
+#ifndef MAIN_H // Start of include guard
 #define MAIN_H
-typedef struct 
+typedef struct
 {
     int pos[2]; // Array to hold row and column
 } stBtnPos;

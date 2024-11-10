@@ -9,12 +9,13 @@
 #define TRAIN_PATH "training-"
 #define TEST_PATH "testing-"
 
-struct Dataset {
+struct Dataset
+{
     char grid[3][3];
     char outcome[9];
 };
 
-int readDataset(const char* filename, bool split);
+int readDataset(const char *filename, bool split);
 int splitFile();
 void getRandomNo(int random[DATA_SIZE]);
 int getTrainingData(struct Dataset **d);
