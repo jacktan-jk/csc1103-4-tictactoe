@@ -201,7 +201,7 @@ int doBOTmove()
         }
         gettimeofday(&t, NULL);
         time2 = t.tv_sec + 1.0e-6 * t.tv_usec;
-        printf("Minimax Elapsed: %f seconds \n\n", (double)(time2 - time1));
+        PRINT_DEBUG("Minimax Elapsed: %f seconds \n\n", (double)(time2 - time1));
     }
     else //ML mode, sets ML as default if for some reason playermode.mode has expected value.
     {
