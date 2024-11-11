@@ -1,4 +1,5 @@
-# **TIC TAC TOE - CSC1103 & CSC1104 Project**
+# **TIC TAC TOE - CSC1103 & CSC1104 Project** 
+[![DeepSource](https://app.deepsource.com/gh/jacktan-jk/csc1103-4-tictactoe.svg/?label=active+issues&show_trend=true&token=bKtP7GgPb1UrjF48CC8gp0hi)](https://app.deepsource.com/gh/jacktan-jk/csc1103-4-tictactoe/)[![DeepSource](https://app.deepsource.com/gh/jacktan-jk/csc1103-4-tictactoe.svg/?label=resolved+issues&show_trend=true&token=bKtP7GgPb1UrjF48CC8gp0hi)](https://app.deepsource.com/gh/jacktan-jk/csc1103-4-tictactoe/)
 ## Installation Instructions (Linux)
 
 To get started with the project, ensure you have the following installed:
@@ -162,7 +163,7 @@ docker load -i FILE_NAME.tar
 - [X] Implement ML Algorithm (80:20)
     > [TIP]
     > Linear regression, Navie bayes, Neural network and Reinforcement learning
-- [ ] Plot the confusion matrix for the training and testing accuracy
+- [X] Plot the confusion matrix for the training and testing accuracy
 - [ ] Calculate the number of times the computer wins as a gauge of difficulty level. 
  
 ## **[^2]COA-CSC1104 REQUIRMENTS**
