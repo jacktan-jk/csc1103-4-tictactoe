@@ -43,13 +43,13 @@ if [ "$SAVE_IMAGE" = true ]; then
 	fi
 fi
 
-OS=$(uname)
+OS="$(uname)"
 
 if [ "$OS" = "Linux" ]; then
     echo "[DOCKER] Running container..."
     sudo xhost +local:
     export DISPLAY=:0
-    sudo docker run -it --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe
+    sudo docker run -it --user "$(id -u)":"$(id -g)" -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe
 
 elif [[ "$OS" == *"_NT"* ]]; then
     # Run the Docker command inside WSL

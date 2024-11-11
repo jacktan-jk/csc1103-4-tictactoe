@@ -171,7 +171,8 @@ int doBOTmove()
     if (playerMode.mode == MODE_MM)
     {
         struct timeval t;
-        double time1, time2;
+        double time1
+        double time2;
         gettimeofday(&t, NULL);
         time1 = t.tv_sec + 1.0e-6 * t.tv_usec;
 
