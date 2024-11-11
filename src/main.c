@@ -99,14 +99,20 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     if (retVal == WIN)
     {
         showWin();
+        PRINT_DEBUG("[DEBUG] GAME RESULT -> %s Win\n", isPlayer1Turn ? "Player 1": playerMode.mode == MODE_2P ? "Player 2" : "BOT");
         isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
         iGameState = WIN;
+        readDataset(RES_PATH "" DATA_PATH, true);
+        initData();
     }
 
     if (retVal == TIE)
     {
+        PRINT_DEBUG("[DEBUG] GAME RESULT -> TIE\n");
         iTie_score++;
         iGameState = TIE;
+        readDataset(RES_PATH "" DATA_PATH, true);
+        initData();
     }
 
     if (playerMode.mode != MODE_2P)
@@ -168,6 +174,11 @@ int doBOTmove()
     struct Position botMove;
     if (playerMode.mode == MODE_MM)
     {
+        struct timeval t;
+        double time1, time2;
+        gettimeofday(&t, NULL);
+        time1 = t.tv_sec + 1.0e-6 * t.tv_usec;
+
         if (rand() % 100 < 70)
         {
             botMove = findBestMove(iBoard);
@@ -194,6 +205,9 @@ int doBOTmove()
                 }
             }
         }
+        gettimeofday(&t, NULL);
+        time2 = t.tv_sec + 1.0e-6 * t.tv_usec;
+        PRINT_DEBUG("Minimax Elapsed: %f seconds \n\n", (double)(time2 - time1));
     }
     else // ML mode, sets ML as default if for some reason playermode.mode has expected value.
     {

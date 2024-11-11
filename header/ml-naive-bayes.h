@@ -10,8 +10,15 @@
 
 int assignMoveIndex(char move);
 void calculateProbabilities(int dataset_size);
-void predictOutcome(char grid[3][3]);
+void resetTrainingData();
 int initData();
+int predictOutcome(struct Dataset board);
+void calcTrainErrors();
+void calcConfusionMatrix();
 struct Position getBestPosition(int grid[3][3], char player);
+
+int getTruthValue(char *str1);
+void assignCMValue(int actual, int predicted);
+void debugDataset(struct Dataset *data, int len);
 
 #endif // ML_NAIVE_BAYES_H

@@ -4,7 +4,7 @@
 #include <macros.h>
 
 // changed to 100 for testing. make sure to chg back
-#define RES_PATH "resources/"
+#define RES_PATH "./resources/"
 #define DATA_PATH "tic-tac-toe.data"
 #define TRAIN_PATH "training-"
 #define TEST_PATH "testing-"

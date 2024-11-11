@@ -49,14 +49,14 @@ if [ "$OS" = "Linux" ]; then
     echo "[DOCKER] Running container..."
     sudo xhost +local:
     export DISPLAY=:0
-    sudo docker run --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe
+    sudo docker run -it --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe
 
 elif [[ "$OS" == *"_NT"* ]]; then
     # Run the Docker command inside WSL
     echo "[DOCKER] Opening WSL to run container..."
 
     # Construct the Docker run command
-    DOCKER_RUN_CMD="export DISPLAY=:0 && docker run -e DISPLAY=\$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe"
+    DOCKER_RUN_CMD="export DISPLAY=:0 && docker run -it -e DISPLAY=\$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix docker_tictactoe"
 
     # Use `wsl` command to open WSL and run the Docker command
     wsl bash -c "$DOCKER_RUN_CMD"
