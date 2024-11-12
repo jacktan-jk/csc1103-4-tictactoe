@@ -13,9 +13,9 @@ GLOBAL DECLARATION
 typedef struct
 {
     int pos[2]; // Array to hold row and column
-} stBtnPos;
+} BtnPos;
 
-struct stPlayerMode
+struct PlayerMode
 {
     char txt[2];
     int mode;

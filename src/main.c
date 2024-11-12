@@ -15,7 +15,7 @@ int iWinPos[3][3];
 bool isPlayer1Turn = true;
 bool isMLAvail = true;
 
-struct stPlayerMode playerMode = {"2P", MODE_2P};
+struct PlayerMode playerMode = {"2P", MODE_2P};
 
 GtkWidget *btnGrid[3][3];
 
@@ -60,7 +60,7 @@ void updateScoreBtn(gpointer data)
 void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
 {
     const char *current_label = gtk_button_get_label(GTK_BUTTON(widget));
-    stBtnPos *btnPos = (stBtnPos *)g_object_get_data(G_OBJECT(widget), "button-data");
+    BtnPos *btnPos = (BtnPos *)g_object_get_data(G_OBJECT(widget), "button-data");
 
     if (iGameState != PLAY)
     {
@@ -347,7 +347,7 @@ int main(int argc, char *argv[])
         {
             btnGrid[i][j] = gtk_button_new_with_label("");
 
-            stBtnPos *data = g_new(stBtnPos, 1); // Allocate memory for the structure
+            BtnPos *data = g_new(BtnPos, 1); // Allocate memory for the structure
             data->pos[0] = i;                    // Store row
             data->pos[1] = j;                    // Store column
 
