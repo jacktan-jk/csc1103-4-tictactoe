@@ -99,11 +99,10 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     if (retVal == WIN)
     {
         showWin();
-        PRINT_DEBUG("[DEBUG] GAME RESULT -> %s Win\n", isPlayer1Turn ? "Player 1": playerMode.mode == MODE_2P ? "Player 2" : "BOT");
+        PRINT_DEBUG("[DEBUG] GAME RESULT -> %s Win\n", isPlayer1Turn ? "Player 1" : playerMode.mode == MODE_2P ? "Player 2"
+                                                                                                               : "BOT");
         isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
         iGameState = WIN;
-        readDataset(RES_PATH "" DATA_PATH, true);
-        initData();
     }
 
     if (retVal == TIE)
@@ -111,8 +110,6 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         PRINT_DEBUG("[DEBUG] GAME RESULT -> TIE\n");
         iTie_score++;
         iGameState = TIE;
-        readDataset(RES_PATH "" DATA_PATH, true);
-        initData();
     }
 
     if (playerMode.mode != MODE_2P)
@@ -120,6 +117,14 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         isPlayer1Turn = !isPlayer1Turn;
     }
 
+    if (isMLAvail && playerMode.mode == MODE_ML)
+    {
+        if (retVal == WIN || retVal == TIE)
+        {
+            readDataset(RES_PATH "" DATA_PATH, true);
+            initData();
+        }
+    }
     updateScoreBtn(data);
 }
 
