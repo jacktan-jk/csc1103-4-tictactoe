@@ -28,7 +28,7 @@
 #define CLASSES 2
 
 #define DEBUG 1 // set 0 to disable debug msg
-#define MINIMAX_GODMODE 1 //set 1 to enable minimax god mode, no 30% random and max depth
+#define MINIMAX_GODMODE 0 //set 1 to enable minimax god mode, no 30% random and max depth
 
 #if DEBUG
 #define PRINT_DEBUG(...) printf(__VA_ARGS__);
