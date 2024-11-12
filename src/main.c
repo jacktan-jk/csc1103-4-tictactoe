@@ -99,7 +99,8 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
     if (retVal == WIN)
     {
         showWin();
-        PRINT_DEBUG("[DEBUG] GAME RESULT -> %s Win\n", isPlayer1Turn ? "Player 1": playerMode.mode == MODE_2P ? "Player 2" : "BOT");
+        PRINT_DEBUG("[DEBUG] GAME RESULT -> %s Win\n", isPlayer1Turn ? "Player 1" : playerMode.mode == MODE_2P ? "Player 2"
+                                                                                                               : "BOT");
         isPlayer1Turn ? iPlayer1_score++ : iPlayer2_score++;
         iGameState = WIN;
     }
@@ -116,6 +117,14 @@ void on_btnGrid_clicked(GtkWidget *widget, gpointer data)
         isPlayer1Turn = !isPlayer1Turn;
     }
 
+    if (isMLAvail && playerMode.mode == MODE_ML)
+    {
+        if (retVal == WIN || retVal == TIE)
+        {
+            readDataset(RES_PATH "" DATA_PATH, true);
+            initData();
+        }
+    }
     updateScoreBtn(data);
 }
 
@@ -174,11 +183,14 @@ int doBOTmove()
         double time1, time2;
         gettimeofday(&t, NULL);
         time1 = t.tv_sec + 1.0e-6 * t.tv_usec;
-
-        if (rand() % 100 < 70)
+        
+#if !(MINIMAX_GODMODE)
+        if (rand() % 100 < 80)
+#endif
         {
             botMove = findBestMove(iBoard);
         }
+#if !(MINIMAX_GODMODE)
         else
         {
             int randRow = rand() % 3;
@@ -201,6 +213,7 @@ int doBOTmove()
                 }
             }
         }
+#endif
         gettimeofday(&t, NULL);
         time2 = t.tv_sec + 1.0e-6 * t.tv_usec;
         PRINT_DEBUG("Minimax Elapsed: %f seconds \n\n", (double)(time2 - time1));

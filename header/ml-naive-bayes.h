@@ -10,6 +10,7 @@
 
 int assignMoveIndex(char move);
 void calculateProbabilities(int dataset_size);
+void resetTrainingData();
 int initData();
 int predictOutcome(struct Dataset board);
 void calcTrainErrors();

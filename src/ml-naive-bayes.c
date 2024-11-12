@@ -245,10 +245,37 @@ struct Position getBestPosition(int grid[3][3], char player)
     }
 }
 
+void resetTrainingData() {
+    // Reset outcome counts
+    positive_count = 0;
+    negative_count = 0;
+
+    // Reset move count arrays for each grid position
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+            for (int moveIndex = 0; moveIndex < 3; moveIndex++) {
+                positiveMoveCount[row][col][moveIndex] = 0;
+                negativeMoveCount[row][col][moveIndex] = 0;
+            }
+        }
+    }
+
+    // Reset the confusion matrix counters
+    cM[0] = 0; // True positive
+    cM[1] = 0; // False negative
+    cM[2] = 0; // False positive
+    cM[3] = 0; // True negative
+
+    // Reset prediction errors
+    test_PredictedErrors = 0;
+
+    train_PredictedErrors = 0;
+}
+
 int initData()
 {
+    resetTrainingData();
     int retVal = SUCCESS;
-
 doGetTrainingData:
     struct Dataset *trainingData = NULL;      // Initialize pointer
     int len = getTrainingData(&trainingData); // Pass address of pointer
@@ -344,13 +371,6 @@ void calcConfusionMatrix()
     { // Ensure len is valid before accessing test
         for (int i = 0; i < len; i++)
         {
-            /*PRINT_DEBUG("%d ", i);
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
-                    PRINT_DEBUG("%c,", train[i].grid[j][k]);
-
-                }
-            }*/
             actual = getTruthValue(test[i].outcome);
             predicted = predictOutcome(test[i]);
 
@@ -368,10 +388,6 @@ void calcConfusionMatrix()
 
     PRINT_DEBUG("For testing dataset: %d errors, %lf probability of error.\n", test_PredictedErrors, probabilityErrors);
     PRINT_DEBUG("TP: %d, FN: %d, FP: %d, TN: %d\n", cM[0], cM[1], cM[2], cM[3]);
-
-    /*    PRINT_DEBUG("%s\n", train[190].outcome);
-        //assignCMValue(train[0].outcome, predicted);
-        PRINT_DEBUG("A_outcome %s\n",train[0].outcome);*/
 }
 
 int getTruthValue(char *str1)
@@ -415,12 +431,6 @@ void calcTrainErrors()
     probabilityErrors = (1 / i) * train_PredictedErrors; // round to 2dp? not in spec though
 
     PRINT_DEBUG("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
-}
-
-void rbset()
-{
-    int retVal = SUCCESS;
-    retVal = readDataset(RES_PATH "" DATA_PATH, true);
 }
 
 void debugDataset(struct Dataset *data, int len)

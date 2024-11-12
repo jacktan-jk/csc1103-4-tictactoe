@@ -113,8 +113,10 @@ int minimax(int board[3][3], int depth, bool isMax)
     if (isMovesLeft(board) == false)
         return 0;
 
+#if !(MINIMAX_GODMODE)
     if (depth > 2)
         return 0;
+#endif
 
     // If this maximizer's move
     if (isMax)
