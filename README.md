@@ -1,3 +1,7 @@
+/*! @cond DOXYGEN_IGNORE */
+\mainpage
+/*! @endcond */
+
 # **TIC TAC TOE - CSC1103 & CSC1104 Project**
 ## Installation Instructions (Linux)
 
@@ -72,7 +76,7 @@ Use the following command.
   docker ps -a
 ```
 
-## Run TicTacToe Application on Docker (MacOS)
+### Run TicTacToe Application on Docker (MacOS)
 >[!IMPORTANT]
 >**Pre-requisite application to be install.
 >
@@ -162,7 +166,7 @@ docker load -i FILE_NAME.tar
 - [X] Implement ML Algorithm (80:20)
     > [TIP]
     > Linear regression, Navie bayes, Neural network and Reinforcement learning
-- [ ] Plot the confusion matrix for the training and testing accuracy
+- [X] Plot the confusion matrix for the training and testing accuracy
 - [ ] Calculate the number of times the computer wins as a gauge of difficulty level. 
  
 ## **[^2]COA-CSC1104 REQUIRMENTS**

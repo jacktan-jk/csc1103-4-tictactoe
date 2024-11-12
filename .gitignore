@@ -8,3 +8,4 @@ ldd_output.txt
 resources/testing-*
 resources/training-*
 *.txt
+/docs
