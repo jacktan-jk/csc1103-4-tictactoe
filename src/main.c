@@ -183,11 +183,14 @@ int doBOTmove()
         double time1, time2;
         gettimeofday(&t, NULL);
         time1 = t.tv_sec + 1.0e-6 * t.tv_usec;
-
-        if (rand() % 100 < 70)
+        
+#if !(MINIMAX_GODMODE)
+        if (rand() % 100 < 80)
+#endif
         {
             botMove = findBestMove(iBoard);
         }
+#if !(MINIMAX_GODMODE)
         else
         {
             int randRow = rand() % 3;
@@ -210,6 +213,7 @@ int doBOTmove()
                 }
             }
         }
+#endif
         gettimeofday(&t, NULL);
         time2 = t.tv_sec + 1.0e-6 * t.tv_usec;
         PRINT_DEBUG("Minimax Elapsed: %f seconds \n\n", (double)(time2 - time1));
