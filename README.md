@@ -1,6 +1,4 @@
-/*! @cond DOXYGEN_IGNORE */
-\mainpage
-/*! @endcond */
+<!--- /*! \mainpage */ --->
 
 # **TIC TAC TOE - CSC1103 & CSC1104 Project**
 ## Installation Instructions (Linux)
