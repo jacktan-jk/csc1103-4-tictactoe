@@ -315,9 +315,20 @@ int loadBoardStates(struct BoardState boardStates[])
         // Read the best move
         if (token != NULL)
         {
-            boardStates[count].bestMove.row = atoi(token);
+            char *endptr;
+        
+            boardStates[count].bestMove.row = strtol(token, &endptr, 10);
+            if (*endptr != '\0') {
+                // Handle conversion error for row if needed
+            }
+        
             token = strtok(NULL, ",");
-            boardStates[count].bestMove.col = atoi(token);
+            if (token != NULL) {
+                boardStates[count].bestMove.col = strtol(token, &endptr, 10);
+                if (*endptr != '\0') {
+                    // Handle conversion error for col if needed
+                }
+            }
         }
         count++;
     }
