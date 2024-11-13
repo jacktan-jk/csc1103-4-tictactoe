@@ -1,21 +1,9 @@
-/**
- * @file main.c
- * @author jacktan-jk
- * @brief 
- * @version 1.0
- * @date 2024-11-12
- * 
- * @copyright Copyright (c) 2024
- * 
- */
-
 #include <main.h>
 
 /*===============================================================================================
 GLOBAL DECLARATION
 ===============================================================================================*/
 
-// Global variables for score
 /**  
  * @var int iPlayer1_score
  * @brief Global variable to track Player 1's score.

@@ -1,3 +1,17 @@
+/**
+ * @file macros.h
+ * @author jacktan-jk
+ * @brief Header file containing macros, constants, and structure definitions for the Tic-Tac-Toe game.
+ * @version 1.0
+ * @date 2024-11-13
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ * This file defines various constants for game modes, player identifiers, error codes, and debugging options.
+ * It also includes the `Position` structure for grid positions in the game.
+ * 
+ */
+
 #ifndef MACROS_H
 #define MACROS_H
 
@@ -8,27 +22,31 @@
 #include <sys/time.h>
 #include <string.h>
 
-#define PLAY 0x69
-#define TIE 0xFF
-#define WIN 0xAA
+// Constants for game states and player identifiers
+#define PLAY 0x69        /**< Player move */
+#define TIE 0xFF         /**< Tie state */
+#define WIN 0xAA         /**< Winning state */
+#define SUCCESS 0        /**< Success */
+#define ERROR -1         /**< Error */
+#define BAD_PARAM -5     /**< Bad parameter error */
 
-#define SUCCESS 0
-#define ERROR -1
-#define BAD_PARAM -5
+// Game modes
+#define MODE_2P 0        /**< Two-player mode */
+#define MODE_MM 1        /**< Minimax mode */
+#define MODE_ML 2        /**< Machine Learning mode */
 
-#define MODE_2P 0
-#define MODE_MM 1
-#define MODE_ML 2
+// Player identifiers
+#define EMPTY 0          /**< Empty cell */
+#define PLAYER1 1        /**< Player 1 */
+#define BOT 2            /**< Bot (Player 2) */
 
-#define EMPTY 0
-#define PLAYER1 1
-#define BOT 2 // this is also used for player 2
+// Data constants
+#define DATA_SIZE 958    /**< Dataset size */
+#define CLASSES 2        /**< Number of outcome classes */
 
-#define DATA_SIZE 958
-#define CLASSES 2
-
-#define DEBUG 1 // set 0 to disable debug msg
-#define MINIMAX_GODMODE 0 //set 1 to enable minimax god mode, no 30% random and max depth
+// Debugging and configuration options
+#define DEBUG 1          /**< Enable debug messages */
+#define MINIMAX_GODMODE 0/**< Minimax god mode toggle */
 
 #if DEBUG
 #define PRINT_DEBUG(...) printf(__VA_ARGS__);
@@ -36,10 +54,16 @@
 #define PRINT_DEBUG(...)
 #endif
 
+/**
+ * @struct Position
+ * @brief Represents a position on the Tic-Tac-Toe grid.
+ * @var Position::row Row index (0-2)
+ * @var Position::col Column index (0-2)
+ */
 struct Position
 {
-    int row;
-    int col;
+    int row; /**< Row index (0-2) */
+    int col; /**< Column index (0-2) */
 };
 
 #endif // MACROS_H

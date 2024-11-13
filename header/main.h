@@ -1,17 +1,11 @@
 /**
  * @file main.h
  * @author jacktan-jk
- * @brief 
+ * @brief Header file for the Tic-Tac-Toe game logic.
  * @version 1.0
  * @date 2024-11-12
  * 
  * @copyright Copyright (c) 2024
- * 
- */
-
-/** 
- * @file main.h
- * @brief Header file for the Tic-Tac-Toe game logic.
  * 
  * This file contains function declarations, structure definitions, and constants 
  * for handling game logic, button interactions, and the bot's behavior.

@@ -19,17 +19,6 @@
 #include <macros.h>  /**< Include macro definitions */
 
 /** 
- * @brief Represents the position of a move on the Tic-Tac-Toe board.
- * 
- * This structure defines the row and column for a move made by the bot or player.
- */
-struct Position
-{
-    int row; /**< Row index of the move */
-    int col; /**< Column index of the move */
-};
-
-/** 
  * @brief Stores the current state of the Tic-Tac-Toe board along with the best move.
  * 
  * This structure holds a 3x3 board array and the best move associated with that 
