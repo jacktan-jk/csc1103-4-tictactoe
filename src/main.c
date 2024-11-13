@@ -315,11 +315,7 @@ int doBOTmove()
     struct Position botMove;
     if (playerMode.mode == MODE_MM)
     {
-        struct timeval t;
-        double time1, time2;
-        gettimeofday(&t, NULL);
-        time1 = t.tv_sec + 1.0e-6 * t.tv_usec;
-        
+        startElapseTime();
 #if !(MINIMAX_GODMODE)
         if (rand() % 100 < 80)
 #endif
@@ -329,6 +325,7 @@ int doBOTmove()
 #if !(MINIMAX_GODMODE)
         else
         {
+            startElapseTime();
             int randRow = rand() % 3;
             int randCol = rand() % 3;
             bool bIsDone = false;
@@ -348,11 +345,10 @@ int doBOTmove()
                     randCol = rand() % 3;
                 }
             }
+            stopElapseTime("Minimax Random Move");
         }
 #endif
-        gettimeofday(&t, NULL);
-        time2 = t.tv_sec + 1.0e-6 * t.tv_usec;
-        PRINT_DEBUG("Minimax Elapsed: %f seconds \n\n", (double)(time2 - time1));
+        stopElapseTime("Minimax Move");
     }
     else // ML mode, sets ML as default if for some reason playermode.mode has expected value.
     {

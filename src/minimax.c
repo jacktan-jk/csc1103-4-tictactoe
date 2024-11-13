@@ -81,17 +81,27 @@ struct Position findBestMove(int board[3][3])
     struct Position bestMove;
 
     struct BoardState boardStates[MAX_BOARDS];
+
+#if !(DISABLE_LOOKUP)
+    startElapseTime();
     int boardCount = loadBoardStates(boardStates);
+    stopElapseTime("Loading lookup table");
+#endif
 
     bestMove.row = ERROR;
     bestMove.col = ERROR;
 
+    startElapseTime();
+#if !(DISABLE_LOOKUP)
     if (checkAndUpdateBestMove(board, &bestMove, boardStates, boardCount))
     {
+        stopElapseTime("Find best move in lookup table");
         PRINT_DEBUG("Best move found in memory: Row = %d, Col = %d\n", bestMove.row, bestMove.col);
     }
     else
+#endif
     {
+        startElapseTime();
         // Traverse all cells, evaluate minimax function for
         // all empty cells. And return the cell with optimal
         // value.
@@ -122,6 +132,7 @@ struct Position findBestMove(int board[3][3])
                 }
             }
         }
+        stopElapseTime("Minimax depth search");
         writeBestMoveToFile(board, bestMove);
     }
 

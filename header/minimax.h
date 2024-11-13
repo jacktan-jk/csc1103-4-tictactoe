@@ -17,6 +17,7 @@
 #define MINIMAX_H
 
 #include <macros.h>  /**< Include macro definitions */
+#include <elapsedTime.h>
 
 /** 
  * @brief Stores the current state of the Tic-Tac-Toe board along with the best move.

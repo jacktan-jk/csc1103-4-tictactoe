@@ -18,6 +18,7 @@
 #include <macros.h>
 #include <minimax.h>
 #include <ml-naive-bayes.h>
+#include <elapsedTime.h>
 
 /*===============================================================================================
 GLOBAL DECLARATION

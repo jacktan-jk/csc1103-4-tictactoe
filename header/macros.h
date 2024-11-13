@@ -47,6 +47,8 @@
 // Debugging and configuration options
 #define DEBUG 1          /**< Enable debug messages */
 #define MINIMAX_GODMODE 0/**< Minimax god mode toggle */
+#define DISABLE_LOOKUP  0/**< Disable Minimax lookup table*/
+#define DISABLE_ELAPSED 0/**< Disable Elapsed time function*/
 
 #if DEBUG
 #define PRINT_DEBUG(...) printf(__VA_ARGS__);
