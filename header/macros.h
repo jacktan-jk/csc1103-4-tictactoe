@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-#include <sys/time.h>
 #include <string.h>
 
 // Constants for game states and player identifiers
