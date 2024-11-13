@@ -2,11 +2,27 @@
 ## Installation Instructions (Linux)
 
 To get started with the project, ensure you have the following installed:
+
+> [!IMPORTANT]
+> Ensure that you follow all the instruction in the link below!
+
+1. **Installing xhost(X11)**
 ```
-sudo apt-get install -y \
-       docker-ce \
-       x11-xserver-utils \
+sudo apt-get install x11-apps
+sudo apt-get install x11-xserver-utils
 ```
+2. **Docker Desktop**, Select based on your specs.
+     - [Install Docker Desktop - Ubuntu](https://docs.docker.com/desktop/setup/install/linux/ubuntu/)
+     - [Install Docker Desktop - Debian](https://docs.docker.com/desktop/setup/install/linux/debian/)
+     - [Install Docker Desktop - RHEL](https://docs.docker.com/desktop/setup/install/linux/rhel/)
+     - [Install Docker Desktop - Fedora](https://docs.docker.com/desktop/setup/install/linux/fedora/)
+  
+> [!TIP]
+> Adding this command in startup.sh will make your life easier.
+> ```
+> systemctl --user start docker-desktop
+> ```
+
 ### Building the Project via Docker (Linux)
 After setting up WSL2 and Docker, you can choose to either load a Docker image or build the Docker image yourself.
 #### **[OPTIONAL]** Loading Docker Image
@@ -38,8 +54,8 @@ To get started with the project, ensure you have the following installed:
 1. **Docker Desktop**
 Select based on your specs.
      - [Install Docker Desktop](https://www.docker.com/products/docker-desktop)
-     -  select "Download for Mac - Intel Chip"
-     -  select "Download for Mac - Apple Silicon"
+     -  Select "Download for Mac - Intel Chip"
+     -  Select "Download for Mac - Apple Silicon"
 
 2. **Installation Docker Desktop**
      - Go to "Downloads" and double click "Docker.dmg"
@@ -73,10 +89,11 @@ Use the following command.
 ```
 
 ### Run TicTacToe Application on Docker (MacOS)
->[!IMPORTANT]
->**Pre-requisite application to be install.
+> [!IMPORTANT]
+> **Pre-requisite application to be install.
 >
->**BEFORE BUILDING DOCKER IMAGE OR CONTAINER.
+> **BEFORE BUILDING DOCKER IMAGE OR CONTAINER.
+
 1. Install brew
      - [Install brew](https://brew.sh)
 
