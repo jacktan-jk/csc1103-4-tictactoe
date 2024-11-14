@@ -14,10 +14,14 @@ usage() {
 
 # Check for options
 SAVE_IMAGE=false
-while getopts ":s" opt; do
+DOCKER_DEBUG=""
+while getopts ":sd" opt; do
     case ${opt} in
         s )
             SAVE_IMAGE=true
+            ;;
+        d )
+            DOCKER_DEBUG="--progress=plain"
             ;;
         \? )
             usage
@@ -32,7 +36,7 @@ dos2unix compile.sh
 
 # Build the Docker image
 echo "[DOCKER] Building image..."
-if ! docker build -t docker_tictactoe .; then
+if ! docker build "$DOCKER_DEBUG" -t docker_tictactoe .; then
     echo "[DOCKER] Docker image build failed!"
     exit 1
 fi
@@ -62,8 +66,6 @@ elif [[ "$OS" == *"_NT"* ]]; then
     wsl bash -c "$DOCKER_RUN_CMD"
 
 fi
-
-
 
 echo "[DOCKER] Container ran successfully."
 

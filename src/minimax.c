@@ -16,6 +16,16 @@ int depthCounter = 0;
 int max(int a, int b)
 {
     int result;
+#ifdef __aarch64__
+    __asm__(
+        "mov %w0, %w1;"       // Move 'a' to result
+        "cmp %w0, %w2;"       // Compare result (a) and b
+        "csel %w0, %w0, %w2, ge;" // If a >= b, keep a in result; otherwise, move b to result
+        : "=&r" (result)      // Output
+        : "r" (a), "r" (b)    // Inputs
+        : "cc"                // Clobbered flags (condition codes)
+    );
+#else
     __asm__(
         "movl %1, %%eax;"    // Move 'a' to eax
         "movl %2, %%ebx;"    // Move 'b' to ebx
@@ -28,6 +38,7 @@ int max(int a, int b)
         : "r"(a), "r"(b)  // Inputs
         : "%eax", "%ebx"  // Clobbered registers
     );
+#endif
     return result;
 }
 
@@ -45,6 +56,16 @@ int max(int a, int b)
 int min(int a, int b)
 {
     int result;
+#ifdef __aarch64__
+    __asm__(
+        "mov %w0, %w1;"       // Move 'a' to result
+        "cmp %w0, %w2;"       // Compare result (a) and b
+        "csel %w0, %w0, %w2, le;" // If a <= b, keep a in result; otherwise, move b to result
+        : "=&r" (result)      // Output
+        : "r" (a), "r" (b)    // Inputs
+        : "cc"                // Clobbered flags (condition codes)
+    );
+#else
     __asm__(
         "movl %1, %%eax;"    // Move 'a' to eax
         "movl %2, %%ebx;"    // Move 'b' to ebx
@@ -57,6 +78,7 @@ int min(int a, int b)
         : "r"(a), "r"(b)  // Inputs
         : "%eax", "%ebx"  // Clobbered registers
     );
+#endif
     return result;
 }
 
@@ -327,7 +349,46 @@ int evaluate(int b[3][3])
 bool isMovesLeft(int board[3][3])
 {
     int result;
+#ifdef __aarch64__
+    __asm__(
+        "mov x1, #0;"           // x1 = i = 0
+        "outer_loop:;"
+        "cmp x1, #3;"           // if i >= 3, go to return_false
+        "bge return_false;"
 
+        "mov x2, #0;"           // x2 = j = 0
+        "inner_loop:;"
+        "cmp x2, #3;"           // if j >= 3, increment i
+        "bge increment_i;"
+
+        // Calculate board[i][j]
+        "mov x3, x1;"           // Copy i to x3
+        "mul x3, x3, #12;"      // x3 = i * 12 (calculate row offset)
+        "add x3, %1, x3;"       // x3 = board + (i * 12), points to board[i]
+        "ldr w0, [x3, x2, lsl #2];" // Load board[i][j] (each int is 4 bytes)
+
+        "cbz w0, return_true;"   // If board[i][j] == 0, go to return_true
+
+        "add x2, x2, #1;"       // Increment j
+        "b inner_loop;"
+
+        "increment_i:;"
+        "add x1, x1, #1;"       // Increment i
+        "b outer_loop;"
+
+        "return_false:;"
+        "mov %w0, #0;"          // Set result to 0 (false)
+        "b end;"
+
+        "return_true:;"
+        "mov %w0, #1;"          // Set result to 1 (true)
+
+        "end:;"
+        : "=r"(result)           // Output operand
+        : "r"(board)             // Input operand
+        : "x0", "x1", "x2", "x3" // Clobbered registers
+    );
+#else
     __asm__(
         "xor %%rbx, %%rbx;" // rbx = i = 0
         "outer_loop:;"
@@ -367,7 +428,7 @@ bool isMovesLeft(int board[3][3])
         : "r"(board)                 // Input operand
         : "rbx", "rcx", "rdx", "rax" // Clobbered registers
     );
-
+#endif
     return result;
 }
 
