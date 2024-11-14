@@ -350,7 +350,7 @@ bool isMovesLeft(int board[3][3])
 {
     int result;
 #ifdef __aarch64__
-    __asm__(
+__asm__(
         "mov x1, #0;"           // x1 = i = 0
         "outer_loop:;"
         "cmp x1, #3;"           // if i >= 3, go to return_false
@@ -363,7 +363,8 @@ bool isMovesLeft(int board[3][3])
 
         // Calculate board[i][j]
         "mov x3, x1;"           // Copy i to x3
-        "mul x3, x3, #12;"      // x3 = i * 12 (calculate row offset)
+        "lsl x4, x1, #3;"       // x4 = i * 8
+        "add x3, x4, x1, lsl #2;" // x3 = i * 8 + i * 4 = i * 12
         "add x3, %1, x3;"       // x3 = board + (i * 12), points to board[i]
         "ldr w0, [x3, x2, lsl #2];" // Load board[i][j] (each int is 4 bytes)
 
@@ -386,7 +387,7 @@ bool isMovesLeft(int board[3][3])
         "end:;"
         : "=r"(result)           // Output operand
         : "r"(board)             // Input operand
-        : "x0", "x1", "x2", "x3" // Clobbered registers
+        : "x0", "x1", "x2", "x3", "x4" // Clobbered registers
     );
 #else
     __asm__(
