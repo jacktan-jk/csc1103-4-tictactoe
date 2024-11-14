@@ -21,7 +21,7 @@ while getopts ":sd" opt; do
             SAVE_IMAGE=true
             ;;
         d )
-            DOCKER_DEBUG="--progress=plain"
+            DOCKER_DEBUG=" --progress=plain"
             ;;
         \? )
             usage
@@ -36,7 +36,7 @@ dos2unix compile.sh
 
 # Build the Docker image
 echo "[DOCKER] Building image..."
-if ! docker build "$DOCKER_DEBUG" -t docker_tictactoe .; then
+if ! docker build$DOCKER_DEBUG -t docker_tictactoe .; then
     echo "[DOCKER] Docker image build failed!"
     exit 1
 fi
