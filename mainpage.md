@@ -1,4 +1,4 @@
-/mainpage
+\mainpage
 # **TIC TAC TOE - CSC1103 & CSC1104 Project**
 ## Installation Instructions (Linux)
 

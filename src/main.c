@@ -262,8 +262,10 @@ void on_btnScore_clicked(GtkWidget *widget, gpointer data)
     }
     PRINT_DEBUG("playerMode: %d\n", playerMode.mode);
     isPlayer1Turn = true;
-    updateScoreBtn(data);
+    iPlayer1_score = iPlayer2_score = iTie_score = 0;
+    
     clearBtn();
+    updateScoreBtn(data);
 }
 
 /** 
