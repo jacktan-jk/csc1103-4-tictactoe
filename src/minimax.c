@@ -15,6 +15,9 @@ int depthCounter = 0;
  */
 int max(int a, int b)
 {
+#if (DISABLE_ASM)
+    return (a > b) ? a : b;
+#else
     int result;
 #ifdef __aarch64__
     __asm__(
@@ -40,6 +43,7 @@ int max(int a, int b)
     );
 #endif
     return result;
+#endif
 }
 
 /**  
@@ -55,6 +59,9 @@ int max(int a, int b)
  */
 int min(int a, int b)
 {
+#if (DISABLE_ASM)
+    return (a < b) ? a : b;
+#else
     int result;
 #ifdef __aarch64__
     __asm__(
@@ -80,6 +87,7 @@ int min(int a, int b)
     );
 #endif
     return result;
+#endif
 }
 
 /**  
@@ -348,6 +356,14 @@ int evaluate(int b[3][3])
  */
 bool isMovesLeft(int board[3][3])
 {
+#if (DISABLE_ASM)
+    for (int i = 0; i<3; i++) 
+        for (int j = 0; j<3; j++) 
+            if (board[i][j] == EMPTY) 
+                return true; 
+    return false; 
+
+#else
     int result;
 #ifdef __aarch64__
 __asm__(
@@ -431,6 +447,7 @@ __asm__(
     );
 #endif
     return result;
+#endif
 }
 
 /**  
