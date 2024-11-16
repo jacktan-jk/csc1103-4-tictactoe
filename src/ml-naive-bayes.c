@@ -88,6 +88,58 @@ int assignMoveIndex(char move)
     }
 }
 
+void assignCMValue(int actual, int predicted)
+{
+
+    if (actual == ERROR || predicted == ERROR) //guard case
+    {
+        printf("ERROR either value is -1. actual: %d predicted: %d", actual, predicted);
+    }
+
+    //assigns value based on actual and predicted values and stores in a counter inside arr CM
+    //array cM contains TP, FN, FP and TN respectively
+
+    if (actual == 1)
+    {
+        if (predicted == 1)
+        {
+            cM[0] += 1; // True positive
+        }
+        else
+        {
+            cM[1] += 1; // False negative
+        }
+    }
+    else
+    {
+        if (predicted == 1)
+        {
+            cM[2] += 1; // False positive
+        }
+        else
+        {
+            cM[3] += 1; // True negative
+        }
+    }
+}
+
+int getTruthValue(char *str1) //returns a truth value based on input
+{
+    if (strcmp(str1, "positive") == 0)
+    {
+        return 1;
+    }
+    else if (strcmp(str1, "negative") == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        //guard case if inputs are neither positive nor negative
+        return -1;
+    }
+}
+
 /**  
  * @brief Calculates the probabilities for each class and conditional probabilities with Laplace smoothing.
  * 
@@ -390,11 +442,81 @@ void resetTrainingData() {
  * 
  * @see resetTrainingData, getTrainingData, calcTrainErrors, calcConfusionMatrix
  */
+
+
+/**  
+ * @brief Updates the confusion matrix based on actual and predicted outcomes.
+ * 
+ * This function updates the confusion matrix counters for true positives, false negatives, false positives, and true negatives. 
+ * It checks the actual and predicted outcomes and increments the appropriate counter in the confusion matrix.
+ * 
+ * If either the actual or predicted value is ERROR, an error is logged.
+ * 
+ * @param actual The actual outcome value (1 for positive, 0 for negative).
+ * @param predicted The predicted outcome value (1 for positive, 0 for negative).
+ * 
+ * @see cM, ERROR
+ */
+
+
+void calcConfusionMatrix()
+{
+    struct Dataset *test = NULL;
+    int len = getTestingData(&test);
+
+    if (len > 0)
+    { // Ensure len is valid before accessing test
+        for (int i = 0; i < len; i++)
+        {
+            actual = getTruthValue(test[i].outcome);
+            predicted = predictOutcome(test[i]); //converts char* to int for comparison
+
+            // checks and updates total errors for test dataset
+            if (actual != predicted)
+            {
+                test_PredictedErrors += 1;
+            }
+            assignCMValue(actual, predicted);
+        }
+    }
+
+    double i = TESTING_DATA_SIZE;                       // assign macro to double as you cant cast macros
+    probabilityErrors = (1 / i) * test_PredictedErrors; // round to 2dp? not in spec though
+
+    printf("For testing dataset: %d errors, %lf probability of error.\n", test_PredictedErrors, probabilityErrors);
+    printf("True Positive: %d, False Negative: %d, False Positive: %d, True Negative: %d\n", cM[0], cM[1], cM[2], cM[3]);
+}
+
+void calcTrainErrors()
+{
+    struct Dataset *test = NULL;      // Initialize pointer
+    int len = getTrainingData(&test); // Pass address of pointer
+
+    if (len > 0)
+    { // Ensure len is valid before accessing test
+        for (int i = 0; i < len; i++)
+        {
+            actual = getTruthValue(test[i].outcome); //converts char* to int for comparison
+            predicted = predictOutcome(test[i]);
+
+            // checks and updates total errors for train dataset
+            if (actual != predicted)
+            {
+                train_PredictedErrors += 1;
+            }
+        }
+    }
+
+    double i = TRAINING_DATA_SIZE;                       // assign macro to double var as macros cant be cast
+    probabilityErrors = (1 / i) * train_PredictedErrors; // calculates probabilty of error based on formula
+
+}
+
 int initData()
 {
     resetTrainingData();
     int retVal = SUCCESS;
-doGetTrainingData:
+    doGetTrainingData:
     struct Dataset *trainingData = NULL;      // Initialize pointer
     int len = getTrainingData(&trainingData); // Pass address of pointer
 
@@ -448,80 +570,6 @@ doGetTrainingData:
 }
 
 /**  
- * @brief Updates the confusion matrix based on actual and predicted outcomes.
- * 
- * This function updates the confusion matrix counters for true positives, false negatives, false positives, and true negatives. 
- * It checks the actual and predicted outcomes and increments the appropriate counter in the confusion matrix.
- * 
- * If either the actual or predicted value is ERROR, an error is logged.
- * 
- * @param actual The actual outcome value (1 for positive, 0 for negative).
- * @param predicted The predicted outcome value (1 for positive, 0 for negative).
- * 
- * @see cM, ERROR
- */
-void assignCMValue(int actual, int predicted)
-{
-    // PRINT_DEBUG("\nactual_%i, predicted_%i\n",actual,predicted);
-
-    if (actual == ERROR || predicted == ERROR)
-    {
-        PRINT_DEBUG("ERROR either value is -1. actual: %d predicted: %d", actual, predicted);
-    }
-
-    if (actual == 1)
-    {
-        if (predicted == 1)
-        {
-            cM[0] += 1; // True positive
-        }
-        else
-        {
-            cM[1] += 1; // False negative
-        }
-    }
-    else
-    {
-        if (predicted == 1)
-        {
-            cM[2] += 1; // False positive
-        }
-        else
-        {
-            cM[3] += 1; // True negative
-        }
-    }
-}
-
-void calcConfusionMatrix()
-{
-    struct Dataset *test = NULL;
-    int len = getTestingData(&test);
-    // PRINT_DEBUG("Test_Data length: %d\n", len);
-    if (len > 0)
-    { // Ensure len is valid before accessing test
-        for (int i = 0; i < len; i++)
-        {
-            actual = getTruthValue(test[i].outcome);
-            predicted = predictOutcome(test[i]);
-
-            // probability of error calculation
-            if (actual != predicted)
-            {
-                test_PredictedErrors += 1;
-            }
-            assignCMValue(actual, predicted);
-        }
-    }
-
-    double i = TESTING_DATA_SIZE;                       // assign macro to double as you cant cast macros
-    probabilityErrors = (1 / i) * test_PredictedErrors; // round to 2dp? not in spec though
-
-    PRINT_DEBUG("For testing dataset: %d errors, %lf probability of error.\n", test_PredictedErrors, probabilityErrors);
-    PRINT_DEBUG("TP: %d, FN: %d, FP: %d, TN: %d\n", cM[0], cM[1], cM[2], cM[3]);
-}
-
-/**  
  * @brief Calculates the confusion matrix and error probability for the testing dataset.
  * 
  * This function evaluates the model's performance by calculating the confusion matrix based on actual and predicted outcomes. 
@@ -530,22 +578,6 @@ void calcConfusionMatrix()
  * 
  * @see cM, test_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
-int getTruthValue(char *str1)
-{
-    if (strcmp(str1, "positive") == 0)
-    {
-        return 1;
-    }
-    else if (strcmp(str1, "negative") == 0)
-    {
-        return 0;
-    }
-    else
-    {
-        PRINT_DEBUG("ERROR: Not truth value: %p", str1);
-        return -1;
-    }
-}
 
 /**  
  * @brief Calculates the training errors and the probability of error.
@@ -555,31 +587,6 @@ int getTruthValue(char *str1)
  * 
  * @see train_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
-void calcTrainErrors()
-{
-    struct Dataset *test = NULL;      // Initialize pointer
-    int len = getTrainingData(&test); // Pass address of pointer
-    // debugDataset(test,len);
-
-    if (len > 0)
-    { // Ensure len is valid before accessing test
-        for (int i = 0; i < len; i++)
-        {
-            predicted = predictOutcome(test[i]);
-            actual = getTruthValue(test[i].outcome);
-            // PRINT_DEBUG("Actual dataset outcome: %s, Dataset outcome: %d, Predicted outcome: %d\n", test[i].outcome, actual, predicted);
-            if (actual != predicted)
-            {
-                train_PredictedErrors += 1;
-            }
-        }
-    }
-
-    double i = TRAINING_DATA_SIZE;                       // assign macro to double var as macros cant be cast
-    probabilityErrors = (1 / i) * train_PredictedErrors; // round to 2dp? not in spec though
-
-    PRINT_DEBUG("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
-}
 
 /**  
  * @brief Debug function to display dataset contents.
