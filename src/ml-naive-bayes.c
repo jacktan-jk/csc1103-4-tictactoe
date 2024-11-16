@@ -77,16 +77,30 @@ int assignMoveIndex(char move) //converts char to int value for easier calculati
 {
     switch (move)
     {
-    case 'x':
-        return BOT;
-    case 'o':
-        return PLAYER1;
-    case 'b':
-        return EMPTY;
-    default: //guard case if input is invalid
-        return ERROR;
+        case 'x':
+            return BOT;
+        case 'o':
+            return PLAYER1;
+        case 'b':
+            return EMPTY;
+        default: //guard case if input is invalid
+            return ERROR;
     }
 }
+
+/**
+ * @brief Updates the confusion matrix based on actual and predicted outcomes.
+ *
+ * This function updates the confusion matrix counters for true positives, false negatives, false positives, and true negatives.
+ * It checks the actual and predicted outcomes and increments the appropriate counter in the confusion matrix.
+ *
+ * If either the actual or predicted value is ERROR, an error is logged.
+ *
+ * @param actual The actual outcome value (1 for positive, 0 for negative).
+ * @param predicted The predicted outcome value (1 for positive, 0 for negative).
+ *
+ * @see cM, ERROR
+ */
 
 void assignCMValue(int actual, int predicted)
 {
@@ -97,17 +111,11 @@ void assignCMValue(int actual, int predicted)
         printf("Invalid value for actual: %d", actual);
     }
 
-
     //predicted must be 0 or 1
     if (predicted != 0 && predicted != 1) //guard case for predicted variable
     {
         printf("Invalid value for predicted: %d", predicted);
     }
-
-/*    if (actual == ERROR || predicted == ERROR) //guard case
-    {
-        printf("ERROR either value is -1. actual: %d predicted: %d", actual, predicted);
-    }*/
 
     //assigns value based on actual and predicted values and stores in a counter inside arr CM
     //array cM contains TP, FN, FP and TN respectively
@@ -168,6 +176,7 @@ int getTruthValue(char *str1) //returns an integer value based on input
  * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount
  */
+
 void calculateProbabilities(int dataset_size)
 {
     // Calculate class probability
@@ -235,6 +244,7 @@ void calculateProbabilities(int dataset_size)
  * 
  * @see positiveClassProbability, negativeClassProbability, positiveMoveCount, negativeMoveCount, assignMoveIndex
  */
+
 int predictOutcome(struct Dataset board)
 {
     double positiveProbability = positiveClassProbability;
@@ -301,7 +311,6 @@ int predictOutcome(struct Dataset board)
     }
 }
 
-
 /**  
  * @brief Determines the best position for the bot to make a move based on the highest probability.
  * 
@@ -317,6 +326,7 @@ int predictOutcome(struct Dataset board)
  * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount
  */
+
 struct Position getBestPosition(int grid[3][3], char player)
 {
     // Determine whether bot is X or O depending on current player
@@ -417,6 +427,7 @@ struct Position getBestPosition(int grid[3][3], char player)
  * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount, cM, test_PredictedErrors, train_PredictedErrors
  */
+
 void resetTrainingData() {
     // Reset outcome counts
     positive_count = 0;
@@ -444,33 +455,15 @@ void resetTrainingData() {
     train_PredictedErrors = 0;
 }
 
-/**  
- * @brief Initializes the training data and model statistics.
- * 
- * This function resets the training data, then retrieves the training dataset for model training. 
- * It processes the dataset to count occurrences of positive and negative outcomes and updates the move counts for each grid position based on the data. 
- * Afterward, it calculates training errors and updates the confusion matrix.
- * 
- * If the initial dataset is empty, it attempts to load the data again.
- * 
- * @see resetTrainingData, getTrainingData, calcTrainErrors, calcConfusionMatrix
+/**
+ * @brief Calculates the confusion matrix and error probability for the testing dataset.
+ *
+ * This function evaluates the model's performance by calculating the confusion matrix based on actual and predicted outcomes.
+ * It iterates through the testing data, compares actual outcomes with predicted ones, and updates the confusion matrix values.
+ * The number of prediction errors and the probability of error are also computed.
+ *
+ * @see cM, test_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
-
-
-/**  
- * @brief Updates the confusion matrix based on actual and predicted outcomes.
- * 
- * This function updates the confusion matrix counters for true positives, false negatives, false positives, and true negatives. 
- * It checks the actual and predicted outcomes and increments the appropriate counter in the confusion matrix.
- * 
- * If either the actual or predicted value is ERROR, an error is logged.
- * 
- * @param actual The actual outcome value (1 for positive, 0 for negative).
- * @param predicted The predicted outcome value (1 for positive, 0 for negative).
- * 
- * @see cM, ERROR
- */
-
 
 void calcConfusionMatrix()
 {
@@ -500,6 +493,15 @@ void calcConfusionMatrix()
     printf("True Positive: %d, False Negative: %d, False Positive: %d, True Negative: %d\n", cM[0], cM[1], cM[2], cM[3]);
 }
 
+/**
+ * @brief Calculates the training errors and the probability of error.
+ *
+ * This function evaluates the model's performance on the training dataset by comparing predicted outcomes with actual ones.
+ * It updates the count of prediction errors and computes the probability of error based on the number of errors and the size of the training dataset.
+ *
+ * @see train_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
+ */
+
 void calcTrainErrors()
 {
     struct Dataset *test = NULL;      // Initialize pointer
@@ -525,6 +527,18 @@ void calcTrainErrors()
     printf("For training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
 
 }
+
+/**
+ * @brief Initializes the training data and model statistics.
+ *
+ * This function resets the training data, then retrieves the training dataset for model training.
+ * It processes the dataset to count occurrences of positive and negative outcomes and updates the move counts for each grid position based on the data.
+ * Afterward, it calculates training errors and updates the confusion matrix.
+ *
+ * If the initial dataset is empty, it attempts to load the data again.
+ *
+ * @see resetTrainingData, getTrainingData, calcTrainErrors, calcConfusionMatrix
+ */
 
 int initData()
 {
@@ -583,25 +597,6 @@ int initData()
     calcConfusionMatrix();
     return SUCCESS;
 }
-
-/**  
- * @brief Calculates the confusion matrix and error probability for the testing dataset.
- * 
- * This function evaluates the model's performance by calculating the confusion matrix based on actual and predicted outcomes. 
- * It iterates through the testing data, compares actual outcomes with predicted ones, and updates the confusion matrix values. 
- * The number of prediction errors and the probability of error are also computed.
- * 
- * @see cM, test_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
- */
-
-/**  
- * @brief Calculates the training errors and the probability of error.
- * 
- * This function evaluates the model's performance on the training dataset by comparing predicted outcomes with actual ones. 
- * It updates the count of prediction errors and computes the probability of error based on the number of errors and the size of the training dataset.
- * 
- * @see train_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
- */
 
 /**  
  * @brief Debug function to display dataset contents.
