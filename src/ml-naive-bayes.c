@@ -73,7 +73,7 @@ double probabilityErrors;
  * 
  * @see BOT, PLAYER1, EMPTY, ERROR
  */
-int assignMoveIndex(char move)
+int assignMoveIndex(char move) //converts char to int value for easier calculation
 {
     switch (move)
     {
@@ -83,7 +83,7 @@ int assignMoveIndex(char move)
         return PLAYER1;
     case 'b':
         return EMPTY;
-    default:
+    default: //guard case if input is invalid
         return ERROR;
     }
 }
@@ -91,10 +91,23 @@ int assignMoveIndex(char move)
 void assignCMValue(int actual, int predicted)
 {
 
-    if (actual == ERROR || predicted == ERROR) //guard case
+    //actual must be 0 or 1
+    if (actual != 0 && actual != 1) //guard case for actual variable
+    {
+        printf("Invalid value for actual: %d", actual);
+    }
+
+
+    //predicted must be 0 or 1
+    if (predicted != 0 && predicted != 1) //guard case for predicted variable
+    {
+        printf("Invalid value for predicted: %d", predicted);
+    }
+
+/*    if (actual == ERROR || predicted == ERROR) //guard case
     {
         printf("ERROR either value is -1. actual: %d predicted: %d", actual, predicted);
-    }
+    }*/
 
     //assigns value based on actual and predicted values and stores in a counter inside arr CM
     //array cM contains TP, FN, FP and TN respectively
@@ -123,7 +136,7 @@ void assignCMValue(int actual, int predicted)
     }
 }
 
-int getTruthValue(char *str1) //returns a truth value based on input
+int getTruthValue(char *str1) //returns an integer value based on input
 {
     if (strcmp(str1, "positive") == 0)
     {
@@ -135,7 +148,7 @@ int getTruthValue(char *str1) //returns a truth value based on input
     }
     else
     {
-        //guard case if inputs are neither positive nor negative
+        //guard case if inputs are neither "positive" nor "negative"
         return -1;
     }
 }
@@ -509,6 +522,7 @@ void calcTrainErrors()
 
     double i = TRAINING_DATA_SIZE;                       // assign macro to double var as macros cant be cast
     probabilityErrors = (1 / i) * train_PredictedErrors; // calculates probabilty of error based on formula
+    printf("For training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
 
 }
 
@@ -516,6 +530,7 @@ int initData()
 {
     resetTrainingData();
     int retVal = SUCCESS;
+
     doGetTrainingData:
     struct Dataset *trainingData = NULL;      // Initialize pointer
     int len = getTrainingData(&trainingData); // Pass address of pointer
