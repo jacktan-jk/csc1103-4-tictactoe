@@ -527,8 +527,8 @@ void calcConfusionMatrix()
     double i = TESTING_DATA_SIZE;                       // assign macro to double as you cant cast macros
     probabilityErrors = (1 / i) * test_PredictedErrors; // round to 2dp? not in spec though
 
-    PRINT_DEBUG("For testing dataset: %d errors, %lf probability of error.\n", test_PredictedErrors, probabilityErrors);
-    PRINT_DEBUG("TP: %d, FN: %d, FP: %d, TN: %d\n", cM[0], cM[1], cM[2], cM[3]);
+    printf("For testing dataset: %d errors, %lf probability of error.\n", test_PredictedErrors, probabilityErrors);
+    printf("TP: %d, FN: %d, FP: %d, TN: %d\n", cM[0], cM[1], cM[2], cM[3]);
 }
 
 /**
@@ -590,7 +590,7 @@ void calcTrainErrors()
     double i = TRAINING_DATA_SIZE;                       // assign macro to double var as macros cant be cast
     probabilityErrors = (1 / i) * train_PredictedErrors; // round to 2dp? not in spec though
 
-    PRINT_DEBUG("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
+    printf("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
 }
 
 /**  
