@@ -568,16 +568,16 @@ int getTruthValue(char *str1) //returns an integer value based on input
  */
 void calcTrainErrors()
 {
-    struct Dataset *test = NULL;      // Initialize pointer
-    int len = getTrainingData(&test); // Pass address of pointer
+    struct Dataset *train = NULL;      // Initialize pointer
+    int len = getTrainingData(&train); // Pass address of pointer
     // debugDataset(test,len);
 
     if (len > 0)
     { // Ensure len is valid before accessing test
         for (int i = 0; i < len; i++)
         {
-            predicted = predictOutcome(test[i]);
-            actual = getTruthValue(test[i].outcome);
+            predicted = predictOutcome(train[i]);
+            actual = getTruthValue(train[i].outcome);
             // PRINT_DEBUG("Actual dataset outcome: %s, Dataset outcome: %d, Predicted outcome: %d\n", test[i].outcome, actual, predicted);
             // checks and updates total errors for train dataset
             if (actual != predicted)
