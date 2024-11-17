@@ -77,30 +77,30 @@ int assignMoveIndex(char move) //converts char to int value for easier calculati
 {
     switch (move)
     {
-        case 'x':
-            return BOT;
-        case 'o':
-            return PLAYER1;
-        case 'b':
-            return EMPTY;
-        default: //guard case if input is invalid
-            return ERROR;
+    case 'x':
+        return BOT;
+    case 'o':
+        return PLAYER1;
+    case 'b':
+        return EMPTY;
+    default:
+        return ERROR;
     }
 }
 
-/**
+/**  
  * @brief Calculates the probabilities for each class and conditional probabilities with Laplace smoothing.
- *
+ * 
  * This function calculates:
  * - The class probabilities for positive and negative outcomes.
  * - The conditional probabilities for each move ('x', 'o', 'b') at each position on the board,
  *   given the class (positive or negative) with Laplace smoothing applied.
- *
+ * 
  * The Laplace smoothing is used to prevent zero probabilities for moves that may not have been observed in the training data.
  * The resulting probabilities are printed for debugging purposes.
- *
+ * 
  * @param dataset_size The total number of samples in the dataset used for probability calculation.
- *
+ * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount
  */
 void calculateProbabilities(int dataset_size)
@@ -133,7 +133,6 @@ void calculateProbabilities(int dataset_size)
                     move = 'b';
                 }
 
-
                 double positiveProbability = (double)(positiveMoveCount[row][col][moveIndex] + laplace_smoothing) / (positive_count + 3 * laplace_smoothing);
                 double negativeProbability = (double)(negativeMoveCount[row][col][moveIndex] + laplace_smoothing) / (negative_count + 3 * laplace_smoothing);
                 if (positive_count == 0)
@@ -156,20 +155,20 @@ void calculateProbabilities(int dataset_size)
     }
 }
 
-/**
+/**  
  * @brief Predicts the outcome of a given Tic Tac Toe board based on previously calculated probabilities.
- *
+ * 
  * This function calculates the probabilities of a positive (Player 1 wins) or negative (Bot wins) outcome
  * for a given board state by multiplying the conditional probabilities of each move in the grid with the
  * class probabilities. The prediction is made based on which outcome (positive or negative) has the higher probability.
- *
+ * 
  * If the calculated probabilities are zero, indicating that the outcome cannot be predicted with the available data,
  * the function returns -1.
- *
+ * 
  * @param board The current Tic Tac Toe board whose outcome needs to be predicted.
- *
+ * 
  * @return 1 if the predicted outcome is positive (Player 1 wins), 0 if negative (Bot wins), and -1 if the outcome cannot be predicted.
- *
+ * 
  * @see positiveClassProbability, negativeClassProbability, positiveMoveCount, negativeMoveCount, assignMoveIndex
  */
 int predictOutcome(struct Dataset board)
@@ -241,19 +240,19 @@ int predictOutcome(struct Dataset board)
 }
 
 
-/**
+/**  
  * @brief Determines the best position for the bot to make a move based on the highest probability.
- *
+ * 
  * This function evaluates all empty positions on the Tic Tac Toe grid and calculates the probability
- * of the bot winning (either as 'x' or 'o') using the pre-calculated move probabilities from the training data.
- * The bot chooses the position with the highest probability of winning, where the move is either 'x' or 'o'
+ * of the bot winning (either as 'x' or 'o') using the pre-calculated move probabilities from the training data. 
+ * The bot chooses the position with the highest probability of winning, where the move is either 'x' or 'o' 
  * depending on the current player. It returns the best position for the bot to make its move.
- *
+ * 
  * @param grid The current state of the Tic Tac Toe game board.
  * @param player The current player, either 'x' or 'o'.
- *
+ * 
  * @return A struct `Position` representing the row and column of the best move for the bot. If no valid move is found, it returns an error indicator.
- *
+ * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount
  */
 struct Position getBestPosition(int grid[3][3], char player)
@@ -347,13 +346,13 @@ struct Position getBestPosition(int grid[3][3], char player)
     }
 }
 
-/**
+/**  
  * @brief Resets the training data and associated statistics for a fresh training cycle.
- *
+ * 
  * This function resets all relevant variables used in the machine learning model's training process.
  * It clears the outcome counts, resets the move count arrays for each grid position, and reinitializes the confusion matrix.
  * Additionally, it clears the prediction error counters, ensuring that the model starts with a clean state.
- *
+ * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount, cM, test_PredictedErrors, train_PredictedErrors
  */
 void resetTrainingData() {
@@ -382,15 +381,15 @@ void resetTrainingData() {
     train_PredictedErrors = 0;
 }
 
-/**
+/**  
  * @brief Initializes the training data and model statistics.
- *
- * This function resets the training data, then retrieves the training dataset for model training.
- * It processes the dataset to count occurrences of positive and negative outcomes and updates the move counts for each grid position based on the data.
+ * 
+ * This function resets the training data, then retrieves the training dataset for model training. 
+ * It processes the dataset to count occurrences of positive and negative outcomes and updates the move counts for each grid position based on the data. 
  * Afterward, it calculates training errors and updates the confusion matrix.
- *
+ * 
  * If the initial dataset is empty, it attempts to load the data again.
- *
+ * 
  * @see resetTrainingData, getTrainingData, calcTrainErrors, calcConfusionMatrix
  */
 int initData()
@@ -398,7 +397,7 @@ int initData()
     resetTrainingData();
     int retVal = SUCCESS;
 
-    doGetTrainingData:
+doGetTrainingData:
     struct Dataset *trainingData = NULL;      // Initialize pointer
     int len = getTrainingData(&trainingData); // Pass address of pointer
 
@@ -452,17 +451,17 @@ int initData()
     return SUCCESS;
 }
 
-/**
+/**  
  * @brief Updates the confusion matrix based on actual and predicted outcomes.
- *
- * This function updates the confusion matrix counters for true positives, false negatives, false positives, and true negatives.
+ * 
+ * This function updates the confusion matrix counters for true positives, false negatives, false positives, and true negatives. 
  * It checks the actual and predicted outcomes and increments the appropriate counter in the confusion matrix.
- *
+ * 
  * If either the actual or predicted value is ERROR, an error is logged.
- *
+ * 
  * @param actual The actual outcome value (1 for positive, 0 for negative).
  * @param predicted The predicted outcome value (1 for positive, 0 for negative).
- *
+ * 
  * @see cM, ERROR
  */
 void assignCMValue(int actual, int predicted)
@@ -527,17 +526,17 @@ void calcConfusionMatrix()
     double i = TESTING_DATA_SIZE;                       // assign macro to double as you cant cast macros
     probabilityErrors = (1 / i) * test_PredictedErrors; // round to 2dp? not in spec though
 
-    printf("For testing dataset: %d errors, %lf probability of error.\n", test_PredictedErrors, probabilityErrors);
-    printf("TP: %d, FN: %d, FP: %d, TN: %d\n", cM[0], cM[1], cM[2], cM[3]);
+    PRINT_DEBUG("For testing dataset: %d errors, %lf probability of error.\n", test_PredictedErrors, probabilityErrors);
+    PRINT_DEBUG("TP: %d, FN: %d, FP: %d, TN: %d\n", cM[0], cM[1], cM[2], cM[3]);
 }
 
-/**
+/**  
  * @brief Calculates the confusion matrix and error probability for the testing dataset.
- *
- * This function evaluates the model's performance by calculating the confusion matrix based on actual and predicted outcomes.
- * It iterates through the testing data, compares actual outcomes with predicted ones, and updates the confusion matrix values.
+ * 
+ * This function evaluates the model's performance by calculating the confusion matrix based on actual and predicted outcomes. 
+ * It iterates through the testing data, compares actual outcomes with predicted ones, and updates the confusion matrix values. 
  * The number of prediction errors and the probability of error are also computed.
- *
+ * 
  * @see cM, test_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
 int getTruthValue(char *str1) //returns an integer value based on input
@@ -558,12 +557,12 @@ int getTruthValue(char *str1) //returns an integer value based on input
     }
 }
 
-/**
+/**  
  * @brief Calculates the training errors and the probability of error.
- *
- * This function evaluates the model's performance on the training dataset by comparing predicted outcomes with actual ones.
+ * 
+ * This function evaluates the model's performance on the training dataset by comparing predicted outcomes with actual ones. 
  * It updates the count of prediction errors and computes the probability of error based on the number of errors and the size of the training dataset.
- *
+ * 
  * @see train_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
 void calcTrainErrors()
@@ -590,7 +589,7 @@ void calcTrainErrors()
     double i = TRAINING_DATA_SIZE;                       // assign macro to double var as macros cant be cast
     probabilityErrors = (1 / i) * train_PredictedErrors; // round to 2dp? not in spec though
 
-    printf("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
+    PRINT_DEBUG("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
 }
 
 /**  
