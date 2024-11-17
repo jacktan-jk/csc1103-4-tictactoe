@@ -120,7 +120,7 @@ void calculateProbabilities(int dataset_size)
             for (int moveIndex = 0; moveIndex < 3; moveIndex++)
             {
                 char move;
-                if (moveIndex == 0)
+                if (moveIndex == 0) //convert
                 {
                     move = 'x';
                 }
@@ -132,6 +132,8 @@ void calculateProbabilities(int dataset_size)
                 {
                     move = 'b';
                 }
+
+
                 double positiveProbability = (double)(positiveMoveCount[row][col][moveIndex] + laplace_smoothing) / (positive_count + 3 * laplace_smoothing);
                 double negativeProbability = (double)(negativeMoveCount[row][col][moveIndex] + laplace_smoothing) / (negative_count + 3 * laplace_smoothing);
                 if (positive_count == 0)
@@ -185,6 +187,7 @@ int predictOutcome(struct Dataset board)
         negativeProbability = 1;
     }
 
+    //loops through board grid and sums up probability for each grid
     for (int row = 0; row < 3; row++)
     {
         for (int col = 0; col < 3; col++)
@@ -219,6 +222,7 @@ int predictOutcome(struct Dataset board)
     // Output probabilities for debugging
     // PRINT_DEBUG("\nPositive: %lf, Negative: %lf Probability: \n", positiveProbability, negativeProbability);
 
+    //returns a value based on condition
     if (positiveProbability > negativeProbability)
     {
         // PRINT_DEBUG("Predicted Outcome: Positive\n");
@@ -375,7 +379,6 @@ void resetTrainingData() {
 
     // Reset prediction errors
     test_PredictedErrors = 0;
-
     train_PredictedErrors = 0;
 }
 
@@ -394,6 +397,7 @@ int initData()
 {
     resetTrainingData();
     int retVal = SUCCESS;
+
     doGetTrainingData:
     struct Dataset *trainingData = NULL;      // Initialize pointer
     int len = getTrainingData(&trainingData); // Pass address of pointer
@@ -405,12 +409,13 @@ int initData()
         {
             return retVal;
         }
-        goto doGetTrainingData;
+        goto doGetTrainingData; //loops until training data is set
     }
 
+    //loops through train dataset for ml training
     for (int i = 0; i < len; i++)
     {
-        // Get outcome class count
+        // Get outcome class count for each position
         if (strcmp(trainingData[i].outcome, "positive") == 0)
         {
             positive_count++;
@@ -495,21 +500,26 @@ void assignCMValue(int actual, int predicted)
 
 void calcConfusionMatrix()
 {
+    //Tests ml on test dataset and stores result in a confusion matrix
+
     struct Dataset *test = NULL;
     int len = getTestingData(&test);
     // PRINT_DEBUG("Test_Data length: %d\n", len);
+    //loops through testing dataset
     if (len > 0)
     { // Ensure len is valid before accessing test
         for (int i = 0; i < len; i++)
         {
-            actual = getTruthValue(test[i].outcome);
+            actual = getTruthValue(test[i].outcome); //converts char* to int for comparison
             predicted = predictOutcome(test[i]);
 
-            // probability of error calculation
+            // checks and updates total errors for test dataset
             if (actual != predicted)
             {
                 test_PredictedErrors += 1;
             }
+
+            //sets value based on actual vs predicted
             assignCMValue(actual, predicted);
         }
     }
@@ -530,7 +540,7 @@ void calcConfusionMatrix()
  *
  * @see cM, test_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
-int getTruthValue(char *str1)
+int getTruthValue(char *str1) //returns an integer value based on input
 {
     if (strcmp(str1, "positive") == 0)
     {
@@ -542,6 +552,7 @@ int getTruthValue(char *str1)
     }
     else
     {
+        //guard case if inputs are neither "positive" nor "negative"
         PRINT_DEBUG("ERROR: Not truth value: %p", str1);
         return -1;
     }
@@ -568,6 +579,7 @@ void calcTrainErrors()
             predicted = predictOutcome(test[i]);
             actual = getTruthValue(test[i].outcome);
             // PRINT_DEBUG("Actual dataset outcome: %s, Dataset outcome: %d, Predicted outcome: %d\n", test[i].outcome, actual, predicted);
+            // checks and updates total errors for train dataset
             if (actual != predicted)
             {
                 train_PredictedErrors += 1;
