@@ -3,11 +3,42 @@
 ## Installation Instructions (Linux)
 
 To get started with the project, ensure you have the following installed:
+
+> [!IMPORTANT]
+> Ensure that you follow all the instruction in the link below!
+
+1. **Setup Docker's apt repository**
 ```
-sudo apt-get install -y \
-       docker-ce \
-       x11-xserver-utils \
+ # Add Docker's official GPG key:
+ sudo apt-get update
+ sudo apt-get install ca-certificates curl
+ sudo install -m 0755 -d /etc/apt/keyrings
+ sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+ sudo chmod a+r /etc/apt/keyrings/docker.asc
+ # Add the repository to Apt sources:
+ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
 ```
+
+2. **Installing xhost(X11)**
+```
+sudo apt-get install x11-apps
+sudo apt-get install x11-xserver-utils
+```
+2. **Installing Docker Desktop**
+```
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+  
+> [!TIP]
+> Adding this command in startup.sh will make your life easier.
+> ```
+> systemctl --user start docker-desktop
+> ```
+
 ### Building the Project via Docker (Linux)
 After setting up WSL2 and Docker, you can choose to either load a Docker image or build the Docker image yourself.
 #### **[OPTIONAL]** Loading Docker Image
@@ -21,6 +52,7 @@ sudo ./run_docker.sh
 ```
 > [!WARNING]
 > **Warning for Docker Building:**
+> 
 > If `compile.sh` or `run_docker.sh` is not found and it's clearly in the directory, run the following command to convert it to Unix line endings:
 > ```
 > dos2unix SCRIPT_NAME.sh
@@ -39,8 +71,8 @@ To get started with the project, ensure you have the following installed:
 1. **Docker Desktop**
 Select based on your specs.
      - [Install Docker Desktop](https://www.docker.com/products/docker-desktop)
-     -  select "Download for Mac - Intel Chip"
-     -  select "Download for Mac - Apple Silicon"
+     -  Select "Download for Mac - Intel Chip"
+     -  Select "Download for Mac - Apple Silicon"
 
 2. **Installation Docker Desktop**
      - Go to "Downloads" and double click "Docker.dmg"
@@ -73,11 +105,12 @@ Use the following command.
   docker ps -a
 ```
 
-## Run TicTacToe Application on Docker (MacOS)
->[!IMPORTANT]
->**Pre-requisite application to be install.
+### Run TicTacToe Application on Docker (MacOS)
+> [!IMPORTANT]
+> **Pre-requisite application to be install.
 >
->**BEFORE BUILDING DOCKER IMAGE OR CONTAINER.
+> **BEFORE BUILDING DOCKER IMAGE OR CONTAINER.
+
 1. Install brew
      - [Install brew](https://brew.sh)
 
