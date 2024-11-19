@@ -2,16 +2,30 @@
 
 int depthCounter = 0;
 
-/**  
- * @brief Returns the maximum of two integers using inline assembly.
- * 
- * This function compares two integers, `a` and `b`, and returns the greater of the two. 
- * It uses inline assembly to perform the comparison and conditional move, making the operation more efficient.
- * 
- * @param a The first integer.
- * @param b The second integer.
- * 
- * @return The maximum of `a` and `b`.
+/**
+ * @brief Returns the maximum of two integers.
+ *
+ * This function computes the maximum of two integers using either:
+ * - A standard C implementation when `DISABLE_ASM` is defined.
+ * - Optimized assembly instructions for either AArch64 or x86 platforms.
+ *
+ * The choice of implementation depends on the platform and preprocessor directives.
+ *
+ * @param a The first integer to compare.
+ * @param b The second integer to compare.
+ * @return The greater of the two integers.
+ *
+ * @note If `DISABLE_ASM` is defined, the function uses pure C logic.
+ * @note For AArch64 platforms, the function uses assembly instructions with conditional selection.
+ * @note For x86 platforms, the function uses assembly instructions with register manipulation and branching.
+ *
+ * @warning Ensure the platform supports the specified assembly code paths if `DISABLE_ASM` is not defined.
+ *
+ * Example usage:
+ * @code
+ * int result = max(10, 20);
+ * // result now holds the value 20.
+ * @endcode
  */
 int max(int a, int b)
 {
@@ -46,16 +60,30 @@ int max(int a, int b)
 #endif
 }
 
-/**  
- * @brief Returns the minimum of two integers using inline assembly.
- * 
- * This function compares two integers, `a` and `b`, and returns the smaller of the two. 
- * It uses inline assembly to perform the comparison and conditional move, optimizing the operation.
- * 
- * @param a The first integer.
- * @param b The second integer.
- * 
- * @return The minimum of `a` and `b`.
+/**
+ * @brief Returns the minimum of two integers.
+ *
+ * This function computes the minimum of two integers using either:
+ * - A standard C implementation when `DISABLE_ASM` is defined.
+ * - Optimized assembly instructions for either AArch64 or x86 platforms.
+ *
+ * The choice of implementation depends on the platform and preprocessor directives.
+ *
+ * @param a The first integer to compare.
+ * @param b The second integer to compare.
+ * @return The smaller of the two integers.
+ *
+ * @note If `DISABLE_ASM` is defined, the function uses pure C logic.
+ * @note For AArch64 platforms, the function uses assembly instructions with conditional selection.
+ * @note For x86 platforms, the function uses assembly instructions with register manipulation and branching.
+ *
+ * @warning Ensure the platform supports the specified assembly code paths if `DISABLE_ASM` is not defined.
+ *
+ * Example usage:
+ * @code
+ * int result = min(10, 20);
+ * // result now holds the value 10.
+ * @endcode
  */
 int min(int a, int b)
 {
@@ -341,18 +369,38 @@ int evaluate(int b[3][3])
     return 0;
 }
 
-/**  
- * @brief Checks if there are any remaining moves on the board.
- * 
- * This function scans the Tic-Tac-Toe board for any empty cells (represented 
- * by `0`). If at least one empty cell is found, it returns true, indicating 
- * that the game can continue. If no empty cells are found, it returns false, 
- * indicating the game has ended.
- * 
- * @param board A 3x3 array representing the Tic-Tac-Toe board.
- * 
- * @return True if there are empty cells (moves left), false if the board is full.
- * 
+
+/**
+ * @brief Checks if there are any moves left on the board.
+ *
+ * This function determines if there are any empty cells left on a 3x3 board.
+ * It uses one of the following implementations based on compilation options:
+ * - A standard C implementation when `DISABLE_ASM` is defined.
+ * - Optimized assembly instructions for either AArch64 or x86 platforms.
+ *
+ * The choice of implementation depends on the platform and preprocessor directives.
+ *
+ * @param board A 3x3 array representing the board state. Each cell should contain:
+ * - `EMPTY` (typically 0) if the cell is empty.
+ * - Any non-zero value if the cell is occupied.
+ * @return `true` if there are empty cells; otherwise, `false`.
+ *
+ * @note If `DISABLE_ASM` is defined, the function uses pure C logic.
+ * @note For AArch64 platforms, the function uses assembly instructions for efficient scanning.
+ * @note For x86 platforms, the function uses assembly instructions for efficient scanning.
+ *
+ * Example usage:
+ * @code
+ * int board[3][3] = {
+ *     {1, 2, 0},
+ *     {0, 1, 2},
+ *     {2, 1, 0}
+ * };
+ * bool movesLeft = isMovesLeft(board);
+ * // movesLeft will be true as there are empty cells (0s).
+ * @endcode
+ *
+ * @warning Ensure the platform supports the specified assembly code paths if `DISABLE_ASM` is not defined.
  */
 bool isMovesLeft(int board[3][3])
 {
