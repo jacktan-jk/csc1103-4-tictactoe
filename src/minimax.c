@@ -42,7 +42,7 @@ int max(int a, int b)
         : "r" (a), "r" (b)    // Inputs
         : "cc"                // Clobbered flags (condition codes)
     );
-#else
+#else   //x86-64
     __asm__(
         "movl %1, %%eax;"    // Move 'a' to eax
         "movl %2, %%ebx;"    // Move 'b' to ebx
@@ -100,7 +100,7 @@ int min(int a, int b)
         : "r" (a), "r" (b)    // Inputs
         : "cc"                // Clobbered flags (condition codes)
     );
-#else
+#else   //x86-64
     __asm__(
         "movl %1, %%eax;"    // Move 'a' to eax
         "movl %2, %%ebx;"    // Move 'b' to ebx
@@ -453,7 +453,7 @@ __asm__(
         : "r"(board)             // Input operand
         : "x0", "x1", "x2", "x3", "x4" // Clobbered registers
     );
-#else
+#else   //x86-64
     __asm__(
         "xor %%rbx, %%rbx;" // rbx = i = 0
         "outer_loop:;"

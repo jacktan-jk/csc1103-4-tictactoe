@@ -398,6 +398,7 @@ int initData()
     int retVal = SUCCESS;
 
 doGetTrainingData:
+    static bool doOnce = false;
     struct Dataset *trainingData = NULL;      // Initialize pointer
     int len = getTrainingData(&trainingData); // Pass address of pointer
 
@@ -408,6 +409,13 @@ doGetTrainingData:
         {
             return retVal;
         }
+
+        if (doOnce) //prevents potential loopback/deadlock. Edge case tbh.
+        {
+            return BAD_PARAM;
+        }
+
+        doOnce = true;
         goto doGetTrainingData; //loops until training data is set
     }
 
