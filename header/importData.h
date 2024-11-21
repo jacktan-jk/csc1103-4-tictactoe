@@ -31,42 +31,78 @@ struct Dataset
     char outcome[9];    /**< Outcome of the board state */
 };
 
-/** 
- * @brief Reads a dataset file and optionally splits data randomly.
+/**  
+ * @brief Reads a dataset from a file and optionally randomizes entries for training and testing.
  * 
- * @param filename Name of the file to read.
- * @param split Flag indicating whether to split data into training/testing.
- * @return Success or error code.
+ * Opens a file to read each line as a Tic Tac Toe board state, populating a grid structure 
+ * where 'x', 'o', and 'b' represent the Bot, Player 1, and empty cells, respectively. 
+ * Each board state is followed by an outcome that is stored within the dataset. 
+ * If `split` is true, entries are randomized using an array of unique indices for shuffling.
+ * 
+ * @param filename The name of the dataset file to read.
+ * @param split Boolean indicating whether to randomize entries for dataset splitting.
+ * @return int SUCCESS (0) if reading is successful, BAD_PARAM (-5) if the file cannot be opened, 
+ *         or the return value of `splitFile()` if `split` is enabled.
+ * 
+ * @see getRandomNo, splitFile
  */
 int readDataset(const char *filename, bool split);
 
 /** 
- * @brief Splits dataset into 80% training and 20% testing files.
+ * @brief Splits the dataset into training and testing files with an 80-20 ratio.
  * 
- * @return Success or error code.
+ * This function separates the dataset into two parts: 80% for training and 20% for testing. 
+ * The training portion is written to `trainingFile`, and the testing portion is written to 
+ * `testingFile`. Each entry consists of a 3x3 grid representing the Tic Tac Toe board and 
+ * the outcome of that board.
+ * 
+ * @return int SUCCESS (0) if both files are written successfully, BAD_PARAM (-5) if either 
+ *         file cannot be opened.
+ * 
+ * @see data, trainingFile, testingFile
  */
 int splitFile();
 
 /** 
- * @brief Generates an array of unique random numbers within the dataset size.
+ * @brief Generates an array of unique random integers within the range of the dataset size.
  * 
- * @param random Array to store generated random numbers.
+ * This function populates an array with unique random integers between 0 and `DATA_SIZE - 1`. 
+ * It ensures that each integer appears only once by checking a `check` array to track used 
+ * indices. This can be used for randomizing the order of data for splitting purposes.
+ * 
+ * @param random Array to store the generated unique random integers.
+ * 
+ * @see DATA_SIZE
  */
 void getRandomNo(int random[DATA_SIZE]);
 
 /** 
- * @brief Retrieves the training data and its length.
+ * @brief Retrieves the training data from a file and returns its length.
  * 
- * @param[out] d Pointer to a dataset pointer that will reference the training data.
- * @return Number of entries in the training data.
+ * This function initializes the `data` array to zero for the length of the training set, reads 
+ * the dataset from the specified `trainingFile`, and assigns the `data` pointer to the provided 
+ * dataset pointer. Returns the length of the training data loaded.
+ * 
+ * @param d Pointer to a dataset pointer that will reference the loaded training data array.
+ * 
+ * @return The number of training entries loaded (i.e., `len_train`).
+ * 
+ * @see readDataset, trainingFile
  */
 int getTrainingData(struct Dataset **d);
 
 /** 
- * @brief Retrieves the testing data and its length.
+ * @brief Retrieves the testing data from a file and returns its length.
  * 
- * @param[out] d Pointer to a dataset pointer that will reference the testing data.
- * @return Number of entries in the testing data.
+ * This function zeroes out the `data` array for the length of the testing set, reads the 
+ * dataset from the specified `testingFile`, and assigns the `data` pointer to the provided 
+ * dataset pointer. Returns the length of the testing data loaded.
+ * 
+ * @param d Pointer to a dataset pointer that will reference the loaded testing data array.
+ * 
+ * @return The number of testing entries loaded (i.e., `len_test`).
+ * 
+ * @see readDataset, testingFile
  */
 int getTestingData(struct Dataset **d);
 

@@ -41,28 +41,13 @@ struct Dataset data[DATA_SIZE];
 const char *trainingFile = RES_PATH "" TRAIN_PATH "" DATA_PATH;
 const char *testingFile = RES_PATH "" TEST_PATH "" DATA_PATH;
 
-/**  
- * @brief Reads a dataset from a file and optionally randomizes entries for training and testing.
- * 
- * Opens a file to read each line as a Tic Tac Toe board state, populating a grid structure 
- * where 'x', 'o', and 'b' represent the Bot, Player 1, and empty cells, respectively. 
- * Each board state is followed by an outcome that is stored within the dataset. 
- * If `split` is true, entries are randomized using an array of unique indices for shuffling.
- * 
- * @param filename The name of the dataset file to read.
- * @param split Boolean indicating whether to randomize entries for dataset splitting.
- * @return int SUCCESS (0) if reading is successful, ERROR (-1) if the file cannot be opened, 
- *         or the return value of `splitFile()` if `split` is enabled.
- * 
- * @see getRandomNo, splitFile
- */
 int readDataset(const char *filename, bool split)
 {
     FILE *file = fopen(filename, "r");
     if (!file)
     {
         PRINT_DEBUG("[ERROR] Error opening file.\n");
-        return ERROR;
+        return BAD_PARAM;
     }
 
     if (split)
@@ -102,19 +87,6 @@ int readDataset(const char *filename, bool split)
     return SUCCESS;
 }
 
-/** 
- * @brief Splits the dataset into training and testing files with an 80-20 ratio.
- * 
- * This function separates the dataset into two parts: 80% for training and 20% for testing. 
- * The training portion is written to `trainingFile`, and the testing portion is written to 
- * `testingFile`. Each entry consists of a 3x3 grid representing the Tic Tac Toe board and 
- * the outcome of that board.
- * 
- * @return int SUCCESS (0) if both files are written successfully, BAD_PARAM (-1) if either 
- *         file cannot be opened.
- * 
- * @see data, trainingFile, testingFile
- */
 int splitFile()
 {
     // get 80% and 20% respectively
@@ -168,17 +140,6 @@ int splitFile()
     return SUCCESS;
 }
 
-/** 
- * @brief Generates an array of unique random integers within the range of the dataset size.
- * 
- * This function populates an array with unique random integers between 0 and `DATA_SIZE - 1`. 
- * It ensures that each integer appears only once by checking a `check` array to track used 
- * indices. This can be used for randomizing the order of data for splitting purposes.
- * 
- * @param random Array to store the generated unique random integers.
- * 
- * @see DATA_SIZE
- */
 void getRandomNo(int random[DATA_SIZE])
 {
     int count = 0;
@@ -203,19 +164,6 @@ void getRandomNo(int random[DATA_SIZE])
     }
 }
 
-/** 
- * @brief Retrieves the training data from a file and returns its length.
- * 
- * This function initializes the `data` array to zero for the length of the training set, reads 
- * the dataset from the specified `trainingFile`, and assigns the `data` pointer to the provided 
- * dataset pointer. Returns the length of the training data loaded.
- * 
- * @param[out] d Pointer to a dataset pointer that will reference the loaded training data array.
- * 
- * @return The number of training entries loaded (i.e., `len_train`).
- * 
- * @see readDataset, trainingFile
- */
 int getTrainingData(struct Dataset **d)
 {
     memset(data, 0, len_train * sizeof(struct Dataset));
@@ -224,19 +172,6 @@ int getTrainingData(struct Dataset **d)
     return len_train;
 }
 
-/** 
- * @brief Retrieves the testing data from a file and returns its length.
- * 
- * This function zeroes out the `data` array for the length of the testing set, reads the 
- * dataset from the specified `testingFile`, and assigns the `data` pointer to the provided 
- * dataset pointer. Returns the length of the testing data loaded.
- * 
- * @param[out] d Pointer to a dataset pointer that will reference the loaded testing data array.
- * 
- * @return The number of testing entries loaded (i.e., `len_test`).
- * 
- * @see readDataset, testingFile
- */
 int getTestingData(struct Dataset **d)
 {
     memset(data, 0, len_test * sizeof(struct Dataset));
