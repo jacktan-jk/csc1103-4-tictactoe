@@ -87,7 +87,7 @@ int readDataset(const char *filename, bool split)
     return SUCCESS;
 }
 
-int splitFile()
+static int splitFile()
 {
     // get 80% and 20% respectively
     int eighty = len_train = 0.8 * DATA_SIZE;
@@ -140,7 +140,7 @@ int splitFile()
     return SUCCESS;
 }
 
-void getRandomNo(int random[DATA_SIZE])
+static void getRandomNo(int random[DATA_SIZE])
 {
     int count = 0;
     srand(time(NULL));

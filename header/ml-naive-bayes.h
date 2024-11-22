@@ -81,7 +81,7 @@
  * 
  * @see BOT, PLAYER1, EMPTY, ERROR
  */
-int assignMoveIndex(char move);
+static int assignMoveIndex(char move);
 
 /**  
  * @brief Calculates the probabilities for each class and conditional probabilities with Laplace smoothing.
@@ -98,7 +98,7 @@ int assignMoveIndex(char move);
  * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount
  */
-void calculateProbabilities(int dataset_size);
+static void calculateProbabilities(int dataset_size);
 
 /**  
  * @brief Resets the training data and associated statistics for a fresh training cycle.
@@ -109,7 +109,7 @@ void calculateProbabilities(int dataset_size);
  * 
  * @see positive_count, negative_count, positiveMoveCount, negativeMoveCount, cM, test_PredictedErrors, train_PredictedErrors
  */
-void resetTrainingData();
+static void resetTrainingData();
 
 /**  
  * @brief Initializes the training data and model statistics.
@@ -140,7 +140,7 @@ int initData();
  * 
  * @see positiveClassProbability, negativeClassProbability, positiveMoveCount, negativeMoveCount, assignMoveIndex
  */
-int predictOutcome(struct Dataset board);
+static int predictOutcome(struct Dataset board);
 
 /**  
  * @brief Calculates the training errors and the probability of error.
@@ -150,7 +150,7 @@ int predictOutcome(struct Dataset board);
  * 
  * @see train_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
-void calcTrainErrors();
+static void calcTrainErrors();
 
 /**  
  * @brief Calculates the confusion matrix and error probability for the testing dataset.
@@ -161,7 +161,7 @@ void calcTrainErrors();
  * 
  * @see cM, test_PredictedErrors, probabilityErrors, getTruthValue, predictOutcome
  */
-void calcConfusionMatrix();
+static void calcConfusionMatrix();
 
 /**  
  * @brief Determines the best position for the bot to make a move based on the highest probability.
@@ -198,7 +198,7 @@ struct Position getBestPosition(int grid[3][3], char player);
  * 
  * @see PRINT_DEBUG
  */
-int getTruthValue(char *str1);
+static int getTruthValue(char *str1);
 
 /**  
  * @brief Updates the confusion matrix based on actual and predicted outcomes.
@@ -213,7 +213,7 @@ int getTruthValue(char *str1);
  * 
  * @see cM, ERROR
  */
-void assignCMValue(int actual, int predicted);
+static void assignCMValue(int actual, int predicted);
 
 /**  
  * @brief Debug function to display dataset contents.
@@ -226,6 +226,6 @@ void assignCMValue(int actual, int predicted);
  * 
  * @see PRINT_DEBUG
  */
-void debugDataset(struct Dataset *data, int len);
+static void debugDataset(struct Dataset *data, int len);
 
 #endif // ML_NAIVE_BAYES_H

@@ -109,7 +109,7 @@ struct PlayerMode
  * @return SUCCESS if the bot's move was made successfully.
  * @see playerMode, isMLAvail, iBoard, findBestMove, getBestPosition, btnGrid
  */
-int doBOTmove();
+static int doBOTmove();
 
 /** 
  * @brief Checks the current game board for a win or tie.
@@ -126,7 +126,7 @@ int doBOTmove();
  * @return WIN if there is a winner, TIE if the game is a tie, PLAY if the game is still ongoing.
  * @see iBoard, iWinPos
  */
-int chkPlayerWin();
+static int chkPlayerWin();
 
 /** 
  * @brief Clears the game board and resets the player's turn.
@@ -144,7 +144,7 @@ int chkPlayerWin();
  * @see btnGrid
  * @see isPlayer1Turn
  */
-void clearGrid();
+static void clearGrid();
 
 /** 
  * @brief Updates the score display on the button.
@@ -162,7 +162,7 @@ void clearGrid();
  * 
  * @see iPlayer1_score, iTie_score, iPlayer2_score, playerMode
  */
-void updateScoreBtn(gpointer data);
+static void updateScoreBtn(gpointer data);
 
 /** 
  * @brief Callback function for handling button clicks on the game grid.
@@ -211,6 +211,6 @@ void on_btnScore_clicked(GtkWidget *widget, gpointer data);
  * 
  * @see iWinPos, btnGrid
  */
-void showWin();
+static void showWin();
 
 #endif // MAIN_H  // End of include guard

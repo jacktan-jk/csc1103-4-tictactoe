@@ -61,7 +61,7 @@ int readDataset(const char *filename, bool split);
  * 
  * @see data, trainingFile, testingFile
  */
-int splitFile();
+static int splitFile();
 
 /** 
  * @brief Generates an array of unique random integers within the range of the dataset size.
@@ -74,7 +74,7 @@ int splitFile();
  * 
  * @see DATA_SIZE
  */
-void getRandomNo(int random[DATA_SIZE]);
+static void getRandomNo(int random[DATA_SIZE]);
 
 /** 
  * @brief Retrieves the training data from a file and returns its length.

@@ -58,7 +58,7 @@ struct BoardState
  * // result now holds the value 20.
  * @endcode
  */
-int max(int a, int b);
+static int max(int a, int b);
 
 /**
  * @brief Returns the minimum of two integers.
@@ -83,7 +83,7 @@ int max(int a, int b);
  * // result now holds the value 10.
  * @endcode
  */
-int min(int a, int b);
+static int min(int a, int b);
 
 /**  
  * @brief Finds the best move for the bot in the Tic-Tac-Toe game.
@@ -120,7 +120,7 @@ struct Position findBestMove(int board[3][3]);
  * 
  * @see evaluate, isMovesLeft, max, min
  */
-int minimax(int board[3][3], int depth, bool isMax);
+static int minimax(int board[3][3], int depth, bool isMax);
 
 /**  
  * @brief Evaluates the current board state to determine if there is a winner.
@@ -141,7 +141,7 @@ int minimax(int board[3][3], int depth, bool isMax);
  * 
  * @see BOT, PLAYER1
  */
-int evaluate(int b[3][3]);
+static int evaluate(int b[3][3]);
 
 /**
  * @brief Checks if there are any moves left on the board.
@@ -174,7 +174,7 @@ int evaluate(int b[3][3]);
  * @endcode
  *
  */
-bool isMovesLeft(int board[3][3]);
+static bool isMovesLeft(int board[3][3]);
 
 /**  
  * @brief Checks if the current board configuration exists in the lookup table and updates the best move.
@@ -193,7 +193,7 @@ bool isMovesLeft(int board[3][3]);
  * 
  * @see BoardState, Position
  */
-bool checkAndUpdateBestMove(int board[3][3], struct Position *bestMove, struct BoardState boardStates[], int count);
+static bool checkAndUpdateBestMove(int board[3][3], struct Position *bestMove, struct BoardState boardStates[], int count);
 
 /**  
  * @brief Appends the current board state and the best move to a file.
@@ -207,7 +207,7 @@ bool checkAndUpdateBestMove(int board[3][3], struct Position *bestMove, struct B
  * 
  * @see Position, BoardState
  */
-void writeBestMoveToFile(int board[3][3], struct Position bestMove);
+static void writeBestMoveToFile(int board[3][3], struct Position bestMove);
 
 /**  
  * @brief Loads board states and their best moves from a file.
@@ -229,7 +229,7 @@ void writeBestMoveToFile(int board[3][3], struct Position bestMove);
  * 
  * @see BoardState, FILE_BESTMOV
  */
-int loadBoardStates(struct BoardState boardStates[]);
+static int loadBoardStates(struct BoardState boardStates[]);
 
 /** 
  * @brief Prints the contents of the best move file.
@@ -237,6 +237,6 @@ int loadBoardStates(struct BoardState boardStates[]);
  * This function reads and prints the contents of the file that stores the best moves 
  * for various board states.
  */
-void printFileContents();
+static void printFileContents();
 
 #endif // MINIMAX_H // End of include guard

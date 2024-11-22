@@ -18,7 +18,7 @@ double positiveClassProbability;
 double negativeClassProbability;
 double probabilityErrors;
 
-int assignMoveIndex(char move) //converts char to int value for easier calculation
+static int assignMoveIndex(char move) //converts char to int value for easier calculation
 {
     switch (move)
     {
@@ -33,7 +33,7 @@ int assignMoveIndex(char move) //converts char to int value for easier calculati
     }
 }
 
-void calculateProbabilities(int dataset_size)
+static void calculateProbabilities(int dataset_size)
 {
     // Calculate class probability
     positiveClassProbability = (double)positive_count / dataset_size;
@@ -85,7 +85,7 @@ void calculateProbabilities(int dataset_size)
     }
 }
 
-int predictOutcome(struct Dataset board)
+static int predictOutcome(struct Dataset board)
 {
     double positiveProbability = positiveClassProbability;
     double negativeProbability = negativeClassProbability;
@@ -244,7 +244,7 @@ struct Position getBestPosition(int grid[3][3], char player)
     }
 }
 
-void resetTrainingData() {
+static void resetTrainingData() {
     // Reset outcome counts
     positive_count = 0;
     negative_count = 0;
@@ -337,7 +337,7 @@ doGetTrainingData:
     return SUCCESS;
 }
 
-void assignCMValue(int actual, int predicted)
+static void assignCMValue(int actual, int predicted)
 {
     // PRINT_DEBUG("\nactual_%i, predicted_%i\n",actual,predicted);
 
@@ -370,7 +370,7 @@ void assignCMValue(int actual, int predicted)
     }
 }
 
-void calcConfusionMatrix()
+static void calcConfusionMatrix()
 {
     //Tests ml on test dataset and stores result in a confusion matrix
 
@@ -421,7 +421,7 @@ int getTruthValue(char *str1) //returns an integer value based on input
     }
 }
 
-void calcTrainErrors()
+static void calcTrainErrors()
 {
     struct Dataset *train = NULL;      // Initialize pointer
     int len = getTrainingData(&train); // Pass address of pointer
@@ -448,7 +448,7 @@ void calcTrainErrors()
     PRINT_DEBUG("\nFor training dataset: %d errors, %lf probability of error.\n", train_PredictedErrors, probabilityErrors);
 }
 
-void debugDataset(struct Dataset *data, int len)
+static void debugDataset(struct Dataset *data, int len)
 {
     PRINT_DEBUG("%d\n", len);
     if (len > 0)

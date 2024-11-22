@@ -2,7 +2,7 @@
 
 int depthCounter = 0;
 
-int max(int a, int b)
+static int max(int a, int b)
 {
 #if (DISABLE_ASM)
     return (a > b) ? a : b;
@@ -35,7 +35,7 @@ int max(int a, int b)
 #endif
 }
 
-int min(int a, int b)
+static int min(int a, int b)
 {
 #if (DISABLE_ASM)
     return (a < b) ? a : b;
@@ -133,7 +133,7 @@ struct Position findBestMove(int board[3][3])
     return bestMove;
 }
 
-int minimax(int board[3][3], int depth, bool isMax)
+static int minimax(int board[3][3], int depth, bool isMax)
 {
 #if DEBUG
     depthCounter++;
@@ -217,7 +217,7 @@ int minimax(int board[3][3], int depth, bool isMax)
     }
 }
 
-int evaluate(int b[3][3])
+static int evaluate(int b[3][3])
 {
     // Checking for Rows for X or O victory.
     for (int row = 0; row < 3; row++)
@@ -267,7 +267,7 @@ int evaluate(int b[3][3])
     return 0;
 }
 
-bool isMovesLeft(int board[3][3])
+static bool isMovesLeft(int board[3][3])
 {
 #if (DISABLE_ASM)
     for (int i = 0; i<3; i++) 
@@ -363,7 +363,7 @@ __asm__(
 #endif
 }
 
-int loadBoardStates(struct BoardState boardStates[])
+static int loadBoardStates(struct BoardState boardStates[])
 {
     FILE *file = fopen(FILE_BESTMOV, "r");
     if (file == NULL)
@@ -416,7 +416,7 @@ int loadBoardStates(struct BoardState boardStates[])
     return count; // Return the number of boards loaded
 }
 
-bool checkAndUpdateBestMove(int board[3][3], struct Position *bestMove, struct BoardState boardStates[], int count)
+static bool checkAndUpdateBestMove(int board[3][3], struct Position *bestMove, struct BoardState boardStates[], int count)
 {
     for (int i = 0; i < count; i++)
     {
@@ -433,7 +433,7 @@ bool checkAndUpdateBestMove(int board[3][3], struct Position *bestMove, struct B
     return false; // No matching board found
 }
 
-void writeBestMoveToFile(int board[3][3], struct Position bestMove)
+static void writeBestMoveToFile(int board[3][3], struct Position bestMove)
 {
     FILE *file = fopen(FILE_BESTMOV, "a"); // Open the file for appending
     if (file == NULL)

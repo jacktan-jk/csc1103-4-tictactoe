@@ -26,7 +26,7 @@ END OF GLOBAL DECLARATION
 GUI FUNCTIONS
 ===============================================================================================*/
 
-void clearGrid()
+static void clearGrid()
 {
     isPlayer1Turn = true;
     for (int i = 0; i < 3; i++)
@@ -39,7 +39,7 @@ void clearGrid()
     }
 }
 
-void updateScoreBtn(gpointer data)
+static void updateScoreBtn(gpointer data)
 {
     // Update the score display
     char score_text[100];
@@ -156,7 +156,7 @@ void on_btnScore_clicked(GtkWidget *widget, gpointer data)
     updateScoreBtn(data);
 }
 
-void showWin()
+static void showWin()
 {
     for (int i = 0; i < 3; i++)
     {
@@ -178,7 +178,7 @@ END OF GUI FUNCTIONS
 LOGIC FUNCTIONS
 ===============================================================================================*/
 
-int doBOTmove()
+static int doBOTmove()
 {
     struct Position botMove;
     if (playerMode.mode == MODE_MM)
@@ -231,7 +231,7 @@ int doBOTmove()
     return SUCCESS;
 }
 
-int chkPlayerWin()
+static int chkPlayerWin()
 {
     // check both dia
     if (iBoard[0][0] == iBoard[1][1] && iBoard[1][1] == iBoard[2][2] && iBoard[0][0] != 0)
