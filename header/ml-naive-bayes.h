@@ -21,8 +21,8 @@
 #include <macros.h>
 #include <importData.h>
 
-#define TRAINING_DATA_SIZE 0.8 * DATA_SIZE     /**< Size of the training dataset (80%) */
-#define TESTING_DATA_SIZE 0.2 * DATA_SIZE      /**< Size of the testing dataset (20%) */
+#define TRAINING_DATA_SIZE (double)((int)(0.8 * DATA_SIZE))     /**< Size of the training dataset (80%) */
+#define TESTING_DATA_SIZE  (double)((int)(0.2 * DATA_SIZE))      /**< Size of the testing dataset (20%) */
 #define CLASSES 2                              /**< Number of possible outcome classes (positive/negative) */
 
 /**
