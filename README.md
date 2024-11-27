@@ -4,7 +4,7 @@
 To get started with the project, ensure you have the following installed:
 
 > [!IMPORTANT]
-> Ensure that you follow all the instruction in the link below!
+> Ensure that you follow all the instruction below!
 
 1. **Setup Docker's apt repository**
 ```
@@ -33,9 +33,15 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 ```
   
 > [!TIP]
-> Adding this command in startup.sh will make your life easier.
+> Enable Docker service on boot. Make your life easier.
 > ```
-> systemctl --user start docker-desktop
+>  sudo systemctl enable docker.service
+>  sudo systemctl enable containerd.service
+> ```
+>  To stop this behavior, use disable instead.
+> ```
+>  sudo systemctl disable docker.service
+>  sudo systemctl disable containerd.service
 > ```
 
 ### Building the Project via Docker (Linux)
@@ -60,9 +66,13 @@ sudo ./run_docker.sh
 > [!TIP]
 > **Saving Docker Image**
 > ```
-> ./run_script.sh -s
+> ./run_docker.sh -s
 > ```
-
+> **Run Docker Verbose**
+> ```
+> ./run_docker.sh -d
+> ```
+> 
 ## Installation Instructions (MacOS) 
 
 To get started with the project, ensure you have the following installed:
@@ -173,9 +183,13 @@ docker load -i FILE_NAME.tar
 > [!TIP]
 > **Saving Docker Image**
 > ```
-> ./run_script.sh -s
+> ./run_docker.sh -s
 > ```
-
+> **Run Docker Verbose**
+> ```
+> ./run_docker.sh -d
+> ```
+> 
 ### Build and Run the Project in Windows (w/o Docker)
 > [!CAUTION]
 > **Not recommended**, unless you know what you're doing and install the right packages. (refer Dockerfile)
@@ -196,7 +210,7 @@ docker load -i FILE_NAME.tar
     > [TIP]
     > Linear regression, Navie bayes, Neural network and Reinforcement learning
 - [X] Plot the confusion matrix for the training and testing accuracy
-- [ ] Calculate the number of times the computer wins as a gauge of difficulty level. 
+- [X] Calculate the number of times the computer wins as a gauge of difficulty level. 
  
 ## **[^2]COA-CSC1104 REQUIRMENTS**
 - [X] Replace one function with assembly
