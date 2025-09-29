@@ -1,4 +1,24 @@
 # **TIC TAC TOE - CSC1103 & CSC1104 Project**
+## Project Overview
+
+This project delivers a polished Tic Tac Toe experience that demonstrates programming methodology and computer organisation concepts through a modern C/C++ codebase. Players can enjoy a classic two-player match or challenge an unbeatable AI powered by a perfect minimax strategy augmented with machine-learning analytics. The graphical interface is built with GTK, and the entire environment is reproducible through Docker so the application behaves consistently on Linux, macOS, and Windows systems.
+
+## Features
+
+- **Rich GTK GUI** providing responsive controls, animated win indicators, and an intuitive layout.
+- **Single-player and two-player modes**, with the computer opponent implemented using a memory-optimised minimax algorithm.
+- **Machine-learning evaluation** that tracks game outcomes, plots a confusion matrix, and gauges AI difficulty based on win rates.
+- **Assembly integration** that replaces a targeted function to highlight low-level optimisation opportunities.
+- **Docker-first workflow** for building, running, and sharing the project without host-OS dependency headaches.
+
+## Tech Stack
+
+- **Languages:** C/C++ with targeted inline assembly.
+- **GUI Framework:** GTK.
+- **AI/ML:** Minimax decision tree & Naive Bayes with a custom 80/20 training and evaluation pipeline.
+- **Tooling:** Docker, Bash automation scripts, Doxygen documentation.
+
+# Getting Started
 ## Installation Instructions (Linux)
 
 To get started with the project, ensure you have the following installed:
@@ -219,3 +239,4 @@ docker load -i FILE_NAME.tar
 
 [^1]: PROGRAMMING METHODOLOGY.
 [^2]: COMPUTER ORGANIZATION AND ARCH.
+
